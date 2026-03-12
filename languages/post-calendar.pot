@@ -1,0 +1,297 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Post Calendar 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-13 13:10:54+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: post-calendar\n"
+
+#. translators: 1: post type label, 2: post type slug.
+#: includes/bricks/elements/class-element-post-calendar.php:393
+msgid "%1$s (%2$s)"
+msgstr ""
+
+#: includes/admin/class-settings-page.php:104
+msgid "%d post is currently marked as an event."
+msgid_plural "%d posts are currently marked as events."
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:302
+msgid "Active button color"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:315
+msgid "Active button text color"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:70 includes/bricks/elements/class-element-post-calendar.php:84 includes/class-assets.php:79
+msgid "Agenda"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:115
+msgid "Agenda range in months"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:103
+msgid "Agenda range mode"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:88
+msgid "All views enabled"
+msgstr ""
+
+#: includes/class-assets.php:78
+msgid "All-day"
+msgstr ""
+
+#: includes/class-acf-fields.php:40
+msgid "All-day event"
+msgstr ""
+
+#: includes/admin/class-settings-page.php:81
+msgid "Allowed event post types"
+msgstr ""
+
+#: includes/class-assets.php:80
+msgid "Back"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:30
+msgid "Behavior"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:246
+msgid "Body text color"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:233
+msgid "Border color"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:190
+msgid "Button and event radius"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:155
+msgid "Calendar height"
+msgstr ""
+
+#: includes/class-assets.php:81
+msgid "Calendar views"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:137
+msgid "Calendar width"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:58
+msgid "Choose specific post types for this calendar instance. Leave empty to use the allowed post types from Settings > Post Calendar."
+msgstr ""
+
+#: includes/admin/class-settings-page.php:71
+msgid "Choose which post types can be used as calendar events. Only Posts, Pages, and custom post types that look like content types are listed here."
+msgstr ""
+
+#: includes/admin/class-settings-page.php:118
+msgid "Clears the event flag, all-day flag, and event dates for this post type."
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:40
+msgid "Colors"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:25
+msgid "Content"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:143
+msgid "Controls the minimum calendar width used by the month and week layouts."
+msgstr ""
+
+#: includes/class-assets.php:83
+msgid "Date"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:69 includes/bricks/elements/class-element-post-calendar.php:83 includes/class-assets.php:84
+msgid "Day"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:64
+msgid "Default view"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:128
+msgid "Empty state message"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:78
+msgid "Enabled views"
+msgstr ""
+
+#: includes/class-acf-fields.php:75
+msgid "End date"
+msgstr ""
+
+#: includes/class-assets.php:85
+msgid "Event"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:276
+msgid "Event pill color"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:289
+msgid "Event pill text color"
+msgstr ""
+
+#: includes/admin/class-settings-page.php:153
+msgid "Forbidden"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:35
+msgid "Layout"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:89
+msgid "Leave empty to show all views. Deselect a view to hide its toolbar button."
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:355 includes/class-shortcode.php:66
+msgid "Loading calendar…"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:67 includes/bricks/elements/class-element-post-calendar.php:81 includes/class-assets.php:88
+msgid "Month"
+msgstr ""
+
+#: includes/class-assets.php:91
+msgid "more"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:220
+msgid "Muted surface color"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:259
+msgid "Muted text color"
+msgstr ""
+
+#: includes/class-assets.php:89
+msgid "Next"
+msgstr ""
+
+#: includes/admin/class-settings-page.php:86
+msgid "No eligible post types found."
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:130 includes/bricks/elements/class-element-post-calendar.php:131 includes/bricks/elements/class-element-post-calendar.php:350 includes/class-assets.php:90 includes/class-shortcode.php:45
+msgid "No events to display."
+msgstr ""
+
+#: includes/admin/class-settings-page.php:50 includes/admin/class-settings-page.php:51 includes/admin/class-settings-page.php:70 includes/bricks/elements/class-element-post-calendar.php:16 includes/class-acf-fields.php:28
+msgid "Post Calendar"
+msgstr ""
+
+#: includes/bricks/class-bricks-integration.php:37
+msgid "Post Calendar could not register its Bricks element because Bricks is not active or its API is unavailable."
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:51
+msgid "Post types"
+msgstr ""
+
+#: includes/admin/class-settings-page.php:116
+msgid "Remove all event data"
+msgstr ""
+
+#: includes/admin/class-settings-page.php:113
+msgid "Remove all event data for this post type? This cannot be undone."
+msgstr ""
+
+#. translators: 1: number of posts cleared, 2: post type label.
+#: includes/admin/class-settings-page.php:198
+msgid "Removed all event data from %1$d posts in %2$s."
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:161
+msgid "Sets the fixed height used by the month and week layouts."
+msgstr ""
+
+#: includes/class-acf-fields.php:32
+msgid "Show on calendar"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:95
+msgid "Show toolbar"
+msgstr ""
+
+#: includes/class-acf-fields.php:57
+msgid "Start date"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:207
+msgid "Surface color"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:173
+msgid "Surface radius"
+msgstr ""
+
+#: includes/admin/class-settings-page.php:212
+msgid "That post type cannot be managed from Post Calendar."
+msgstr ""
+
+#: includes/class-assets.php:87
+msgid "The calendar API URL is missing."
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:337 includes/class-shortcode.php:34
+msgid "The calendar frontend assets are missing. Run the plugin build before using this element."
+msgstr ""
+
+#: includes/class-assets.php:92
+msgid "Time"
+msgstr ""
+
+#: includes/class-assets.php:93
+msgid "Today"
+msgstr ""
+
+#: includes/class-assets.php:86
+msgid "Unable to load calendar events right now."
+msgstr ""
+
+#: includes/class-assets.php:82
+msgid "Unable to parse the calendar configuration."
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:107
+msgid "Upcoming events window"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:57
+msgid "Use allowed post types from Settings > Post Calendar"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:106
+msgid "Use visible agenda range"
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:121
+msgid "Used when agenda range mode is set to upcoming events window."
+msgstr ""
+
+#: includes/bricks/elements/class-element-post-calendar.php:68 includes/bricks/elements/class-element-post-calendar.php:82 includes/class-assets.php:94
+msgid "Week"
+msgstr ""
+
+#: includes/admin/class-settings-page.php:152
+msgid "You are not allowed to manage Post Calendar settings."
+msgstr ""

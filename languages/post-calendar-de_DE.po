@@ -1,0 +1,286 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Post Calendar 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-13 11:33:27+0000\n"
+"PO-Revision-Date: 2026-03-13 12:30+0000\n"
+"Last-Translator: GitHub Copilot <copilot@github.com>\n"
+"Language-Team: German\n"
+"Language: de_DE\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: post-calendar\n"
+
+#. translators: 1: post type label, 2: post type slug.
+#: includes/bricks/elements/class-element-post-calendar.php:374
+msgid "%1$s (%2$s)"
+msgstr "%1$s (%2$s)"
+
+#: includes/admin/class-settings-page.php:104
+msgid "%d post is currently marked as an event."
+msgid_plural "%d posts are currently marked as events."
+msgstr[0] "%d Beitrag ist derzeit als Termin markiert."
+msgstr[1] "%d Beiträge sind derzeit als Termine markiert."
+
+#: includes/bricks/elements/class-element-post-calendar.php:284
+msgid "Active button color"
+msgstr "Farbe der aktiven Schaltfläche"
+
+#: includes/bricks/elements/class-element-post-calendar.php:297
+msgid "Active button text color"
+msgstr "Textfarbe der aktiven Schaltfläche"
+
+#: includes/bricks/elements/class-element-post-calendar.php:69 includes/class-assets.php:80
+msgid "Agenda"
+msgstr "Agenda"
+
+#: includes/bricks/elements/class-element-post-calendar.php:97
+msgid "Agenda range in months"
+msgstr "Agenda-Bereich in Monaten"
+
+#: includes/bricks/elements/class-element-post-calendar.php:85
+msgid "Agenda range mode"
+msgstr "Modus für den Agenda-Bereich"
+
+#: includes/class-assets.php:79
+msgid "All-day"
+msgstr "Ganztägig"
+
+#: includes/class-acf-fields.php:40
+msgid "All-day event"
+msgstr "Ganztägige Veranstaltung"
+
+#: includes/admin/class-settings-page.php:81
+msgid "Allowed event post types"
+msgstr "Erlaubte Beitragstypen für Termine"
+
+#: includes/class-assets.php:81
+msgid "Back"
+msgstr "Zurück"
+
+#: includes/bricks/elements/class-element-post-calendar.php:30
+msgid "Behavior"
+msgstr "Verhalten"
+
+#: includes/bricks/elements/class-element-post-calendar.php:228
+msgid "Body text color"
+msgstr "Textfarbe"
+
+#: includes/bricks/elements/class-element-post-calendar.php:215
+msgid "Border color"
+msgstr "Rahmenfarbe"
+
+#: includes/bricks/elements/class-element-post-calendar.php:172
+msgid "Button and event radius"
+msgstr "Radius für Schaltflächen und Termine"
+
+#: includes/bricks/elements/class-element-post-calendar.php:137
+msgid "Calendar height"
+msgstr "Kalenderhöhe"
+
+#: includes/class-assets.php:82
+msgid "Calendar views"
+msgstr "Kalenderansichten"
+
+#: includes/bricks/elements/class-element-post-calendar.php:119
+msgid "Calendar width"
+msgstr "Kalenderbreite"
+
+#: includes/bricks/elements/class-element-post-calendar.php:58
+msgid "Choose specific post types for this calendar instance. Leave empty to use the allowed post types from Settings > Post Calendar."
+msgstr "Wähle bestimmte Beitragstypen für diese Kalenderinstanz. Leer lassen, um die erlaubten Beitragstypen aus Einstellungen > Post Calendar zu verwenden."
+
+#: includes/admin/class-settings-page.php:71
+msgid "Choose which post types can be used as calendar events. Only Posts, Pages, and custom post types that look like content types are listed here."
+msgstr "Wähle, welche Beitragstypen als Kalendertermine verwendet werden können. Es werden nur Beiträge, Seiten und benutzerdefinierte Beitragstypen aufgeführt, die wie Inhaltstypen aussehen."
+
+#: includes/admin/class-settings-page.php:118
+msgid "Clears the event flag, all-day flag, and event dates for this post type."
+msgstr "Entfernt die Terminmarkierung, das Ganztägig-Flag und die Termindaten für diesen Beitragstyp."
+
+#: includes/bricks/elements/class-element-post-calendar.php:40
+msgid "Colors"
+msgstr "Farben"
+
+#: includes/bricks/elements/class-element-post-calendar.php:25
+msgid "Content"
+msgstr "Inhalt"
+
+#: includes/bricks/elements/class-element-post-calendar.php:125
+msgid "Controls the minimum calendar width used by the month and week layouts."
+msgstr "Steuert die Mindestbreite des Kalenders für die Monats- und Wochenlayouts."
+
+#: includes/class-assets.php:84
+msgid "Date"
+msgstr "Datum"
+
+#: includes/bricks/elements/class-element-post-calendar.php:64
+msgid "Default view"
+msgstr "Standardansicht"
+
+#: includes/bricks/elements/class-element-post-calendar.php:110
+msgid "Empty state message"
+msgstr "Meldung für den Leerzustand"
+
+#: includes/class-acf-fields.php:75
+msgid "End date"
+msgstr "Enddatum"
+
+#: includes/class-assets.php:85
+msgid "Event"
+msgstr "Termin"
+
+#: includes/bricks/elements/class-element-post-calendar.php:258
+msgid "Event pill color"
+msgstr "Farbe der Terminmarke"
+
+#: includes/bricks/elements/class-element-post-calendar.php:271
+msgid "Event pill text color"
+msgstr "Textfarbe der Terminmarke"
+
+#: includes/admin/class-settings-page.php:153
+msgid "Forbidden"
+msgstr "Verboten"
+
+#: includes/bricks/elements/class-element-post-calendar.php:35
+msgid "Layout"
+msgstr "Layout"
+
+#: includes/bricks/elements/class-element-post-calendar.php:336
+msgid "Loading calendar…"
+msgstr "Kalender wird geladen…"
+
+#: includes/class-assets.php:87
+msgid "Loading events..."
+msgstr "Termine werden geladen..."
+
+#: includes/bricks/elements/class-element-post-calendar.php:67 includes/class-assets.php:89
+msgid "Month"
+msgstr "Monat"
+
+#: includes/class_assets.php:92
+msgid "more"
+msgstr "mehr"
+
+#: includes/bricks/elements/class-element-post-calendar.php:202
+msgid "Muted surface color"
+msgstr "Gedämpfte Hintergrundfarbe"
+
+#: includes/bricks/elements/class-element-post-calendar.php:241
+msgid "Muted text color"
+msgstr "Gedämpfte Textfarbe"
+
+#: includes/class-assets.php:90
+msgid "Next"
+msgstr "Weiter"
+
+#: includes/admin/class-settings-page.php:86
+msgid "No eligible post types found."
+msgstr "Keine geeigneten Beitragstypen gefunden."
+
+#: includes/bricks/elements/class-element-post-calendar.php:112 includes/bricks/elements/class-element-post-calendar.php:113 includes/bricks/elements/class-element-post-calendar.php:331 includes/class-assets.php:91
+msgid "No events to display."
+msgstr "Keine Termine zum Anzeigen."
+
+#: includes/admin/class-settings-page.php:50 includes/admin/class-settings-page.php:51 includes/admin/class-settings-page.php:70 includes/bricks/elements/class-element-post-calendar.php:16 includes/class-acf-fields.php:28
+msgid "Post Calendar"
+msgstr "Post Calendar"
+
+#: includes/bricks/class-bricks-integration.php:37
+msgid "Post Calendar could not register its Bricks element because Bricks is not active or its API is unavailable."
+msgstr "Post Calendar konnte sein Bricks-Element nicht registrieren, weil Bricks nicht aktiv ist oder seine API nicht verfügbar ist."
+
+#: includes/bricks/elements/class-element-post-calendar.php:51
+msgid "Post types"
+msgstr "Beitragstypen"
+
+#: includes/admin/class-settings-page.php:116
+msgid "Remove all event data"
+msgstr "Alle Termindaten entfernen"
+
+#: includes/admin/class-settings-page.php:113
+msgid "Remove all event data for this post type? This cannot be undone."
+msgstr "Alle Termindaten für diesen Beitragstyp entfernen? Dies kann nicht rückgängig gemacht werden."
+
+#. translators: 1: number of posts cleared, 2: post type label.
+#: includes/admin/class-settings-page.php:198
+msgid "Removed all event data from %1$d posts in %2$s."
+msgstr "Alle Termindaten wurden aus %1$d Beiträgen in %2$s entfernt."
+
+#: includes/bricks/elements/class-element-post-calendar.php:143
+msgid "Sets the fixed height used by the month and week layouts."
+msgstr "Legt die feste Höhe fest, die von den Monats- und Wochenlayouts verwendet wird."
+
+#: includes/class-acf-fields.php:32
+msgid "Show on calendar"
+msgstr "Im Kalender anzeigen"
+
+#: includes/bricks/elements/class-element-post-calendar.php:77
+msgid "Show toolbar"
+msgstr "Werkzeugleiste anzeigen"
+
+#: includes/class-acf-fields.php:57
+msgid "Start date"
+msgstr "Startdatum"
+
+#: includes/bricks/elements/class-element-post-calendar.php:189
+msgid "Surface color"
+msgstr "Hintergrundfarbe"
+
+#: includes/bricks/elements/class-element-post-calendar.php:155
+msgid "Surface radius"
+msgstr "Flächenradius"
+
+#: includes/admin/class-settings-page.php:212
+msgid "That post type cannot be managed from Post Calendar."
+msgstr "Dieser Beitragstyp kann nicht über Post Calendar verwaltet werden."
+
+#: includes/class-assets.php:88
+msgid "The calendar API URL is missing."
+msgstr "Die Kalender-API-URL fehlt."
+
+#: includes/bricks/elements/class-element-post-calendar.php:319
+msgid "The calendar frontend assets are missing. Run the plugin build before using this element."
+msgstr "Die Frontend-Assets des Kalenders fehlen. Führe den Plugin-Build aus, bevor du dieses Element verwendest."
+
+#: includes/class-assets.php:93
+msgid "Time"
+msgstr "Uhrzeit"
+
+#: includes/class-assets.php:94
+msgid "Today"
+msgstr "Heute"
+
+#: includes/class-assets.php:86
+msgid "Unable to load calendar events right now."
+msgstr "Kalendertermine können derzeit nicht geladen werden."
+
+#: includes/class-assets.php:83
+msgid "Unable to parse the calendar configuration."
+msgstr "Die Kalenderkonfiguration konnte nicht verarbeitet werden."
+
+#: includes/bricks/elements/class-element-post-calendar.php:89
+msgid "Upcoming events window"
+msgstr "Fenster für kommende Termine"
+
+#: includes/bricks/elements/class-element-post-calendar.php:57
+msgid "Use allowed post types from Settings > Post Calendar"
+msgstr "Erlaubte Beitragstypen aus Einstellungen > Post Calendar verwenden"
+
+#: includes/bricks/elements/class-element-post-calendar.php:88
+msgid "Use visible agenda range"
+msgstr "Sichtbaren Agenda-Bereich verwenden"
+
+#: includes/bricks/elements/class-element-post-calendar.php:103
+msgid "Used when agenda range mode is set to upcoming events window."
+msgstr "Wird verwendet, wenn der Modus für den Agenda-Bereich auf Fenster für kommende Termine gesetzt ist."
+
+#: includes/bricks/elements/class-element-post-calendar.php:68 includes/class-assets.php:95
+msgid "Week"
+msgstr "Woche"
+
+#: includes/admin/class-settings-page.php:152
+msgid "You are not allowed to manage Post Calendar settings."
+msgstr "Du darfst die Einstellungen von Post Calendar nicht verwalten."

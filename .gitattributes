@@ -1,0 +1,17 @@
+*	text=auto eol=lf 
+
+*.js -linguist-detectable
+*.css -linguist-detectable
+*.html -linguist-detectable
+*.json -linguist-detectable
+
+*.md -linguist-vendored
+*.md -linguist-generated
+*.md -linguist-documentation
+*.md linguist-detectable
+
+CODE_OF_CONDUCT.md -linguist-detectable
+CHANGELOG.md -linguist-detectable
+LICENSE.md -linguist-detectable
+README.md -linguist-detectable
+REVIEWING.md -linguist-detectable
