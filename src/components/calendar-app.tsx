@@ -253,7 +253,7 @@ export default function CalendarApp({ config, runtime }: CalendarAppProps) {
             event: strings.event,
             month: strings.month,
             next: strings.next,
-            noEventsInRange: config.emptyMessage || strings.noEvents,
+            noEventsInRange: strings.noEvents,
             previous: strings.back,
             showMore: (count) => `+${count} ${strings.showMore}`,
             time: strings.time,

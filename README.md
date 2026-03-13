@@ -32,7 +32,7 @@ You can also render a calendar without Bricks:
 Example with custom options:
 
 ```php
-[post_calendar post_types="post,page" default_view="week" enabled_views="month,week,agenda" show_toolbar="1" agenda_range_mode="upcoming-window" agenda_range_months="3" empty_message="No events currently available."]
+[post_calendar post_types="post,page" default_view="week" enabled_views="month,week,agenda" show_toolbar="1" agenda_range_mode="upcoming-window" agenda_range_months="3"]
 ```
 
 Shortcode attributes:
@@ -43,7 +43,6 @@ Shortcode attributes:
 - `show_toolbar`: `1`/`0` (also supports `true`/`false`, `yes`/`no`, `on`/`off`).
 - `agenda_range_mode`: `visible-range` or `upcoming-window`.
 - `agenda_range_months`: Positive integer, used for `upcoming-window`.
-- `empty_message`: Custom empty-state text.
 
 ## Event data model
 

@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Post Calendar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-13 11:33:27+0000\n"
-"PO-Revision-Date: 2026-03-13 12:30+0000\n"
+"POT-Creation-Date: 2026-03-13 13:42:42+0000\n"
+"PO-Revision-Date: 2026-03-13 13:45+0000\n"
 "Last-Translator: GitHub Copilot <copilot@github.com>\n"
 "Language-Team: German\n"
 "Language: de_DE\n"
@@ -119,10 +119,6 @@ msgstr "Datum"
 #: includes/bricks/elements/class-element-post-calendar.php:64
 msgid "Default view"
 msgstr "Standardansicht"
-
-#: includes/bricks/elements/class-element-post-calendar.php:110
-msgid "Empty state message"
-msgstr "Meldung für den Leerzustand"
 
 #: includes/class-acf-fields.php:75
 msgid "End date"

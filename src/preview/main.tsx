@@ -102,7 +102,6 @@ const previewEvents: CalendarEventInput[] = [
 const previewConfig: CalendarConfig = {
   defaultView: 'month',
   showToolbar: true,
-  emptyMessage: 'No preview events are scheduled in this range.',
   agendaRangeMode: 'upcoming-window',
   agendaRangeMonths: 3,
   postTypes: ['event'],

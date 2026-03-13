@@ -122,15 +122,6 @@ class Element_Post_Calendar extends \Bricks\Element {
 			'required'    => array( 'agendaRangeMode', '=', 'upcoming-window' ),
 		);
 
-		$this->controls['emptyMessage'] = array(
-			'tab'         => 'content',
-			'group'       => 'content',
-			'label'       => esc_html__( 'Empty state message', 'post-calendar' ),
-			'type'        => 'text',
-			'placeholder' => esc_html__( 'No events to display.', 'post-calendar' ),
-			'default'     => esc_html__( 'No events to display.', 'post-calendar' ),
-		);
-
 		$this->controls['calendarWidth'] = array(
 			'tab'         => 'style',
 			'group'       => 'layout',
@@ -347,7 +338,6 @@ class Element_Post_Calendar extends \Bricks\Element {
 			'showToolbar'       => ! array_key_exists( 'showToolbar', $settings ) || ! empty( $settings['showToolbar'] ),
 			'agendaRangeMode'   => $this->parse_agenda_range_mode( $settings['agendaRangeMode'] ?? 'visible-range' ),
 			'agendaRangeMonths' => $this->parse_positive_integer( $settings['agendaRangeMonths'] ?? '3', 3 ),
-			'emptyMessage'      => isset( $settings['emptyMessage'] ) ? sanitize_text_field( $settings['emptyMessage'] ) : esc_html__( 'No events to display.', 'post-calendar' ),
 		);
 
 		echo '<div class="post-calendar-element">';

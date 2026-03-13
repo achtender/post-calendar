@@ -42,7 +42,6 @@ class Shortcode {
 				'show_toolbar'        => '1',
 				'agenda_range_mode'   => self::DEFAULT_AGENDA_RANGE_MODE,
 				'agenda_range_months' => (string) self::DEFAULT_AGENDA_RANGE_MONTHS,
-				'empty_message'       => esc_html__( 'No events to display.', 'post-calendar' ),
 			),
 			is_array( $atts ) ? $atts : array(),
 			self::TAG
@@ -57,7 +56,6 @@ class Shortcode {
 			'showToolbar'       => $this->parse_boolean( $attributes['show_toolbar'], true ),
 			'agendaRangeMode'   => $this->parse_agenda_range_mode( $attributes['agenda_range_mode'] ),
 			'agendaRangeMonths' => $this->parse_positive_integer( $attributes['agenda_range_months'], self::DEFAULT_AGENDA_RANGE_MONTHS ),
-			'emptyMessage'      => sanitize_text_field( (string) $attributes['empty_message'] ),
 		);
 
 		return sprintf(

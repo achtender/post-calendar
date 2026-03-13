@@ -2,7 +2,6 @@ export interface CalendarConfig {
   defaultView?: string;
   enabledViews?: string[];
   showToolbar?: boolean;
-  emptyMessage?: string;
   agendaRangeMode?: string;
   agendaRangeMonths?: number | string;
   postTypes?: string[];
