@@ -8,9 +8,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-acf-fields.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-assets.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-proxy-post-type.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-shortcode.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/admin/class-settings-page.php';
-require_once POST_CALENDAR_PLUGIN_DIR . 'includes/api/class-events-endpoint.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/api/class-event-query-service.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/api/class-proxy-post-type-rest.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/bricks/class-bricks-integration.php';
 
 class Plugin {
@@ -30,6 +32,11 @@ class Plugin {
 	private $acf_fields;
 
 	/**
+	 * @var Proxy_Post_Type
+	 */
+	private $proxy_post_type;
+
+	/**
 	 * @var Bricks\Bricks_Integration
 	 */
 	private $bricks_integration;
@@ -40,9 +47,9 @@ class Plugin {
 	private $assets;
 
 	/**
-	 * @var API\Events_Endpoint
+	 * @var API\Proxy_Post_Type_Rest
 	 */
-	private $events_endpoint;
+	private $proxy_post_type_rest;
 
 	/**
 	 * @var Shortcode
@@ -60,10 +67,11 @@ class Plugin {
 	}
 
 	private function __construct() {
+		$this->proxy_post_type    = new Proxy_Post_Type();
 		$this->acf_fields         = new ACF_Fields();
 		$this->assets             = new Assets();
 		$this->settings_page      = new Admin\Settings_Page();
-		$this->events_endpoint    = new API\Events_Endpoint();
+		$this->proxy_post_type_rest = new API\Proxy_Post_Type_Rest();
 		$this->shortcode          = new Shortcode();
 		$this->bricks_integration = new Bricks\Bricks_Integration();
 

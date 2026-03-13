@@ -6,7 +6,6 @@ import type {
   CalendarEventInput,
   CalendarEventRecord,
   CalendarRange,
-  CalendarResponsePayload,
   CalendarRuntime,
   CalendarRuntimeStrings,
 } from '../types.ts';
@@ -189,10 +188,10 @@ export function useCalendarState(
           throw new Error(`Request failed with status ${response.status}`);
         }
 
-        const payload = (await response.json()) as CalendarResponsePayload;
+        const payload = (await response.json()) as CalendarEventInput[];
 
         if (isMounted) {
-          setEvents(normalizeEvents(Array.isArray(payload.events) ? payload.events : []));
+          setEvents(normalizeEvents(Array.isArray(payload) ? payload : []));
           setErrorMessage('');
         }
       } catch {
@@ -316,6 +315,8 @@ function getPreviewEvents(previewEvents?: CalendarEventInput[]): CalendarEventRe
 
 function buildRequestUrl(config: CalendarConfig, runtime: CalendarRuntime, activeRange: CalendarRange | null): string {
   const requestUrl = new URL(runtime.restUrl ?? '', globalThis.location?.origin ?? 'http://localhost');
+
+  requestUrl.searchParams.set('per_page', '1000');
 
   if (Array.isArray(config.postTypes) && config.postTypes.length > 0) {
     requestUrl.searchParams.set('post_types', config.postTypes.join(','));

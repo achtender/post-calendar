@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Post Calendar 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-13 13:44:54+0000\n"
+"POT-Creation-Date: 2026-03-13 15:12:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,15 @@ msgstr ""
 msgid "%1$s (%2$s)"
 msgstr ""
 
-#: includes/admin/class-settings-page.php:104
+#: includes/admin/class-settings-page.php:106
 msgid "%d post is currently marked as an event."
 msgid_plural "%d posts are currently marked as events."
 msgstr[0] ""
 msgstr[1] ""
+
+#: includes/class-proxy-post-type.php:66
+msgid "A virtual query type for Post Calendar events. Query this type to retrieve all event posts from enabled source types."
+msgstr ""
 
 #: includes/bricks/elements/class-element-post-calendar.php:293
 msgid "Active button color"
@@ -55,7 +59,7 @@ msgstr ""
 msgid "All-day event"
 msgstr ""
 
-#: includes/admin/class-settings-page.php:81
+#: includes/admin/class-settings-page.php:83
 msgid "Allowed event post types"
 msgstr ""
 
@@ -95,11 +99,11 @@ msgstr ""
 msgid "Choose specific post types for this calendar instance. Leave empty to use the allowed post types from Settings > Post Calendar."
 msgstr ""
 
-#: includes/admin/class-settings-page.php:71
+#: includes/admin/class-settings-page.php:73
 msgid "Choose which post types can be used as calendar events. Only Posts, Pages, and custom post types that look like content types are listed here."
 msgstr ""
 
-#: includes/admin/class-settings-page.php:118
+#: includes/admin/class-settings-page.php:120
 msgid "Clears the event flag, all-day flag, and event dates for this post type."
 msgstr ""
 
@@ -147,7 +151,7 @@ msgstr ""
 msgid "Event pill text color"
 msgstr ""
 
-#: includes/admin/class-settings-page.php:153
+#: includes/admin/class-settings-page.php:155
 msgid "Forbidden"
 msgstr ""
 
@@ -157,6 +161,14 @@ msgstr ""
 
 #: includes/bricks/elements/class-element-post-calendar.php:89
 msgid "Leave empty to show all views. Deselect a view to hide its toolbar button."
+msgstr ""
+
+#: includes/api/class-proxy-post-type-rest.php:45
+msgid "Limit results to events that overlap the supplied ISO 8601 end date."
+msgstr ""
+
+#: includes/api/class-proxy-post-type-rest.php:39
+msgid "Limit results to events that overlap the supplied ISO 8601 start date."
 msgstr ""
 
 #: includes/bricks/elements/class-element-post-calendar.php:345 includes/class-shortcode.php:64
@@ -183,7 +195,7 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
-#: includes/admin/class-settings-page.php:86
+#: includes/admin/class-settings-page.php:88
 msgid "No eligible post types found."
 msgstr ""
 
@@ -191,7 +203,7 @@ msgstr ""
 msgid "No events to display."
 msgstr ""
 
-#: includes/admin/class-settings-page.php:50 includes/admin/class-settings-page.php:51 includes/admin/class-settings-page.php:70 includes/bricks/elements/class-element-post-calendar.php:16 includes/class-acf-fields.php:28
+#: includes/admin/class-settings-page.php:52 includes/admin/class-settings-page.php:53 includes/admin/class-settings-page.php:72 includes/bricks/elements/class-element-post-calendar.php:16 includes/class-acf-fields.php:28
 msgid "Post Calendar"
 msgstr ""
 
@@ -199,21 +211,33 @@ msgstr ""
 msgid "Post Calendar could not register its Bricks element because Bricks is not active or its API is unavailable."
 msgstr ""
 
+#: includes/class-proxy-post-type.php:63
+msgid "Post Calendar Event"
+msgstr ""
+
+#: includes/class-proxy-post-type.php:60 includes/class-proxy-post-type.php:62 includes/class-proxy-post-type.php:64
+msgid "Post Calendar Events"
+msgstr ""
+
 #: includes/bricks/elements/class-element-post-calendar.php:51
 msgid "Post types"
 msgstr ""
 
-#: includes/admin/class-settings-page.php:116
+#: includes/admin/class-settings-page.php:118
 msgid "Remove all event data"
 msgstr ""
 
-#: includes/admin/class-settings-page.php:113
+#: includes/admin/class-settings-page.php:115
 msgid "Remove all event data for this post type? This cannot be undone."
 msgstr ""
 
 #. translators: 1: number of posts cleared, 2: post type label.
-#: includes/admin/class-settings-page.php:198
+#: includes/admin/class-settings-page.php:200
 msgid "Removed all event data from %1$d posts in %2$s."
+msgstr ""
+
+#: includes/api/class-proxy-post-type-rest.php:33
+msgid "Restrict the collection to a comma-separated list of allowed source post types."
 msgstr ""
 
 #: includes/bricks/elements/class-element-post-calendar.php:152
@@ -240,7 +264,7 @@ msgstr ""
 msgid "Surface radius"
 msgstr ""
 
-#: includes/admin/class-settings-page.php:212
+#: includes/admin/class-settings-page.php:214
 msgid "That post type cannot be managed from Post Calendar."
 msgstr ""
 
@@ -288,6 +312,6 @@ msgstr ""
 msgid "Week"
 msgstr ""
 
-#: includes/admin/class-settings-page.php:152
+#: includes/admin/class-settings-page.php:154
 msgid "You are not allowed to manage Post Calendar settings."
 msgstr ""

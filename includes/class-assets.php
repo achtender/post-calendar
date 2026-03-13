@@ -66,7 +66,7 @@ class Assets {
 
 	private function get_runtime_config(): array {
 		return array(
-			'restUrl'   => esc_url_raw( rest_url( 'post-calendar/v1/events' ) ),
+			'restUrl'   => esc_url_raw( rest_url( 'wp/v2/' . Proxy_Post_Type::SLUG ) ),
 			'restNonce' => wp_create_nonce( 'wp_rest' ),
 			'locale'    => determine_locale(),
 			'strings'   => $this->get_runtime_strings(),

@@ -54,10 +54,6 @@ export interface CalendarRuntimeStrings {
   week?: string;
 }
 
-export interface CalendarResponsePayload {
-  events?: CalendarEventInput[];
-}
-
 export interface CalendarRange {
   start: Date;
   end: Date;

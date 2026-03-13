@@ -4,32 +4,39 @@ Post Calendar is a WordPress plugin that lets you display your content as a cale
 
 ## Quick start
 
-1. [Download and install the plugin ZIP from GitHub Releases.](https://github.com/achtender/post-calendar/releases)
-2. Open `Settings > Post Calendar` and choose the post types you want to use as events.
-3. Place the calendar either with the Bricks element or with the shortcode.
+1. [Download the plugin ZIP from GitHub Releases.](https://github.com/achtender/post-calendar/releases)
+2. In your WordPress admin, go to `Plugins > Add New > Upload Plugin`, select the ZIP, and activate it.
+3. Open `Settings > Post Calendar` and choose the post types you want to use as events.
+4. Add the calendar to a page or page template, either with the Bricks `Post Calendar` element or with the `[post_calendar]` shortcode.
+
+## Display options
 
 | ![](.github/Month.png) | ![](.github/Week.png)   |
 | ---------------------- | ----------------------- |
 | ![](.github/Day.png)   | ![](.github/Agenda.png) |
 
-## Display options
+## Event data model
 
-### Use with the Bricks Builder
+Post Calendar only reads values from post meta. It does not require a specific editor workflow, and as long as the expected post meta keys exist, the calendar can read a post as an event. That means you can populate event data in different ways:
 
-1. Open Bricks Builder on your page/template.
-2. Add the `Post Calendar` element.
-3. Configure the element options as needed (for example view mode, toolbar, and labels).
-4. Publish your page.
+- by enabling the fields on a post type with the included options page
+- with another plugin (for example ACF or a other custom post type plugin)
+- with your own PHP code
 
-### Use as a shortcode
+Example using PHP:
 
-You can also render a calendar without Bricks:
+```php
+update_post_meta( $post_id, '_post_is_event', '1' );                      // `1` for event, `0` or missing for non-event
+update_post_meta( $post_id, '_post_is_allday', '0' );                     // `1` for all-day, `0` for timed event
+update_post_meta( $post_id, '_post_start_date', '2026-03-13 09:00:00' );  // `Y-m-d H:i:s`, for example `2026-03-13 09:00:00`
+update_post_meta( $post_id, '_post_end_date', '2026-03-13 11:00:00' );    // `Y-m-d H:i:s`, optional; when missing, start date is used
+```
+
+## Shortcode
 
 ```php
 [post_calendar]
 ```
-
-Example with custom options:
 
 ```php
 [post_calendar post_types="post,page" default_view="week" enabled_views="month,week,agenda" show_toolbar="1" agenda_range_mode="upcoming-window" agenda_range_months="3"]
@@ -44,30 +51,51 @@ Shortcode attributes:
 - `agenda_range_mode`: `visible-range` or `upcoming-window`.
 - `agenda_range_months`: Positive integer, used for `upcoming-window`.
 
-## Event data model
+## Querying events in templates and page builders
 
-Post Calendar only reads values from post meta. It does not require a specific editor workflow.
+Post Calendar registers a virtual post type called `post_calendar_event`. It acts as a single query target for all event posts from every source post type enabled under `Settings > Post Calendar`.
 
-That means you can populate event data in different ways:
+This type is intended as a virtual query target and is not created through normal admin workflows. Any `WP_Query` or builder loop targeting `post_calendar_event` is automatically resolved to the matching source posts, with the event-enabled meta constraint applied.
 
-- with Post Calendar related fields
-- with another plugin (for example ACF or a custom post type plugin)
-- with your own PHP code
+### Use with a builder loop or WP_Query
 
-As long as these post meta keys exist, the calendar can read the event:
-
-- `_post_is_event` (`1` for event, `0` or missing for non-event)
-- `_post_is_allday` (`1` for all-day, `0` for timed event)
-- `_post_start_date` (`Y-m-d H:i:s`, for example `2026-03-13 09:00:00`)
-- `_post_end_date` (`Y-m-d H:i:s`, optional; when missing, start date is used)
-
-Example using PHP:
+Set the query post type to `post_calendar_event`. Most query options (pagination, filters, sorting) work normally. The plugin always rewrites `post_type` to enabled source types and adds the event-enabled filter. The loop renders the actual source posts, so field access, permalink, excerpt, and featured image all work without extra steps.
 
 ```php
-update_post_meta( $post_id, '_post_is_event', '1' );
-update_post_meta( $post_id, '_post_is_allday', '0' );
-update_post_meta( $post_id, '_post_start_date', '2026-03-13 09:00:00' );
-update_post_meta( $post_id, '_post_end_date', '2026-03-13 11:00:00' );
+$events = new WP_Query( [
+    'post_type'      => 'post_calendar_event',
+    'posts_per_page' => 10,
+] );
+```
+
+Events are ordered by start date ascending by default. You can override it:
+
+```php
+$events = new WP_Query( [
+    'post_type'      => 'post_calendar_event',
+    'posts_per_page' => -1,
+    'meta_key'       => '_post_start_date',
+    'orderby'        => 'meta_value',
+    'meta_type'      => 'DATETIME',
+    'order'          => 'DESC',
+] );
+```
+
+A custom `meta_query` is merged with the event-enabled constraint automatically:
+
+```php
+$events = new WP_Query( [
+    'post_type'      => 'post_calendar_event',
+    'posts_per_page' => 10,
+    'meta_query'     => [
+        [
+            'key'     => '_post_start_date',
+            'value'   => date( 'Y-m-d H:i:s' ),
+            'compare' => '>=',
+            'type'    => 'DATETIME',
+        ],
+    ],
+] );
 ```
 
 ## Developer workflow

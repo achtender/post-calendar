@@ -25,6 +25,8 @@ class Settings_Page {
 		'acf-ui-options-page',
 		'bricks_fonts',
 		'bricks_template',
+		// Internal virtual type — must never appear as a selectable event source.
+		'post_calendar_event',
 	);
 
 	public function __construct() {
