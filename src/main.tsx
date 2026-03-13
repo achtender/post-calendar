@@ -5,6 +5,10 @@ import CalendarApp from './components/calendar-app.tsx';
 import './styles.css';
 import type { CalendarConfig } from './types.ts';
 
+const CALENDAR_ROOT_SELECTOR = '.js-post-calendar-root';
+
+let observer: MutationObserver | null = null;
+
 function parseConfig(element: HTMLElement): CalendarConfig {
   const rawConfig = element.dataset.config;
 
@@ -38,12 +42,44 @@ function mountCalendar(element: HTMLElement): void {
   element.dataset.mounted = 'true';
 }
 
-function boot(): void {
-  document.querySelectorAll<HTMLElement>('.js-post-calendar-root').forEach(mountCalendar);
+function mountCalendarsInNode(node: ParentNode): void {
+  if (node instanceof HTMLElement && node.matches(CALENDAR_ROOT_SELECTOR)) {
+    mountCalendar(node);
+  }
+
+  node.querySelectorAll<HTMLElement>(CALENDAR_ROOT_SELECTOR).forEach(mountCalendar);
+}
+
+function observeCalendarRoots(): void {
+  if (observer || !document.body) {
+    return;
+  }
+
+  observer = new MutationObserver((records) => {
+    records.forEach((record) => {
+      record.addedNodes.forEach((node) => {
+        if (!(node instanceof HTMLElement)) {
+          return;
+        }
+
+        mountCalendarsInNode(node);
+      });
+    });
+  });
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
+}
+
+function start(): void {
+  mountCalendarsInNode(document);
+  observeCalendarRoots();
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', boot, { once: true });
+  document.addEventListener('DOMContentLoaded', start, { once: true });
 } else {
-  boot();
+  start();
 }
