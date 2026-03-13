@@ -32,6 +32,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -86,6 +88,22 @@ jobs:
             throw new Error(`Version mismatch: package=${pkg.version}, header=${header}, constant=${constant}, expected=${expected}`);
           }
           NODE
+
+      - name: Commit and push version bump
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.value }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json post-calendar.php
+
+          if git diff --cached --quiet; then
+            echo "No version changes to commit"
+            exit 0
+          fi
+
+          git commit -m "chore: Release v${RELEASE_VERSION}"
+          git push origin HEAD:${GITHUB_REF_NAME}
 
       - name: Build release ZIP
         run: npm run build:zip
