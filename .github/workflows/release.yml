@@ -127,7 +127,7 @@ jobs:
           if [ -n "$INPUT_NOTES" ]; then
             printf '%s\n' "$INPUT_NOTES" > release-notes.md
           else
-            printf 'Post Calendar %s\n\nAutomated build artifact from manual workflow dispatch.\n' "$RELEASE_VERSION" > release-notes.md
+            printf 'Post Calendar %s\n\nAutomated build artifact.\n' "$RELEASE_VERSION" > release-notes.md
           fi
 
       - name: Publish GitHub release

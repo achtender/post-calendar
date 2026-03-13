@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Post Calendar
- * Plugin URI:  https://example.com/
+ * Plugin URI:  https://github.com/achtender/post-calendar
  * Description: Registers a custom Bricks Builder element and a simple settings page for Post Calendar.
  * Version:     0.1.3
  * Author:      Achtender
@@ -9,6 +9,7 @@
  * Domain Path: /languages
  * Requires at least: 6.0
  * Requires PHP: 7.4
+ * Update URI:  https://github.com/achtender/post-calendar
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

@@ -10,6 +10,7 @@ require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-acf-fields.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-assets.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-proxy-post-type.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-shortcode.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-update-checker.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/admin/class-settings-page.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/api/class-event-query-service.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/api/class-proxy-post-type-rest.php';
@@ -56,6 +57,11 @@ class Plugin {
 	 */
 	private $shortcode;
 
+	/**
+	 * @var Update_Checker
+	 */
+	private $update_checker;
+
 	public static function boot(): void {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
@@ -74,6 +80,7 @@ class Plugin {
 		$this->proxy_post_type_rest = new API\Proxy_Post_Type_Rest();
 		$this->shortcode          = new Shortcode();
 		$this->bricks_integration = new Bricks\Bricks_Integration();
+		$this->update_checker     = new Update_Checker();
 
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 	}
