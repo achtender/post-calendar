@@ -102,15 +102,13 @@ class Event_Query_Service {
 	}
 
 	public function resolve_post_types( ?string $post_types ): array {
-		$available_types = Settings_Page::get_allowed_post_types();
+		$available_types = Settings_Page::get_event_source_post_types();
 
 		if ( ! $post_types ) {
 			return $available_types;
 		}
 
-		$requested_types = Settings_Page::sanitize_slug_list( $post_types );
-
-		return array_values( array_intersect( $available_types, $requested_types ) ) ?: $available_types;
+		return Settings_Page::resolve_event_source_post_types( $post_types ) ?: $available_types;
 	}
 
 	private function format_request_date_for_meta( DateTimeImmutable $date ): string {

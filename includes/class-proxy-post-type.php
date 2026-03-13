@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Registers a virtual proxy post type that allows template systems and page builders
- * to query calendar events across all enabled source post types via a single, uniform
+ * to query calendar events across all source post types via a single, uniform
  * `post_type` slug.
  *
  * No proxy posts are ever stored in the database. Instead, any WP_Query targeting the
@@ -63,7 +63,7 @@ class Proxy_Post_Type {
 					'singular_name' => esc_html__( 'Post Calendar Event', 'post-calendar' ),
 					'menu_name'     => esc_html__( 'Post Calendar Events', 'post-calendar' ),
 				),
-				'description'         => esc_html__( 'A virtual query type for Post Calendar events. Query this type to retrieve all event posts from enabled source types.', 'post-calendar' ),
+				'description'         => esc_html__( 'A virtual query type for Post Calendar events. Query this type to retrieve event posts from all source post types.', 'post-calendar' ),
 				// Accessible via URL and queryable via WP_Query in PHP.
 				'public'              => true,
 				'publicly_queryable'  => true,
@@ -150,16 +150,9 @@ class Proxy_Post_Type {
 	}
 
 	private function resolve_source_types( WP_Query $query ): array {
-		$allowed_source_types   = Settings_Page::get_allowed_post_types();
 		$requested_source_types = $query->get( self::SOURCE_TYPES_QUERY_VAR );
 
-		if ( ! is_array( $requested_source_types ) || empty( $requested_source_types ) ) {
-			return $allowed_source_types;
-		}
-
-		$requested_source_types = array_values( array_filter( $requested_source_types, 'is_string' ) );
-
-		return array_values( array_intersect( $allowed_source_types, $requested_source_types ) );
+		return Settings_Page::resolve_event_source_post_types( $requested_source_types );
 	}
 
 	/**

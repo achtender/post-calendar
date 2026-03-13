@@ -53,8 +53,8 @@ msgid "All-day event"
 msgstr "Ganztägige Veranstaltung"
 
 #: includes/admin/class-settings-page.php:81
-msgid "Allowed event post types"
-msgstr "Erlaubte Beitragstypen für Termine"
+msgid "Built-in event fields"
+msgstr "Integrierten Terminfeldern"
 
 #: includes/class-assets.php:81
 msgid "Back"
@@ -89,12 +89,8 @@ msgid "Calendar width"
 msgstr "Kalenderbreite"
 
 #: includes/bricks/elements/class-element-post-calendar.php:58
-msgid "Choose specific post types for this calendar instance. Leave empty to use the allowed post types from Settings > Post Calendar."
-msgstr "Wähle bestimmte Beitragstypen für diese Kalenderinstanz. Leer lassen, um die erlaubten Beitragstypen aus Einstellungen > Post Calendar zu verwenden."
-
-#: includes/admin/class-settings-page.php:71
-msgid "Choose which post types can be used as calendar events. Only Posts, Pages, and custom post types that look like content types are listed here."
-msgstr "Wähle, welche Beitragstypen als Kalendertermine verwendet werden können. Es werden nur Beiträge, Seiten und benutzerdefinierte Beitragstypen aufgeführt, die wie Inhaltstypen aussehen."
+msgid "Choose specific post types for this calendar instance. Leave empty to include events from all post types."
+msgstr "Wähle bestimmte Beitragstypen für diese Kalenderinstanz. Leer lassen, um Termine aus allen Beitragstypen einzubeziehen."
 
 #: includes/admin/class-settings-page.php:118
 msgid "Clears the event flag, all-day flag, and event dates for this post type."
@@ -173,8 +169,8 @@ msgid "Next"
 msgstr "Weiter"
 
 #: includes/admin/class-settings-page.php:86
-msgid "No eligible post types found."
-msgstr "Keine geeigneten Beitragstypen gefunden."
+msgid "No post types available."
+msgstr "Keine Beitragstypen verfügbar."
 
 #: includes/bricks/elements/class-element-post-calendar.php:112 includes/bricks/elements/class-element-post-calendar.php:113 includes/bricks/elements/class-element-post-calendar.php:331 includes/class-assets.php:91
 msgid "No events to display."
@@ -262,8 +258,8 @@ msgid "Upcoming events window"
 msgstr "Fenster für kommende Termine"
 
 #: includes/bricks/elements/class-element-post-calendar.php:57
-msgid "Use allowed post types from Settings > Post Calendar"
-msgstr "Erlaubte Beitragstypen aus Einstellungen > Post Calendar verwenden"
+msgid "All post types"
+msgstr "Alle Beitragstypen"
 
 #: includes/bricks/elements/class-element-post-calendar.php:88
 msgid "Use visible agenda range"
@@ -276,6 +272,14 @@ msgstr "Wird verwendet, wenn der Modus für den Agenda-Bereich auf Fenster für 
 #: includes/bricks/elements/class-element-post-calendar.php:68 includes/class-assets.php:95
 msgid "Week"
 msgstr "Woche"
+
+#: includes/class-proxy-post-type.php:66
+msgid "A virtual query type for Post Calendar events. Query this type to retrieve event posts from all source post types."
+msgstr "Ein virtueller Abfragetyp für Post Calendar-Termine. Abfragen dieses Typs liefern Terminbeiträge aus allen Quell-Beitragstypen."
+
+#: includes/admin/class-settings-page.php:86
+msgid "Use this list to manage the built-in field UI. Posts from any post type appear on the calendar when they carry the required event meta."
+msgstr "Verwende diese Liste, um die integrierte Feldumgebung zu verwalten. Beiträge aller Beitragstypen erscheinen im Kalender, wenn sie die erforderlichen Termin-Metadaten tragen."
 
 #: includes/admin/class-settings-page.php:152
 msgid "You are not allowed to manage Post Calendar settings."

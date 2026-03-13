@@ -124,9 +124,7 @@ class Shortcode {
 			return array();
 		}
 
-		$allowed_post_types = Settings_Page::get_allowed_post_types();
-
-		return array_values( array_intersect( $allowed_post_types, $requested_post_types ) );
+		return Settings_Page::resolve_event_source_post_types( $requested_post_types );
 	}
 
 	/**

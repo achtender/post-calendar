@@ -54,8 +54,8 @@ class Element_Post_Calendar extends \Bricks\Element {
 			'multiple'    => true,
 			'clearable'   => true,
 			'searchable'  => true,
-			'placeholder' => esc_html__( 'Use allowed post types from Settings > Post Calendar', 'post-calendar' ),
-			'description' => esc_html__( 'Choose specific post types for this calendar instance. Leave empty to use the allowed post types from Settings > Post Calendar.', 'post-calendar' ),
+			'placeholder' => esc_html__( 'All post types', 'post-calendar' ),
+			'description' => esc_html__( 'Choose specific post types for this calendar instance. Leave empty to include events from all post types.', 'post-calendar' ),
 		);
 
 		$this->controls['defaultView'] = array(

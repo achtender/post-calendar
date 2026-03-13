@@ -30,7 +30,7 @@ class Proxy_Post_Type_Rest {
 
 	public function filter_collection_params( array $params ): array {
 		$params['post_types'] = array(
-			'description'       => __( 'Restrict the collection to a comma-separated list of allowed source post types.', 'post-calendar' ),
+			'description'       => __( 'Restrict the collection to a comma-separated list of source post types.', 'post-calendar' ),
 			'type'              => 'string',
 			'sanitize_callback' => 'sanitize_text_field',
 		);

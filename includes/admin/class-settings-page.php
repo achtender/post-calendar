@@ -70,7 +70,6 @@ class Settings_Page {
 		?>
 		<div class="wrap">
 			<h1><?php echo esc_html__( 'Post Calendar', 'post-calendar' ); ?></h1>
-			<p><?php echo esc_html__( 'Choose which post types can be used as calendar events. Only Posts, Pages, and custom post types that look like content types are listed here.', 'post-calendar' ); ?></p>
 
 			<?php settings_errors( 'post_calendar' ); ?>
 
@@ -80,12 +79,14 @@ class Settings_Page {
 				<table class="form-table" role="presentation">
 					<tbody>
 						<tr>
-							<th scope="row"><?php echo esc_html__( 'Allowed event post types', 'post-calendar' ); ?></th>
+							<th scope="row"><?php echo esc_html__( 'Built-in event fields', 'post-calendar' ); ?></th>
 							<td>
 								<input type="hidden" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[]" value="">
+								<p class="description"><?php echo esc_html__( 'Use this list to manage the built-in field UI. Posts from any post type appear on the calendar when they carry the required event meta.', 'post-calendar' ); ?></p>
+								<br />
 
 								<?php if ( empty( $post_types ) ) : ?>
-									<p><?php echo esc_html__( 'No eligible post types found.', 'post-calendar' ); ?></p>
+									<p><?php echo esc_html__( 'No post types available.', 'post-calendar' ); ?></p>
 								<?php else : ?>
 									<fieldset>
 										<?php foreach ( $post_types as $post_type ) : ?>
@@ -252,6 +253,33 @@ class Settings_Page {
 		}
 
 		return array_values( array_intersect( $available_types, self::sanitize_slug_list( $saved_types ) ) );
+	}
+
+	public static function get_event_source_post_types(): array {
+		$selectable_types = array_keys( self::get_selectable_post_types() );
+		$source_types = apply_filters( 'post_calendar_event_source_post_types', $selectable_types );
+
+		if ( ! is_array( $source_types ) ) {
+			return array();
+		}
+
+		return array_values( array_intersect( $selectable_types, self::sanitize_slug_list( $source_types ) ) );
+	}
+
+	public static function resolve_event_source_post_types( $requested_post_types ): array {
+		$source_types = self::get_event_source_post_types();
+
+		if ( empty( $source_types ) ) {
+			return array();
+		}
+
+		$requested = self::sanitize_slug_list( $requested_post_types );
+
+		if ( empty( $requested ) ) {
+			return $source_types;
+		}
+
+		return array_values( array_intersect( $source_types, $requested ) );
 	}
 
 	public static function get_selectable_post_types(): array {
