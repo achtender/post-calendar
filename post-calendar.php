@@ -3,7 +3,7 @@
  * Plugin Name: Post Calendar
  * Plugin URI:  https://github.com/achtender/post-calendar
  * Description: Display posts as events in a calendar via Bricks or shortcode, using existing post types and optional built-in event fields.
- * Version:     0.2.1
+ * Version:     0.3.0
  * Author:      Achtender
  * Text Domain: post-calendar
  * Domain Path: /languages
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'POST_CALENDAR_VERSION', '0.2.1' );
+define( 'POST_CALENDAR_VERSION', '0.3.0' );
 define( 'POST_CALENDAR_PLUGIN_FILE', __FILE__ );
 define( 'POST_CALENDAR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'POST_CALENDAR_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
