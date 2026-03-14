@@ -2,6 +2,8 @@
 
 namespace PostCalendar;
 
+use PostCalendar\Event_Sources\Post_Type;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -66,7 +68,7 @@ class Assets {
 
 	private function get_runtime_config(): array {
 		return array(
-			'restUrl'   => esc_url_raw( rest_url( 'wp/v2/' . Proxy_Post_Type::SLUG ) ),
+			'restUrl'   => esc_url_raw( rest_url( 'wp/v2/' . Post_Type::SLUG ) ),
 			'restNonce' => wp_create_nonce( 'wp_rest' ),
 			'locale'    => determine_locale(),
 			'strings'   => $this->get_runtime_strings(),

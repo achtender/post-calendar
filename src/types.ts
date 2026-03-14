@@ -1,9 +1,15 @@
 export interface CalendarConfig {
   defaultView?: string;
   enabledViews?: string[];
+  openTab?: number | string;
   showToolbar?: boolean;
+  showToolbarActions?: boolean;
+  showToolbarLabel?: boolean;
+  showViewMenu?: boolean;
   agendaRangeMode?: string;
   agendaRangeMonths?: number | string;
+  agendaTemplate?: string;
+  queryVars?: Record<string, unknown>;
   postTypes?: string[];
   error?: string;
 }

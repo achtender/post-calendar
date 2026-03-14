@@ -136,23 +136,66 @@
 
 .post-calendar-toolbar-actions,
 .post-calendar-toolbar-views {
-  @apply flex flex-wrap items-center;
+  @apply flex flex-row flex-none flex-nowrap items-center;
   gap: 0.625rem;
+}
+
+.post-calendar-toolbar-label-wrap {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-width: 0;
+}
+
+.post-calendar-views {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.post-calendar-view-panels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.post-calendar-view-panels[hidden] {
+  display: none !important;
+}
+
+.post-calendar-content[hidden] {
+  display: none !important;
+}
+
+.post-calendar-view-panel[hidden] {
+  display: none !important;
 }
 
 .post-calendar-toolbar-button,
 .post-calendar-view-button {
   @apply cursor-pointer bg-transparent border-0 m-0;
+  align-items: center;
   background: transparent;
   border: 0;
   border-radius: var(--post-calendar-radius-sm);
   color: var(--post-calendar-text-subtle);
+  display: flex;
   font: inherit;
   font-size: var(--post-calendar-text-sm-size);
   font-weight: 400;
+  justify-content: center;
   line-height: var(--post-calendar-text-sm-line);
   min-height: 1.875rem;
   padding: 0.3125rem 0.625rem;
+}
+
+.post-calendar-toolbar-button > *,
+.post-calendar-view-button > *,
+.post-calendar-toolbar-label > * {
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  margin: 0;
 }
 
 .post-calendar-toolbar-button:hover,
@@ -169,10 +212,14 @@
 }
 
 .post-calendar-toolbar-label {
+  align-items: center;
   color: var(--post-calendar-text-default);
+  display: flex;
   font-size: var(--post-calendar-text-md-size);
   font-weight: 400;
+  justify-content: center;
   line-height: var(--post-calendar-text-md-line);
+  margin: 0 auto;
   max-width: 100%;
   text-align: center;
   white-space: normal;
@@ -523,6 +570,10 @@
   gap: 1.25rem;
 }
 
+.post-calendar-agenda-template-render {
+  display: contents;
+}
+
 .post-calendar-agenda-copy {
   min-width: 0;
 }
@@ -676,8 +727,12 @@
     grid-template-columns: 1fr;
   }
 
-  .post-calendar-toolbar-label {
+  .post-calendar-toolbar-label-wrap {
+    justify-content: flex-start;
     order: -1;
+  }
+
+  .post-calendar-toolbar-label {
     text-align: left;
   }
 

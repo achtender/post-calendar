@@ -1,6 +1,6 @@
 <?php
 
-namespace PostCalendar\Admin;
+namespace PostCalendar\Event_Sources;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -25,7 +25,7 @@ class Settings_Page {
 		'acf-ui-options-page',
 		'bricks_fonts',
 		'bricks_template',
-		// Internal virtual type — must never appear as a selectable event source.
+		// Internal virtual type - must never appear as a selectable event source.
 		'post_calendar_event',
 	);
 
@@ -191,10 +191,10 @@ class Settings_Page {
 			return;
 		}
 
-		$notice    = sanitize_key( wp_unslash( $_GET['post_calendar_notice'] ) );
-		$post_type = isset( $_GET[ self::NOTICE_POST_TYPE_ARG ] ) ? sanitize_key( wp_unslash( $_GET[ self::NOTICE_POST_TYPE_ARG ] ) ) : '';
+		$notice     = sanitize_key( wp_unslash( $_GET['post_calendar_notice'] ) );
+		$post_type  = isset( $_GET[ self::NOTICE_POST_TYPE_ARG ] ) ? sanitize_key( wp_unslash( $_GET[ self::NOTICE_POST_TYPE_ARG ] ) ) : '';
 		$post_types = self::get_selectable_post_types();
-		$label     = isset( $post_types[ $post_type ] ) ? ( $post_types[ $post_type ]->labels->singular_name ?: $post_types[ $post_type ]->label ) : $post_type;
+		$label      = isset( $post_types[ $post_type ] ) ? ( $post_types[ $post_type ]->labels->singular_name ?: $post_types[ $post_type ]->label ) : $post_type;
 
 		if ( 'events-cleared' === $notice ) {
 			$removed = isset( $_GET[ self::NOTICE_REMOVED_ARG ] ) ? absint( wp_unslash( $_GET[ self::NOTICE_REMOVED_ARG ] ) ) : 0;
@@ -263,7 +263,7 @@ class Settings_Page {
 
 	public static function get_event_source_post_types(): array {
 		$selectable_types = array_keys( self::get_selectable_post_types() );
-		$source_types = apply_filters( 'post_calendar_event_source_post_types', $selectable_types );
+		$source_types     = apply_filters( 'post_calendar_event_source_post_types', $selectable_types );
 
 		if ( ! is_array( $source_types ) ) {
 			return array();

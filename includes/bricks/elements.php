@@ -6,25 +6,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Bricks_Integration {
+class Elements {
 	private $dependency_missing = false;
 
 	public function __construct() {
-		add_action( 'init', array( $this, 'register_element' ), 11 );
+		add_action( 'init', array( $this, 'init_elements' ), 11 );
 		add_action( 'admin_notices', array( $this, 'render_dependency_notice' ) );
 	}
 
-	public function register_element(): void {
+	public function init_elements(): void {
 		if ( ! $this->is_bricks_available() ) {
 			$this->dependency_missing = true;
 			return;
 		}
 
-		\Bricks\Elements::register_element(
-			POST_CALENDAR_PLUGIN_DIR . 'includes/bricks/elements/class-element-post-calendar.php',
+		$element_names = array(
 			'post-calendar',
-			'\\PostCalendar\\Bricks\\Elements\\Element_Post_Calendar'
+			'post-calendar-view-panel',
 		);
+
+		foreach ( $element_names as $element_name ) {
+			$file = POST_CALENDAR_PLUGIN_DIR . "includes/bricks/elements/{$element_name}.php";
+			$class_name = str_replace( '-', '_', $element_name );
+			$class_name = ucwords( $class_name, '_' );
+			$class_name = "\\PostCalendar\\Bricks\\Elements\\Element_{$class_name}";
+
+			\Bricks\Elements::register_element( $file, $element_name, $class_name );
+		}
 	}
 
 	public function render_dependency_notice(): void {

@@ -2,19 +2,24 @@
 
 namespace PostCalendar;
 
+use PostCalendar\Event_Sources\ACF_Fields;
+use PostCalendar\Event_Sources\Post_Type;
+use PostCalendar\Event_Sources\Rest_Controller;
+use PostCalendar\Event_Sources\Settings_Page;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-acf-fields.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-assets.php';
-require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-proxy-post-type.php';
-require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-shortcode.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-update-checker.php';
-require_once POST_CALENDAR_PLUGIN_DIR . 'includes/admin/class-settings-page.php';
-require_once POST_CALENDAR_PLUGIN_DIR . 'includes/api/class-event-query-service.php';
-require_once POST_CALENDAR_PLUGIN_DIR . 'includes/api/class-proxy-post-type-rest.php';
-require_once POST_CALENDAR_PLUGIN_DIR . 'includes/bricks/class-bricks-integration.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/bricks/elements.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/acf-fields.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/event-query-service.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/post-type.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/rest-controller.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/settings-page.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/shortcode/shortcode.php';
 
 class Plugin {
 	/**
@@ -23,7 +28,7 @@ class Plugin {
 	private static $instance = null;
 
 	/**
-	 * @var Admin\Settings_Page
+	 * @var Settings_Page
 	 */
 	private $settings_page;
 
@@ -33,14 +38,14 @@ class Plugin {
 	private $acf_fields;
 
 	/**
-	 * @var Proxy_Post_Type
+	 * @var Post_Type
 	 */
 	private $proxy_post_type;
 
 	/**
-	 * @var Bricks\Bricks_Integration
+	 * @var Bricks\Elements
 	 */
-	private $bricks_integration;
+	private $bricks_elements;
 
 	/**
 	 * @var Assets
@@ -48,12 +53,12 @@ class Plugin {
 	private $assets;
 
 	/**
-	 * @var API\Proxy_Post_Type_Rest
+	 * @var Rest_Controller
 	 */
 	private $proxy_post_type_rest;
 
 	/**
-	 * @var Shortcode
+	 * @var Shortcode\Shortcode
 	 */
 	private $shortcode;
 
@@ -73,14 +78,14 @@ class Plugin {
 	}
 
 	private function __construct() {
-		$this->proxy_post_type    = new Proxy_Post_Type();
-		$this->acf_fields         = new ACF_Fields();
-		$this->assets             = new Assets();
-		$this->settings_page      = new Admin\Settings_Page();
-		$this->proxy_post_type_rest = new API\Proxy_Post_Type_Rest();
-		$this->shortcode          = new Shortcode();
-		$this->bricks_integration = new Bricks\Bricks_Integration();
-		$this->update_checker     = new Update_Checker();
+		$this->proxy_post_type      = new Post_Type();
+		$this->acf_fields           = new ACF_Fields();
+		$this->assets               = new Assets();
+		$this->settings_page        = new Settings_Page();
+		$this->proxy_post_type_rest = new Rest_Controller();
+		$this->shortcode            = new Shortcode\Shortcode();
+		$this->bricks_elements      = new Bricks\Elements();
+		$this->update_checker       = new Update_Checker();
 
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 	}

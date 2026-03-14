@@ -1,10 +1,9 @@
 <?php
 
-namespace PostCalendar\API;
+namespace PostCalendar\Event_Sources;
 
 use DateTimeImmutable;
 use DateTimeZone;
-use PostCalendar\Admin\Settings_Page;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -178,5 +177,4 @@ class Event_Query_Service {
 
 		return $date->format( DATE_ATOM );
 	}
-
 }

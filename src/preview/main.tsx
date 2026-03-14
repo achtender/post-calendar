@@ -198,10 +198,14 @@ const previewRuntime: CalendarRuntime = {
   },
 };
 
-function PreviewPage() {
+interface PreviewPageProps {
+  hostElement: HTMLElement;
+}
+
+function PreviewPage({ hostElement }: PreviewPageProps) {
   return (
     <section className="preview-panel preview-panel-calendar" aria-labelledby="calendar-preview-title">
-      <CalendarApp config={previewConfig} runtime={previewRuntime} />
+      <CalendarApp config={previewConfig} hostElement={hostElement} runtime={previewRuntime} />
     </section>
   );
 }
@@ -211,7 +215,7 @@ const previewRoot = document.getElementById('preview-root');
 if (previewRoot) {
   createRoot(previewRoot).render(
     <React.StrictMode>
-      <PreviewPage />
+      <PreviewPage hostElement={previewRoot} />
     </React.StrictMode>
   );
 }

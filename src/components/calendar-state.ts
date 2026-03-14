@@ -338,6 +338,10 @@ function buildRequestUrl(config: CalendarConfig, runtime: CalendarRuntime, activ
     requestUrl.searchParams.set('post_types', config.postTypes.join(','));
   }
 
+  if (config.queryVars && Object.keys(config.queryVars).length > 0) {
+    requestUrl.searchParams.set('query_vars', JSON.stringify(config.queryVars));
+  }
+
   if (activeRange?.start) {
     requestUrl.searchParams.set('start', activeRange.start.toISOString());
   }

@@ -1,8 +1,9 @@
 <?php
 
-namespace PostCalendar;
+namespace PostCalendar\Shortcode;
 
-use PostCalendar\Admin\Settings_Page;
+use PostCalendar\Plugin;
+use PostCalendar\Event_Sources\Settings_Page;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -65,18 +66,12 @@ class Shortcode {
 		);
 	}
 
-	/**
-	 * @param mixed $value
-	 */
 	private function parse_positive_integer( $value, int $fallback ): int {
 		$number = absint( $value );
 
 		return $number > 0 ? $number : $fallback;
 	}
 
-	/**
-	 * @param mixed $value
-	 */
 	private function parse_default_view( $value ): string {
 		$allowed_views = array( 'month', 'week', 'day', 'agenda', 'year' );
 		$parsed_value  = sanitize_key( (string) $value );
@@ -100,9 +95,6 @@ class Shortcode {
 		return ! empty( $valid ) ? $valid : $allowed;
 	}
 
-	/**
-	 * @param mixed $value
-	 */
 	private function parse_agenda_range_mode( $value ): string {
 		$allowed_modes = array( 'visible-range', 'upcoming-window' );
 		$parsed_mode   = sanitize_text_field( (string) $value );
@@ -114,9 +106,6 @@ class Shortcode {
 		return self::DEFAULT_AGENDA_RANGE_MODE;
 	}
 
-	/**
-	 * @param mixed $value
-	 */
 	private function parse_post_types( $value ): array {
 		$requested_post_types = Settings_Page::sanitize_slug_list( $value );
 
@@ -127,9 +116,6 @@ class Shortcode {
 		return Settings_Page::resolve_event_source_post_types( $requested_post_types );
 	}
 
-	/**
-	 * @param mixed $value
-	 */
 	private function parse_boolean( $value, bool $fallback ): bool {
 		if ( is_bool( $value ) ) {
 			return $value;

@@ -1,6 +1,6 @@
 <?php
 
-namespace PostCalendar;
+namespace PostCalendar\Event_Sources;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -113,7 +113,7 @@ class ACF_Fields {
 
 	private function get_location_rules(): array {
 		$location_rules = array();
-		$post_types     = \PostCalendar\Admin\Settings_Page::get_allowed_post_types();
+		$post_types     = Settings_Page::get_allowed_post_types();
 
 		foreach ( $post_types as $post_type ) {
 			$location_rules[] = array(
