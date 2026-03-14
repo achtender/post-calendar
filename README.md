@@ -137,7 +137,6 @@ $events = new WP_Query( [
 
 For developing locally you can:
 
-1. Run `npm install`.
-2. Run `npm run dev` for a watch build, or `npm run dev:preview` for a preview page.
+1. Run `npm run dev` for a watch build, or `npm run dev:preview` for a standalone React preview.
 3. Run `npm run build` for production assets.
 4. Run `npm run build:zip` to create a release ZIP in `.release/`.
