@@ -4,7 +4,6 @@ import path from 'node:path';
 const rootDir = process.cwd();
 const pluginSlug = 'post-calendar';
 const textDomain = 'post-calendar';
-const packageJson = JSON.parse(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8'));
 const projectName = 'Post Calendar';
 const languagesDir = path.join(rootDir, 'languages');
 const outputPath = path.join(languagesDir, `${pluginSlug}.pot`);
@@ -141,7 +140,7 @@ function renderHeader() {
   return [
     'msgid ""',
     'msgstr ""',
-    `"Project-Id-Version: ${projectName} ${packageJson.version}\\n"`,
+    `"Project-Id-Version: ${projectName}\\n"`,
     '"Report-Msgid-Bugs-To: \\n"',
     `"POT-Creation-Date: ${now}\\n"`,
     '"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"',

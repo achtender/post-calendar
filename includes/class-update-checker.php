@@ -198,7 +198,7 @@ class Update_Checker {
 			'requires_php'  => '7.4',
 			'download_link' => $zip_url ?? false,
 			'sections'      => array(
-				'description' => '<p>' . esc_html__( 'A calendar view for WordPress posts. Manage events directly from existing post types.', 'post-calendar' ) . '</p>'
+				'description' => '<p>' . esc_html__( 'Display posts as events in a calendar via Bricks or shortcode, using existing post types and optional built-in event fields.', 'post-calendar' ) . '</p>'
 					. '<p><a href="' . $releases_url . '" target="_blank">' . esc_html__( 'View all releases on GitHub', 'post-calendar' ) . '</a></p>',
 				'changelog'   => $changelog,
 			),

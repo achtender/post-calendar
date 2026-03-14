@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Calendar 0.2.0\n"
+"Project-Id-Version: Post Calendar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-14 07:55:10+0000\n"
+"POT-Creation-Date: 2026-03-14 09:14:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,10 +22,6 @@ msgid "%d post is currently marked as an event."
 msgid_plural "%d posts are currently marked as events."
 msgstr[0] ""
 msgstr[1] ""
-
-#: includes/class-update-checker.php:201
-msgid "A calendar view for WordPress posts. Manage events directly from existing post types."
-msgstr ""
 
 #: includes/class-proxy-post-type.php:66
 msgid "A virtual query type for Post Calendar events. Query this type to retrieve event posts from all source post types."
@@ -133,6 +129,10 @@ msgstr ""
 
 #: includes/bricks/elements/class-element-post-calendar.php:64
 msgid "Default view"
+msgstr ""
+
+#: includes/class-update-checker.php:201
+msgid "Display posts as events in a calendar via Bricks or shortcode, using existing post types and optional built-in event fields."
 msgstr ""
 
 #: includes/class-update-checker.php:228

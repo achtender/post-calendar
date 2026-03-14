@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Post Calendar
  * Plugin URI:  https://github.com/achtender/post-calendar
- * Description: Registers a custom Bricks Builder element and a simple settings page for Post Calendar.
+ * Description: Display posts as events in a calendar via Bricks or shortcode, using existing post types and optional built-in event fields.
  * Version:     0.2.1
  * Author:      Achtender
  * Text Domain: post-calendar

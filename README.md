@@ -1,12 +1,12 @@
 # Post Calendar
 
-Post Calendar is a WordPress plugin that lets you display your content as a calendar in Bricks Builder, using [react-big-calendar](https://github.com/jquense/react-big-calendar) for the calendar UI.
+Post Calendar is a WordPress plugin that displays posts as events in a calendar via Bricks, shortcode, using [react-big-calendar](https://github.com/jquense/react-big-calendar) for the calendar UI.
 
 ## Quick start
 
 1. [Download the plugin ZIP from GitHub Releases.](https://github.com/achtender/post-calendar/releases)
 2. In your WordPress admin, go to `Plugins > Add New > Upload Plugin`, select the ZIP file, and activate it.
-3. If you want to use the built-in event fields, install and activate an ACF-compatible field plugin (e.g. SCF or ACF), then open `Settings > Post Calendar` and choose where those fields should be available.
+3. If you want the built-in editable event fields in the post editor, install and activate SCF, ACF, or another compatible custom-fields plugin. Then open `Settings > Post Calendar` and choose where the built-in event fields should appear.
 4. Add the calendar to a page or page template, either with the Bricks `Post Calendar` element or with the `[post_calendar]` shortcode.
 
 ## Display options
@@ -41,15 +41,15 @@ Post Calendar is a WordPress plugin that lets you display your content as a cale
 
 ## Event data model
 
-Post Calendar stores and reads event data from post meta on the original source post. It is not tied to one specific way of writing that meta. If a post has `_post_is_event` set to `1`, it is treated as an event candidate.
+Post Calendar stores and reads event data from custom fields on the original source post. It is not tied to a single plugin or editing workflow. If a post has `_post_is_event` set to `1`, it is treated as an event candidate.
 
-You can populate that meta in different ways:
+You can provide that event data in different ways:
 
-- with the built-in field UI managed in `Settings > Post Calendar` (requires SCF or ACF)
+- with the built-in field UI managed in `Settings > Post Calendar` (requires SCF, ACF, or another compatible provider)
 - with another plugin that writes the same meta keys
 - with your own PHP code
 
-The built-in settings screen only controls where the plugin's built-in event fields appear. To use those fields, SCF or ACF must be active. If the same meta keys are written by another plugin or by custom code, the calendar works without the built-in fields.
+The built-in settings screen only controls where the plugin's own event fields appear. To use those fields in the editor, SCF, ACF, or another compatible provider must be active. If the same meta keys are written by another plugin or by custom code, the calendar works without the built-in fields.
 
 Meta keys:
 
