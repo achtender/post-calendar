@@ -82,8 +82,14 @@ class Settings_Page {
 							<th scope="row"><?php echo esc_html__( 'Built-in event fields', 'post-calendar' ); ?></th>
 							<td>
 								<input type="hidden" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[]" value="">
-								<p class="description"><?php echo esc_html__( 'Use this list to manage the built-in field UI. Posts from any post type appear on the calendar when they carry the required event meta.', 'post-calendar' ); ?></p>
+								<p class="description"><?php echo esc_html__( 'Use this list to control where the built-in event fields are shown. An ACF-compatible field plugin such as SCF or ACF must be active for these editor fields to appear. Posts from any post type appear on the calendar when they carry the required event meta.', 'post-calendar' ); ?></p>
 								<br />
+
+								<?php if ( ! function_exists( 'acf_add_local_field_group' ) ) : ?>
+									<div class="notice notice-warning inline" style="margin: 0 0 12px 0;">
+										<p><?php echo esc_html__( 'No ACF-compatible field plugin is currently active. The built-in event fields will not show in the editor until SCF, ACF, or another compatible provider is active.', 'post-calendar' ); ?></p>
+									</div>
+								<?php endif; ?>
 
 								<?php if ( empty( $post_types ) ) : ?>
 									<p><?php echo esc_html__( 'No post types available.', 'post-calendar' ); ?></p>

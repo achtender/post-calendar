@@ -4,9 +4,9 @@ Post Calendar is a WordPress plugin that lets you display your content as a cale
 
 ## Quick start
 
-1. [Download the plugin ZIP from GitHub Releases.](https://github.com/achtender/post-calendar/releases)
-2. In your WordPress admin, go to `Plugins > Add New > Upload Plugin`, select the ZIP, and activate it.
-3. Open `Settings > Post Calendar` and choose where the built-in event fields should be available.
+1. [Download the plugin ZIP from GitHub Releases.](https://github.com/achtender/post-calendar/releases)  
+2. In your WordPress admin, go to `Plugins > Add New > Upload Plugin`, select the ZIP file, and activate it.
+3. If you want to use the built-in event fields, install and activate an ACF-compatible field plugin (e.g. SCF or ACF), then open `Settings > Post Calendar` and choose where those fields should be available.
 4. Add the calendar to a page or page template, either with the Bricks `Post Calendar` element or with the `[post_calendar]` shortcode.
 
 ## Display options
@@ -17,15 +17,15 @@ Post Calendar is a WordPress plugin that lets you display your content as a cale
 
 ## Event data model
 
-Post Calendar stores and reads event data from post meta on the original source post. It does not require a specific editor workflow. If a post has `_post_is_event` set to `1`, it is treated as an event candidate.
+Post Calendar stores and reads event data from post meta on the original source post. It is not tied to one specific way of writing that meta. If a post has `_post_is_event` set to `1`, it is treated as an event candidate.
 
 You can populate that meta in different ways:
 
-- with the built-in field UI managed in `Settings > Post Calendar`
-- with another plugin (for example ACF or another custom post type plugin)
+- with the built-in field UI managed in `Settings > Post Calendar` (requires SCF or ACF)
+- with another plugin that writes the same meta keys
 - with your own PHP code
 
-The built-in settings screen controls where the plugin's built-in field UI appears. It does not force a specific workflow for writing event meta.
+The built-in settings screen only controls where the plugin's built-in event fields appear. To use those fields, SCF or ACF must be active. If the same meta keys are written by another plugin or by custom code, the calendar works without the built-in fields.
 
 Meta keys:
 

@@ -9,6 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class ACF_Fields {
 	public function __construct() {
 		add_action( 'acf/init', array( $this, 'register_field_group' ) );
+		add_action( 'admin_notices', array( $this, 'render_dependency_notice' ) );
 	}
 
 	public function register_field_group(): void {
@@ -99,6 +100,17 @@ class ACF_Fields {
 		);
 	}
 
+	public function render_dependency_notice(): void {
+		if ( $this->is_acf_available() || ! current_user_can( 'activate_plugins' ) ) {
+			return;
+		}
+
+		printf(
+			'<div class="notice notice-warning"><p>%s</p></div>',
+			esc_html__( 'Post Calendar requires an ACF-compatible field plugin such as SCF or ACF for its built-in event fields. You can still use the calendar with event meta written by other plugins or custom code.', 'post-calendar' )
+		);
+	}
+
 	private function get_location_rules(): array {
 		$location_rules = array();
 		$post_types     = \PostCalendar\Admin\Settings_Page::get_allowed_post_types();
@@ -114,5 +126,9 @@ class ACF_Fields {
 		}
 
 		return $location_rules;
+	}
+
+	private function is_acf_available(): bool {
+		return function_exists( 'acf_add_local_field_group' );
 	}
 }
