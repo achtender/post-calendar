@@ -82,7 +82,7 @@ class Settings_Page {
 							<th scope="row"><?php echo esc_html__( 'Built-in event fields', 'post-calendar' ); ?></th>
 							<td>
 								<input type="hidden" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[]" value="">
-								<p class="description"><?php echo esc_html__( 'Use this list to control where the built-in event fields are shown. An ACF-compatible field plugin such as SCF or ACF must be active for these editor fields to appear. Posts from any post type appear on the calendar when they carry the required event meta.', 'post-calendar' ); ?></p>
+								<p class="description"><?php echo esc_html__( 'Use this list to control where the built-in event fields are shown. Posts from any post type appear on the calendar when they carry the required event meta.', 'post-calendar' ); ?></p>
 								<br />
 
 								<?php if ( ! function_exists( 'acf_add_local_field_group' ) ) : ?>

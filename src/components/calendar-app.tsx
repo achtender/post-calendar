@@ -2,15 +2,16 @@ import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import type { CalendarConfig, CalendarEventRecord, CalendarRange, CalendarRuntime, CalendarRuntimeStrings } from '../types.ts';
 import {
-  allowedViews,
   getEventClassName,
   getRuntimeStrings,
   normalizeView,
+  YEAR_VIEW,
   type CalendarRangeInput,
   type CalendarView,
   useCalendarLocale,
   useCalendarState,
 } from './calendar-state.ts';
+import CalendarYearView from './calendar-year-view.tsx';
 
 const localizer = momentLocalizer(moment);
 
@@ -67,6 +68,7 @@ function getViewLabels(strings: Required<CalendarRuntimeStrings>): Record<Calend
     [Views.WEEK]: strings.week,
     [Views.DAY]: strings.day,
     [Views.AGENDA]: strings.agenda,
+    [YEAR_VIEW]: strings.year,
   };
 }
 
@@ -207,6 +209,18 @@ export default function CalendarApp({ config, runtime }: CalendarAppProps) {
     surfaceClassName,
     view,
   } = useCalendarState(config, runtime, strings);
+  const localizedYearView = Object.assign(
+    (props: Parameters<typeof CalendarYearView>[0]) => <CalendarYearView {...props} strings={strings} />,
+    {
+      navigate: CalendarYearView.navigate,
+      range: CalendarYearView.range,
+      title: CalendarYearView.title,
+    }
+  );
+  const calendarViews = activeViews.reduce<Record<string, boolean | typeof CalendarYearView>>((viewMap, activeView) => {
+    viewMap[activeView] = activeView === YEAR_VIEW ? localizedYearView : true;
+    return viewMap;
+  }, {});
 
   return (
     <div className="post-calendar-app">
@@ -274,6 +288,10 @@ export default function CalendarApp({ config, runtime }: CalendarAppProps) {
               globalThis.location?.assign(event.url);
             }
           }}
+          onYearMonthSelect={(nextDate: Date) => {
+            setCurrentDate(nextDate);
+            setView(Views.MONTH);
+          }}
           onView={(nextView) => {
             setView(normalizeView(nextView));
           }}
@@ -282,7 +300,7 @@ export default function CalendarApp({ config, runtime }: CalendarAppProps) {
           startAccessor="start"
           toolbar={config.showToolbar !== false}
           view={view}
-          views={activeViews as unknown as CalendarView[]}
+          views={calendarViews}
         />
       </div>
 

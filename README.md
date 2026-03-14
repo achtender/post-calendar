@@ -4,16 +4,40 @@ Post Calendar is a WordPress plugin that lets you display your content as a cale
 
 ## Quick start
 
-1. [Download the plugin ZIP from GitHub Releases.](https://github.com/achtender/post-calendar/releases)  
+1. [Download the plugin ZIP from GitHub Releases.](https://github.com/achtender/post-calendar/releases)
 2. In your WordPress admin, go to `Plugins > Add New > Upload Plugin`, select the ZIP file, and activate it.
 3. If you want to use the built-in event fields, install and activate an ACF-compatible field plugin (e.g. SCF or ACF), then open `Settings > Post Calendar` and choose where those fields should be available.
 4. Add the calendar to a page or page template, either with the Bricks `Post Calendar` element or with the `[post_calendar]` shortcode.
 
 ## Display options
 
-| ![](.github/Month.png) | ![](.github/Week.png)   |
-| ---------------------- | ----------------------- |
-| ![](.github/Day.png)   | ![](.github/Agenda.png) |
+<table>
+  <tr>
+    <td align="center">
+      <img src=".github/Month.png" alt="Year view preview" width="260"><br>
+      <strong>Year</strong>
+    </td>
+    <td align="center">
+      <img src=".github/Month.png" alt="Month view preview" width="260"><br>
+      <strong>Month</strong>
+    </td>
+    <td align="center">
+      <img src=".github/Week.png" alt="Week view preview" width="260"><br>
+      <strong>Week</strong>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img src=".github/Day.png" alt="Day view preview" width="260"><br>
+      <strong>Day</strong>
+    </td>
+    <td align="center">
+      <img src=".github/Agenda.png" alt="Agenda view preview" width="260"><br>
+      <strong>Agenda</strong>
+    </td>
+    <td></td>
+  </tr>
+</table>
 
 ## Event data model
 
@@ -50,14 +74,14 @@ update_post_meta( $post_id, '_post_end_date', '2026-03-13 11:00:00' );    // `Y-
 ```
 
 ```php
-[post_calendar post_types="post,page" default_view="week" enabled_views="month,week,agenda" show_toolbar="1" agenda_range_mode="upcoming-window" agenda_range_months="3"]
+[post_calendar post_types="post,page" default_view="month" enabled_views="year,month,agenda" show_toolbar="1" agenda_range_mode="upcoming-window" agenda_range_months="12"]
 ```
 
 Shortcode attributes:
 
 - `post_types`: Comma-separated list of source post types to include for this calendar instance. Leave empty to include events from all post types.
-- `default_view`: `month`, `week`, `day`, or `agenda`.
-- `enabled_views`: Comma-separated views from `month`, `week`, `day`, `agenda`.
+- `default_view`: `month`, `week`, `day`, `agenda`, or `year`.
+- `enabled_views`: Comma-separated views from `month`, `week`, `day`, `agenda`, `year`.
 - `show_toolbar`: `1`/`0` (also supports `true`/`false`, `yes`/`no`, `on`/`off`).
 - `agenda_range_mode`: `visible-range` or `upcoming-window`.
 - `agenda_range_months`: Positive integer, used for `upcoming-window`.

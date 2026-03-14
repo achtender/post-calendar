@@ -49,9 +49,11 @@ export interface CalendarRuntimeStrings {
   next?: string;
   noEvents?: string;
   showMore?: string;
+  showMoreEventsForMonth?: string;
   time?: string;
   today?: string;
   week?: string;
+  year?: string;
 }
 
 export interface CalendarRange {

@@ -12,7 +12,8 @@ import type {
 
 const momentLocaleModules = import.meta.glob('../../node_modules/moment/dist/locale/*.js');
 
-export const allowedViews = [Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA] as const;
+export const YEAR_VIEW = 'year';
+export const allowedViews = [YEAR_VIEW, Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA] as const;
 export const agendaRangeModes = {
   VISIBLE_RANGE: 'visible-range',
   UPCOMING_WINDOW: 'upcoming-window',
@@ -33,9 +34,11 @@ const defaultRuntimeStrings: Required<CalendarRuntimeStrings> = {
   next: 'Next',
   noEvents: 'No events to display.',
   showMore: 'Show more',
+  showMoreEventsForMonth: 'Show %1$s more events for %2$s',
   time: 'Time',
   today: 'Today',
   week: 'Week',
+  year: 'Year',
 };
 
 export type CalendarView = (typeof allowedViews)[number];
@@ -154,8 +157,12 @@ export function useCalendarState(
       };
     }
 
+    if (view === YEAR_VIEW) {
+      return calculateYearRange(currentDate);
+    }
+
     return activeRange;
-  }, [activeRange, agendaRangeMode, agendaWindow.end, agendaWindow.start, view]);
+  }, [activeRange, agendaRangeMode, agendaWindow.end, agendaWindow.start, currentDate, view]);
   const requestUrl = useMemo(() => buildRequestUrl(config, runtime, effectiveRange), [config, effectiveRange, runtime]);
 
   useEffect(() => {
@@ -215,7 +222,7 @@ export function useCalendarState(
     errorMessage,
     events,
     handleRangeChange: (range) => {
-      if (view === Views.AGENDA && agendaRangeMode === agendaRangeModes.UPCOMING_WINDOW) {
+      if ((view === Views.AGENDA && agendaRangeMode === agendaRangeModes.UPCOMING_WINDOW) || view === YEAR_VIEW) {
         return;
       }
 
@@ -227,7 +234,7 @@ export function useCalendarState(
     },
     setCurrentDate,
     setView,
-    surfaceClassName: `post-calendar-surface${view === Views.AGENDA ? ' is-agenda-view' : ''}`,
+    surfaceClassName: `post-calendar-surface${view === Views.AGENDA ? ' is-agenda-view' : ''}${view === YEAR_VIEW ? ' is-year-view' : ''}`,
     view,
   };
 }
@@ -296,6 +303,15 @@ function calculateAgendaWindow(date: Date, monthCount: number): CalendarRange & 
     start: windowStart.toDate(),
     end: windowEnd.toDate(),
     length: Math.max(1, windowEnd.diff(windowStart, 'days') + 1),
+  };
+}
+
+export function calculateYearRange(date: Date): CalendarRange {
+  const yearStart = moment(date).startOf('year');
+
+  return {
+    start: yearStart.toDate(),
+    end: yearStart.clone().endOf('year').toDate(),
   };
 }
 
