@@ -89,9 +89,12 @@ class Assets {
 			'next'             => esc_html__( 'Next', 'post-calendar' ),
 			'noEvents'         => esc_html__( 'No events to display.', 'post-calendar' ),
 			'showMore'         => esc_html__( 'more', 'post-calendar' ),
+			/* translators: 1: hidden event count, 2: localized month label. */
+			'showMoreEventsForMonth' => esc_html__( 'Show %1$s more events for %2$s', 'post-calendar' ),
 			'time'             => esc_html__( 'Time', 'post-calendar' ),
 			'today'            => esc_html__( 'Today', 'post-calendar' ),
 			'week'             => esc_html__( 'Week', 'post-calendar' ),
+			'year'             => esc_html__( 'Year', 'post-calendar' ),
 		);
 	}
 }

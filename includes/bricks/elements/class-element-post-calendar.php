@@ -68,6 +68,7 @@ class Element_Post_Calendar extends \Bricks\Element {
 				'week'   => esc_html__( 'Week', 'post-calendar' ),
 				'day'    => esc_html__( 'Day', 'post-calendar' ),
 				'agenda' => esc_html__( 'Agenda', 'post-calendar' ),
+				'year'   => esc_html__( 'Year', 'post-calendar' ),
 			),
 			'default' => 'month',
 		);
@@ -82,6 +83,7 @@ class Element_Post_Calendar extends \Bricks\Element {
 				'week'   => esc_html__( 'Week', 'post-calendar' ),
 				'day'    => esc_html__( 'Day', 'post-calendar' ),
 				'agenda' => esc_html__( 'Agenda', 'post-calendar' ),
+				'year'   => esc_html__( 'Year', 'post-calendar' ),
 			),
 			'multiple'    => true,
 			'clearable'   => true,
@@ -348,7 +350,7 @@ class Element_Post_Calendar extends \Bricks\Element {
 	}
 
 	private function parse_default_view( string $view ): string {
-		$allowed_views = array( 'month', 'week', 'day', 'agenda' );
+		$allowed_views = array( 'month', 'week', 'day', 'agenda', 'year' );
 
 		if ( in_array( $view, $allowed_views, true ) ) {
 			return $view;
@@ -396,7 +398,7 @@ class Element_Post_Calendar extends \Bricks\Element {
 	}
 
 	private function parse_enabled_views( $views ): array {
-		$allowed = array( 'month', 'week', 'day', 'agenda' );
+		$allowed = array( 'month', 'week', 'day', 'agenda', 'year' );
 		$parsed  = \PostCalendar\Admin\Settings_Page::sanitize_slug_list( $views );
 		$valid   = array_values( array_intersect( $allowed, $parsed ) );
 

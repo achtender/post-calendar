@@ -78,7 +78,7 @@ class Shortcode {
 	 * @param mixed $value
 	 */
 	private function parse_default_view( $value ): string {
-		$allowed_views = array( 'month', 'week', 'day', 'agenda' );
+		$allowed_views = array( 'month', 'week', 'day', 'agenda', 'year' );
 		$parsed_value  = sanitize_key( (string) $value );
 
 		if ( in_array( $parsed_value, $allowed_views, true ) ) {
@@ -93,7 +93,7 @@ class Shortcode {
 	 * @return array<int, string>
 	 */
 	private function parse_enabled_views( $value ): array {
-		$allowed = array( 'month', 'week', 'day', 'agenda' );
+		$allowed = array( 'month', 'week', 'day', 'agenda', 'year' );
 		$parsed  = Settings_Page::sanitize_slug_list( $value );
 		$valid   = array_values( array_intersect( $allowed, $parsed ) );
 

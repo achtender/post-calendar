@@ -277,9 +277,13 @@ msgstr "Woche"
 msgid "A virtual query type for Post Calendar events. Query this type to retrieve event posts from all source post types."
 msgstr "Ein virtueller Abfragetyp für Post Calendar-Termine. Abfragen dieses Typs liefern Terminbeiträge aus allen Quell-Beitragstypen."
 
+#: includes/class-assets.php:93
+msgid "Show %1$s more events for %2$s"
+msgstr "Zeige %1$s weitere Termine für %2$s"
+
 #: includes/admin/class-settings-page.php:85
-msgid "Use this list to control where the built-in event fields are shown. An ACF-compatible field plugin such as SCF or ACF must be active for these editor fields to appear. Posts from any post type appear on the calendar when they carry the required event meta."
-msgstr "Mit dieser Liste legst du fest, wo die integrierten Terminfelder angezeigt werden. Damit diese Felder im Editor erscheinen, muss ein ACF-kompatibles Feld-Plugin wie SCF oder ACF aktiv sein. Beiträge aller Beitragstypen erscheinen im Kalender, wenn sie die erforderlichen Termin-Metadaten tragen."
+msgid "Use this list to control where the built-in event fields are shown. Posts from any post type appear on the calendar when they carry the required event meta."
+msgstr "Mit dieser Liste legst du fest, wo die integrierten Terminfelder angezeigt werden. Beiträge aller Beitragstypen erscheinen im Kalender, wenn sie die erforderlichen Termin-Metadaten tragen."
 
 #: includes/admin/class-settings-page.php:90
 msgid "No ACF-compatible field plugin is currently active. The built-in event fields will not show in the editor until SCF, ACF, or another compatible provider is active."
