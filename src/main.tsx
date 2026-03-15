@@ -1,4 +1,4 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import CalendarApp from './components/calendar-app.tsx';
@@ -117,9 +117,9 @@ function mountCalendar(element: HTMLElement): void {
   const root = createRoot(element);
 
   root.render(
-    <React.StrictMode>
+    <StrictMode>
       <CalendarApp config={config} hostElement={element} runtime={globalThis.PostCalendarRuntime ?? {}} />
-    </React.StrictMode>
+    </StrictMode>
   );
 
   element.dataset.mounted = 'true';

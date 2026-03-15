@@ -2,7 +2,8 @@
 
 namespace PostCalendar;
 
-use PostCalendar\Event_Sources\ACF_Fields;
+use PostCalendar\Event_Sources\Admin_Editor;
+use PostCalendar\Event_Sources\Event_Model_Sync;
 use PostCalendar\Event_Sources\Post_Type;
 use PostCalendar\Event_Sources\Rest_Controller;
 use PostCalendar\Event_Sources\Settings_Page;
@@ -13,8 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-assets.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-update-checker.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/event-config.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/event-date-parser.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/bricks/elements.php';
-require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/acf-fields.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/admin-editor.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/event-model-sync.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/event-query-service.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/post-type.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/rest-controller.php';
@@ -33,9 +37,14 @@ class Plugin {
 	private $settings_page;
 
 	/**
-	 * @var ACF_Fields
+	 * @var Admin_Editor
 	 */
-	private $acf_fields;
+	private $admin_editor;
+
+	/**
+	 * @var Event_Model_Sync
+	 */
+	private $event_model_sync;
 
 	/**
 	 * @var Post_Type
@@ -79,8 +88,9 @@ class Plugin {
 
 	private function __construct() {
 		$this->proxy_post_type      = new Post_Type();
-		$this->acf_fields           = new ACF_Fields();
 		$this->assets               = new Assets();
+		$this->admin_editor         = new Admin_Editor( $this->assets );
+		$this->event_model_sync     = new Event_Model_Sync();
 		$this->settings_page        = new Settings_Page();
 		$this->proxy_post_type_rest = new Rest_Controller();
 		$this->shortcode            = new Shortcode\Shortcode();

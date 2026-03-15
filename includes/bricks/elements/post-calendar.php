@@ -2,6 +2,8 @@
 
 namespace PostCalendar\Bricks\Elements;
 
+use PostCalendar\Event_Sources\Event_Config;
+
 if (!defined('ABSPATH')) {
 	exit;
 }
@@ -57,21 +59,7 @@ class Element_Post_Calendar extends \Bricks\Element
 
 	private static function get_supported_query_var_keys(): array
 	{
-		return array(
-			'post_type',
-			'post__in',
-			'post__not_in',
-			'author__in',
-			'author__not_in',
-			'tax_query',
-			'meta_query',
-			'date_query',
-			'orderby',
-			'order',
-			'meta_key',
-			'meta_type',
-			's',
-		);
+		return Event_Config::get_supported_query_var_keys();
 	}
 
 	private static function get_unsupported_query_control_keys(): array

@@ -2,6 +2,9 @@
 
 namespace PostCalendar\Event_Sources;
 
+use DateInterval;
+use DateTimeImmutable;
+use WP_Post;
 use WP_Query;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,12 +20,25 @@ class Post_Type {
 	public const SLUG = 'post_calendar_event';
 	public const SOURCE_TYPES_QUERY_VAR = 'post_calendar_source_types';
 
-	private const EVENT_ENABLED_META = '_post_is_event';
-	private const EVENT_START_META   = '_post_start_date';
+	private const EVENT_ENABLED_META              = Event_Config::EVENT_HAS_EVENTS_META;
+	private const EVENT_START_META                = Event_Config::EVENT_START_META;
+	private const EVENT_END_META                  = Event_Config::EVENT_END_META;
+	private const OCCURRENCE_FLAG_QUERY_VAR       = 'post_calendar_expand_occurrences';
+	private const OCCURRENCE_RANGE_START_QUERY_VAR = 'post_calendar_occurrence_range_start';
+	private const OCCURRENCE_RANGE_END_QUERY_VAR   = 'post_calendar_occurrence_range_end';
+	private const OCCURRENCE_OFFSET_QUERY_VAR      = 'post_calendar_occurrence_offset';
+	private const OCCURRENCE_LIMIT_QUERY_VAR       = 'post_calendar_occurrence_limit';
+	private const DEFAULT_OCCURRENCE_WINDOW        = 'P1Y';
 
-	public function __construct() {
+	private Event_Query_Service $event_query_service;
+
+	public function __construct( ?Event_Query_Service $event_query_service = null ) {
+		$this->event_query_service = $event_query_service ?: new Event_Query_Service();
+
 		add_action( 'init', array( $this, 'register_post_type' ), 5 );
 		add_action( 'pre_get_posts', array( $this, 'intercept_query' ) );
+		add_filter( 'the_posts', array( $this, 'expand_recurring_posts' ), 10, 2 );
+		add_filter( 'get_post_metadata', array( $this, 'filter_occurrence_meta' ), 10, 4 );
 		add_filter( 'post_calendar_excluded_post_types', array( $this, 'exclude_from_settings' ) );
 	}
 
@@ -82,34 +98,381 @@ class Post_Type {
 		}
 
 		$query->set( 'post_type', $source_types );
+		$query->set( self::OCCURRENCE_FLAG_QUERY_VAR, true );
 
-		$caller_meta = $query->get( 'meta_query' );
+		$occurrence_constraints = $this->extract_occurrence_constraints( $query->get( 'meta_query' ) );
+		$range_start            = $this->resolve_occurrence_range_start( $query, $occurrence_constraints['range_start'] );
+		$range_end              = $this->resolve_occurrence_range_end( $query, $occurrence_constraints['range_end'], $range_start );
+		$occurrence_offset      = $this->resolve_occurrence_offset( $query );
+		$occurrence_limit       = $this->resolve_occurrence_limit( $query );
+
+		$query->set( self::OCCURRENCE_RANGE_START_QUERY_VAR, $range_start ? $range_start->format( DATE_ATOM ) : '' );
+		$query->set( self::OCCURRENCE_RANGE_END_QUERY_VAR, $range_end ? $range_end->format( DATE_ATOM ) : '' );
+		$query->set( self::OCCURRENCE_OFFSET_QUERY_VAR, $occurrence_offset );
+		$query->set( self::OCCURRENCE_LIMIT_QUERY_VAR, $occurrence_limit );
+
+		$caller_meta = $occurrence_constraints['meta_query'];
 		$meta_query  = array(
 			'relation' => 'AND',
-			array(
-				'key'   => self::EVENT_ENABLED_META,
-				'value' => '1',
-			),
 		);
 
 		if ( ! empty( $caller_meta ) ) {
 			$meta_query[] = $caller_meta;
 		}
 
+		$meta_query[] = $this->event_query_service->build_range_meta_query( $range_start, $range_end );
+
 		$query->set( 'meta_query', $meta_query );
+		$query->set( 'posts_per_page', -1 );
+		$query->set( 'nopaging', true );
+		$query->set( 'offset', 0 );
+		$query->set( 'paged', 1 );
+		$query->set( 'no_found_rows', true );
+		$query->set( 'ignore_sticky_posts', true );
 
 		if ( ! $query->get( 'orderby' ) ) {
-			$query->set( 'orderby', 'meta_value' );
-			$query->set( 'meta_key', self::EVENT_START_META );
-			$query->set( 'meta_type', 'DATETIME' );
 			$query->set( 'order', 'ASC' );
 		}
+	}
+
+	public function expand_recurring_posts( array $posts, WP_Query $query ): array {
+		if ( ! $query->get( self::OCCURRENCE_FLAG_QUERY_VAR ) ) {
+			return $posts;
+		}
+
+		$range_start = Event_Date_Parser::parse( is_string( $query->get( self::OCCURRENCE_RANGE_START_QUERY_VAR ) ) ? $query->get( self::OCCURRENCE_RANGE_START_QUERY_VAR ) : null );
+		$range_end   = Event_Date_Parser::parse( is_string( $query->get( self::OCCURRENCE_RANGE_END_QUERY_VAR ) ) ? $query->get( self::OCCURRENCE_RANGE_END_QUERY_VAR ) : null );
+		$occurrences = array();
+
+		foreach ( $posts as $index => $post ) {
+			if ( ! $post instanceof WP_Post ) {
+				continue;
+			}
+
+			$events = $this->event_query_service->build_events_for_post( (int) $post->ID, $range_start, $range_end );
+
+			foreach ( $events as $event ) {
+				$occurrences[] = $this->create_occurrence_post( $post, $event, $index );
+			}
+		}
+
+		$occurrences = $this->sort_occurrences( $occurrences, $query );
+		$total       = count( $occurrences );
+		$offset      = max( 0, (int) $query->get( self::OCCURRENCE_OFFSET_QUERY_VAR ) );
+		$limit       = (int) $query->get( self::OCCURRENCE_LIMIT_QUERY_VAR );
+
+		if ( $limit > 0 ) {
+			$occurrences = array_slice( $occurrences, $offset, $limit );
+		} elseif ( $offset > 0 ) {
+			$occurrences = array_slice( $occurrences, $offset );
+		}
+
+		$query->found_posts   = $total;
+		$query->post_count    = count( $occurrences );
+		$query->posts         = $occurrences;
+		$query->max_num_pages = $limit > 0 ? (int) ceil( $total / $limit ) : ( $total > 0 ? 1 : 0 );
+
+		return $occurrences;
+	}
+
+	public function filter_occurrence_meta( $value, $object_id, $meta_key, $single ) {
+		global $post;
+
+		if ( ! $post instanceof WP_Post ) {
+			return $value;
+		}
+
+		if ( (int) $post->ID !== (int) $object_id || empty( $post->post_calendar_occurrence_start ) ) {
+			return $value;
+		}
+
+		if ( self::EVENT_START_META === $meta_key ) {
+			return $single ? $post->post_calendar_occurrence_start : array( $post->post_calendar_occurrence_start );
+		}
+
+		if ( self::EVENT_END_META === $meta_key ) {
+			return $single ? $post->post_calendar_occurrence_end : array( $post->post_calendar_occurrence_end );
+		}
+
+		if ( self::EVENT_ENABLED_META === $meta_key ) {
+			return $single ? '1' : array( '1' );
+		}
+
+		return $value;
 	}
 
 	private function resolve_source_types( WP_Query $query ): array {
 		$requested_source_types = $query->get( self::SOURCE_TYPES_QUERY_VAR );
 
 		return Settings_Page::resolve_event_source_post_types( $requested_source_types );
+	}
+
+	private function resolve_occurrence_range_start( WP_Query $query, ?DateTimeImmutable $derived_range_start ): ?DateTimeImmutable {
+		$requested_range_start = $this->event_query_service->parse_request_date( $query->get( 'start' ) );
+
+		if ( $requested_range_start ) {
+			return $requested_range_start;
+		}
+
+		if ( $derived_range_start ) {
+			return $derived_range_start;
+		}
+
+		return $this->now();
+	}
+
+	private function resolve_occurrence_range_end( WP_Query $query, ?DateTimeImmutable $derived_range_end, ?DateTimeImmutable $range_start ): ?DateTimeImmutable {
+		$requested_range_end = $this->event_query_service->parse_request_date( $query->get( 'end' ) );
+
+		if ( $requested_range_end ) {
+			return $requested_range_end;
+		}
+
+		if ( $derived_range_end ) {
+			return $derived_range_end;
+		}
+
+		$anchor = $range_start ?: $this->now();
+
+		return $anchor->add( new DateInterval( self::DEFAULT_OCCURRENCE_WINDOW ) );
+	}
+
+	private function resolve_occurrence_offset( WP_Query $query ): int {
+		$offset         = max( 0, (int) $query->get( 'offset' ) );
+		$posts_per_page = $this->resolve_occurrence_limit( $query );
+		$paged          = max( 1, (int) $query->get( 'paged' ) );
+
+		if ( $posts_per_page > 0 && $paged > 1 ) {
+			$offset += ( $paged - 1 ) * $posts_per_page;
+		}
+
+		return $offset;
+	}
+
+	private function resolve_occurrence_limit( WP_Query $query ): int {
+		$posts_per_page = (int) $query->get( 'posts_per_page' );
+
+		return $posts_per_page > 0 ? $posts_per_page : -1;
+	}
+
+	private function extract_occurrence_constraints( $meta_query ): array {
+		if ( ! is_array( $meta_query ) ) {
+			return array(
+				'meta_query'  => array(),
+				'range_start' => null,
+				'range_end'   => null,
+			);
+		}
+
+		$cleaned_meta = array();
+
+		if ( isset( $meta_query['relation'] ) ) {
+			$cleaned_meta['relation'] = $meta_query['relation'];
+		}
+
+		$range_start = null;
+		$range_end   = null;
+
+		foreach ( $meta_query as $key => $clause ) {
+			if ( 'relation' === $key ) {
+				continue;
+			}
+
+			if ( ! is_array( $clause ) ) {
+				$cleaned_meta[ $key ] = $clause;
+				continue;
+			}
+
+			if ( $this->is_meta_clause( $clause ) ) {
+				$constraint = $this->extract_range_from_clause( $clause );
+
+				if ( $constraint['handled'] ) {
+					$range_start = $this->merge_range_start( $range_start, $constraint['range_start'] );
+					$range_end   = $this->merge_range_end( $range_end, $constraint['range_end'] );
+					continue;
+				}
+			}
+
+			$nested = $this->extract_occurrence_constraints( $clause );
+
+			$range_start = $this->merge_range_start( $range_start, $nested['range_start'] );
+			$range_end   = $this->merge_range_end( $range_end, $nested['range_end'] );
+
+			if ( $this->has_meta_clauses( $nested['meta_query'] ) ) {
+				$cleaned_meta[ $key ] = $nested['meta_query'];
+			}
+		}
+
+		return array(
+			'meta_query'  => $this->has_meta_clauses( $cleaned_meta ) ? $cleaned_meta : array(),
+			'range_start' => $range_start,
+			'range_end'   => $range_end,
+		);
+	}
+
+	private function is_meta_clause( array $clause ): bool {
+		return isset( $clause['key'] ) && is_string( $clause['key'] );
+	}
+
+	private function extract_range_from_clause( array $clause ): array {
+		$key = $clause['key'] ?? '';
+
+		if ( ! in_array( $key, array( self::EVENT_START_META, self::EVENT_END_META ), true ) ) {
+			return array(
+				'handled'     => false,
+				'range_start' => null,
+				'range_end'   => null,
+			);
+		}
+
+		$compare = strtoupper( is_string( $clause['compare'] ?? '' ) ? $clause['compare'] : '=' );
+		$value   = $clause['value'] ?? null;
+
+		switch ( $compare ) {
+			case '>':
+			case '>=':
+				return array(
+					'handled'     => true,
+					'range_start' => $this->parse_range_value( $value ),
+					'range_end'   => null,
+				);
+
+			case '<':
+			case '<=':
+				return array(
+					'handled'     => true,
+					'range_start' => null,
+					'range_end'   => $this->parse_range_value( $value ),
+				);
+
+			case '=':
+				$date = $this->parse_range_value( $value );
+
+				return array(
+					'handled'     => true,
+					'range_start' => $date,
+					'range_end'   => $date,
+				);
+
+			case 'BETWEEN':
+				$start_value = is_array( $value ) && isset( $value[0] ) ? $value[0] : null;
+				$end_value   = is_array( $value ) && isset( $value[1] ) ? $value[1] : null;
+
+				return array(
+					'handled'     => true,
+					'range_start' => $this->parse_range_value( $start_value ),
+					'range_end'   => $this->parse_range_value( $end_value ),
+				);
+
+			default:
+				return array(
+					'handled'     => false,
+					'range_start' => null,
+					'range_end'   => null,
+				);
+		}
+	}
+
+	private function parse_range_value( $value ): ?DateTimeImmutable {
+		if ( ! is_scalar( $value ) ) {
+			return null;
+		}
+
+		return $this->event_query_service->parse_request_date( (string) $value );
+	}
+
+	private function merge_range_start( ?DateTimeImmutable $current, ?DateTimeImmutable $candidate ): ?DateTimeImmutable {
+		if ( ! $candidate ) {
+			return $current;
+		}
+
+		if ( ! $current || $candidate > $current ) {
+			return $candidate;
+		}
+
+		return $current;
+	}
+
+	private function merge_range_end( ?DateTimeImmutable $current, ?DateTimeImmutable $candidate ): ?DateTimeImmutable {
+		if ( ! $candidate ) {
+			return $current;
+		}
+
+		if ( ! $current || $candidate < $current ) {
+			return $candidate;
+		}
+
+		return $current;
+	}
+
+	private function has_meta_clauses( array $meta_query ): bool {
+		foreach ( $meta_query as $key => $clause ) {
+			if ( 'relation' === $key ) {
+				continue;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private function create_occurrence_post( WP_Post $post, array $event, int $source_index ): WP_Post {
+		$occurrence_start = $this->event_query_service->parse_request_date( $event['start'] ?? null );
+		$occurrence_end   = $this->event_query_service->parse_request_date( $event['end'] ?? null );
+		$occurrence       = clone $post;
+
+		if ( $occurrence_start ) {
+			$occurrence->post_date     = $occurrence_start->format( 'Y-m-d H:i:s' );
+			$occurrence->post_date_gmt = $occurrence_start->setTimezone( new \DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' );
+		}
+
+		$occurrence->post_calendar_occurrence_id        = (string) ( $event['id'] ?? $post->ID );
+		$occurrence->post_calendar_occurrence_start     = $occurrence_start ? $occurrence_start->format( 'Y-m-d H:i:s' ) : '';
+		$occurrence->post_calendar_occurrence_end       = $occurrence_end ? $occurrence_end->format( 'Y-m-d H:i:s' ) : $occurrence->post_calendar_occurrence_start;
+		$occurrence->post_calendar_occurrence_source_id = (int) $post->ID;
+		$occurrence->post_calendar_occurrence_index     = $source_index;
+		$occurrence->post_calendar_occurrence_event_index = isset( $event['eventIndex'] ) ? (int) $event['eventIndex'] : 0;
+
+		return $occurrence;
+	}
+
+	private function sort_occurrences( array $occurrences, WP_Query $query ): array {
+		if ( ! $this->should_sort_by_occurrence_start( $query ) ) {
+			return $occurrences;
+		}
+
+		$order = 'DESC' === strtoupper( (string) $query->get( 'order' ) ) ? 'DESC' : 'ASC';
+
+		usort(
+			$occurrences,
+			static function ( WP_Post $left, WP_Post $right ) use ( $order ): int {
+				$comparison = strcmp( (string) $left->post_calendar_occurrence_start, (string) $right->post_calendar_occurrence_start );
+
+				if ( 0 === $comparison ) {
+					$comparison = strcmp( (string) $left->post_title, (string) $right->post_title );
+				}
+
+				return 'DESC' === $order ? -$comparison : $comparison;
+			}
+		);
+
+		return $occurrences;
+	}
+
+	private function should_sort_by_occurrence_start( WP_Query $query ): bool {
+		$orderby  = $query->get( 'orderby' );
+		$meta_key = (string) $query->get( 'meta_key' );
+
+		if ( empty( $orderby ) || 'date' === $orderby ) {
+			return true;
+		}
+
+		return in_array( $orderby, array( 'meta_value', 'meta_value_num' ), true ) && self::EVENT_START_META === $meta_key;
+	}
+
+	private function now(): DateTimeImmutable {
+		return new DateTimeImmutable( 'now', wp_timezone() );
 	}
 
 	public function exclude_from_settings( array $excluded ): array {

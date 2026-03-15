@@ -4,9 +4,10 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev:admin": "vite build --watch --mode admin",
     "dev:preview": "vite --port 3000 --strictPort",
     "dev": "vite build --watch",
-    "build": "vite build",
+    "build": "vite build && vite build --mode admin",
     "build:pot": "node scripts/build-pot.mjs",
     "build:lang": "node scripts/build-mo.mjs",
     "typecheck": "tsc --noEmit",
@@ -20,14 +21,13 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.4",
-    "@vitejs/plugin-react": "^5.0.4",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^5.0.4",
     "archiver": "^7.0.1",
     "postcss": "^8.4.49",
     "tailwindcss": "^4.1.4",
     "typescript": "^5.6.3",
-    "tw-animate-css": "^1.3.0",
     "vite": "^8.0.0"
   }
 }
