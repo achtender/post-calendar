@@ -66,3 +66,51 @@ export interface CalendarRange {
   start: Date;
   end: Date;
 }
+
+export type EventRepeatValue = 'none' | 'weekly' | 'monthly' | 'yearly';
+
+export interface AdminEventRow {
+  label: string;
+  all_day: boolean;
+  start_date: string;
+  end_date: string;
+  repeat: EventRepeatValue;
+  repeat_interval: number;
+  repeat_byday: string[];
+  repeat_until: string;
+}
+
+export interface AdminRuntimeStrings {
+  addEvent?: string;
+  allDay?: string;
+  doesNotRepeat?: string;
+  endDate?: string;
+  eventLabel?: string;
+  eventLabelHelp?: string;
+  eventNumber?: string;
+  eventRepeat?: string;
+  eventsIntro?: string;
+  friday?: string;
+  monday?: string;
+  monthly?: string;
+  noEvents?: string;
+  removeEvent?: string;
+  repeatInterval?: string;
+  repeatIntervalHelp?: string;
+  repeatOn?: string;
+  repeatUntil?: string;
+  saturday?: string;
+  startDate?: string;
+  sunday?: string;
+  thursday?: string;
+  tuesday?: string;
+  wednesday?: string;
+  weekly?: string;
+  yearly?: string;
+}
+
+export interface AdminRuntime {
+  currentEvents?: AdminEventRow[];
+  fieldName?: string;
+  strings?: AdminRuntimeStrings;
+}

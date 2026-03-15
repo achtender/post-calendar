@@ -2,7 +2,7 @@
 
 namespace PostCalendar;
 
-use PostCalendar\Event_Sources\Post_Type;
+use PostCalendar\Event_Sources\Rest_Controller;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -11,9 +11,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Assets {
 	private const SCRIPT_HANDLE = 'post-calendar-app';
 	private const STYLE_HANDLE  = 'post-calendar-app';
+	private const ADMIN_SCRIPT_HANDLE = 'post-calendar-admin';
+	private const ADMIN_STYLE_HANDLE  = 'post-calendar-admin';
 
 	public function has_built_assets(): bool {
 		return file_exists( POST_CALENDAR_PLUGIN_DIR . 'dist/post-calendar.js' );
+	}
+
+	public function has_admin_built_assets(): bool {
+		return file_exists( POST_CALENDAR_PLUGIN_DIR . 'dist/post-calendar-admin.js' );
 	}
 
 	public function enqueue_calendar_assets(): void {
@@ -21,8 +27,8 @@ class Assets {
 			return;
 		}
 
-		$version = $this->get_asset_version();
-		$style   = $this->get_style_asset_path();
+		$version = $this->get_asset_version( 'post-calendar.js' );
+		$style   = $this->get_style_asset_path( 'post-calendar.css', 'style.css' );
 
 		if ( $style ) {
 			wp_enqueue_style(
@@ -44,8 +50,36 @@ class Assets {
 		wp_localize_script( self::SCRIPT_HANDLE, 'PostCalendarRuntime', $this->get_runtime_config() );
 	}
 
-	private function get_asset_version(): string {
-		$script_path = POST_CALENDAR_PLUGIN_DIR . 'dist/post-calendar.js';
+	public function enqueue_admin_editor_assets( array $config ): void {
+		if ( ! $this->has_admin_built_assets() ) {
+			return;
+		}
+
+		$version = $this->get_asset_version( 'post-calendar-admin.js' );
+		$style   = $this->get_style_asset_path( 'post-calendar-admin.css' );
+
+		if ( $style ) {
+			wp_enqueue_style(
+				self::ADMIN_STYLE_HANDLE,
+				POST_CALENDAR_PLUGIN_URL . 'dist/' . $style,
+				array(),
+				$version
+			);
+		}
+
+		wp_enqueue_script(
+			self::ADMIN_SCRIPT_HANDLE,
+			POST_CALENDAR_PLUGIN_URL . 'dist/post-calendar-admin.js',
+			array( 'wp-element' ),
+			$version,
+			true
+		);
+
+		wp_localize_script( self::ADMIN_SCRIPT_HANDLE, 'PostCalendarAdmin', $config );
+	}
+
+	private function get_asset_version( string $script_name ): string {
+		$script_path = POST_CALENDAR_PLUGIN_DIR . 'dist/' . $script_name;
 
 		if ( file_exists( $script_path ) ) {
 			return (string) filemtime( $script_path );
@@ -54,13 +88,11 @@ class Assets {
 		return POST_CALENDAR_VERSION;
 	}
 
-	private function get_style_asset_path(): ?string {
-		if ( file_exists( POST_CALENDAR_PLUGIN_DIR . 'dist/post-calendar.css' ) ) {
-			return 'post-calendar.css';
-		}
-
-		if ( file_exists( POST_CALENDAR_PLUGIN_DIR . 'dist/style.css' ) ) {
-			return 'style.css';
+	private function get_style_asset_path( string ...$candidates ): ?string {
+		foreach ( $candidates as $candidate ) {
+			if ( file_exists( POST_CALENDAR_PLUGIN_DIR . 'dist/' . $candidate ) ) {
+				return $candidate;
+			}
 		}
 
 		return null;
@@ -68,7 +100,7 @@ class Assets {
 
 	private function get_runtime_config(): array {
 		return array(
-			'restUrl'   => esc_url_raw( rest_url( 'wp/v2/' . Post_Type::SLUG ) ),
+			'restUrl'   => esc_url_raw( rest_url( Rest_Controller::REST_NAMESPACE . Rest_Controller::REST_ROUTE ) ),
 			'restNonce' => wp_create_nonce( 'wp_rest' ),
 			'locale'    => determine_locale(),
 			'strings'   => $this->get_runtime_strings(),

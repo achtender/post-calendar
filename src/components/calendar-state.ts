@@ -109,20 +109,16 @@ export function useCalendarLocale(locale?: string): string | undefined {
   const [culture, setCulture] = useState<string | undefined>(() => normalizeCulture(locale));
 
   useEffect(() => {
-    let isMounted = true;
+    let cancelled = false;
 
-    async function syncMomentLocale(): Promise<void> {
-      const resolvedCulture = await ensureMomentLocale(locale);
-
-      if (isMounted) {
+    void ensureMomentLocale(locale).then((resolvedCulture) => {
+      if (!cancelled) {
         setCulture(resolvedCulture);
       }
-    }
-
-    syncMomentLocale();
+    });
 
     return () => {
-      isMounted = false;
+      cancelled = true;
     };
   }, [locale]);
 
@@ -149,6 +145,7 @@ export function useCalendarState(
   const agendaRangeMode = normalizeAgendaRangeMode(config.agendaRangeMode);
   const agendaRangeMonths = normalizePositiveInteger(config.agendaRangeMonths, 3);
   const agendaWindow = useMemo(() => calculateAgendaWindow(currentDate, agendaRangeMonths), [agendaRangeMonths, currentDate]);
+  const fallbackRange = useMemo(() => calculateFallbackRange(view, currentDate), [currentDate, view]);
   const effectiveRange = useMemo(() => {
     if (view === Views.AGENDA && agendaRangeMode === agendaRangeModes.UPCOMING_WINDOW) {
       return {
@@ -161,8 +158,8 @@ export function useCalendarState(
       return calculateYearRange(currentDate);
     }
 
-    return activeRange;
-  }, [activeRange, agendaRangeMode, agendaWindow.end, agendaWindow.start, currentDate, view]);
+    return activeRange ?? fallbackRange;
+  }, [activeRange, agendaRangeMode, agendaWindow.end, agendaWindow.start, currentDate, fallbackRange, view]);
   const requestUrl = useMemo(() => buildRequestUrl(config, runtime, effectiveRange), [config, effectiveRange, runtime]);
 
   useEffect(() => {
@@ -173,13 +170,11 @@ export function useCalendarState(
       return undefined;
     }
 
-    let isMounted = true;
+    const controller = new AbortController();
 
     async function loadEvents(): Promise<void> {
       if (!runtime.restUrl) {
-        if (isMounted) {
-          setErrorMessage(strings.missingApiUrl);
-        }
+      setErrorMessage(strings.missingApiUrl);
 
         return;
       }
@@ -189,6 +184,7 @@ export function useCalendarState(
           headers: {
             'X-WP-Nonce': runtime.restNonce ?? '',
           },
+        signal: controller.signal,
         });
 
         if (!response.ok) {
@@ -197,21 +193,21 @@ export function useCalendarState(
 
         const payload = (await response.json()) as CalendarEventInput[];
 
-        if (isMounted) {
-          setEvents(normalizeEvents(Array.isArray(payload) ? payload : []));
-          setErrorMessage('');
+        setEvents(normalizeEvents(Array.isArray(payload) ? payload : []));
+        setErrorMessage('');
+        } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          return;
         }
-      } catch {
-        if (isMounted) {
-          setErrorMessage(strings.loadError);
-        }
+
+        setErrorMessage(strings.loadError);
       }
     }
 
-    loadEvents();
+      void loadEvents();
 
     return () => {
-      isMounted = false;
+        controller.abort();
     };
   }, [config.error, previewEvents, requestUrl, runtime.restNonce, runtime.restUrl, strings.loadError, strings.missingApiUrl]);
 
@@ -303,6 +299,43 @@ function calculateAgendaWindow(date: Date, monthCount: number): CalendarRange & 
     start: windowStart.toDate(),
     end: windowEnd.toDate(),
     length: Math.max(1, windowEnd.diff(windowStart, 'days') + 1),
+  };
+}
+
+function calculateFallbackRange(view: CalendarView, date: Date): CalendarRange {
+  if (view === Views.WEEK) {
+    const weekStart = moment(date).startOf('week');
+
+    return {
+      start: weekStart.toDate(),
+      end: weekStart.clone().endOf('week').toDate(),
+    };
+  }
+
+  if (view === Views.DAY) {
+    const dayStart = moment(date).startOf('day');
+
+    return {
+      start: dayStart.toDate(),
+      end: dayStart.clone().endOf('day').toDate(),
+    };
+  }
+
+  if (view === Views.AGENDA) {
+    const agendaStart = moment(date).startOf('day');
+
+    return {
+      start: agendaStart.toDate(),
+      end: agendaStart.clone().add(29, 'days').endOf('day').toDate(),
+    };
+  }
+
+  const monthStart = moment(date).startOf('month').startOf('week');
+  const monthEnd = moment(date).endOf('month').endOf('week');
+
+  return {
+    start: monthStart.toDate(),
+    end: monthEnd.toDate(),
   };
 }
 

@@ -14,10 +14,10 @@ class Settings_Page {
 	private const REMOVE_EVENTS_POST_FIELD = 'post_calendar_remove_post_type';
 	private const NOTICE_POST_TYPE_ARG = 'post_calendar_post_type';
 	private const NOTICE_REMOVED_ARG   = 'post_calendar_removed';
-	private const EVENT_ENABLED_META = '_post_is_event';
-	private const EVENT_ALL_DAY_META = '_post_is_allday';
-	private const EVENT_START_META = '_post_start_date';
-	private const EVENT_END_META = '_post_end_date';
+	private const EVENT_ENABLED_META = Event_Config::EVENT_HAS_EVENTS_META;
+	private const EVENTS_META = Event_Config::EVENTS_META;
+	private const EVENT_RANGE_START_META = Event_Config::EVENT_RANGE_START_META;
+	private const EVENT_RANGE_END_META = Event_Config::EVENT_RANGE_END_META;
 	private const EXCLUDED_POST_TYPES = array(
 		'acf-field-group',
 		'acf-post-type',
@@ -79,17 +79,11 @@ class Settings_Page {
 				<table class="form-table" role="presentation">
 					<tbody>
 						<tr>
-							<th scope="row"><?php echo esc_html__( 'Built-in event fields', 'post-calendar' ); ?></th>
+							<th scope="row"><?php echo esc_html__( 'Built-in event editor', 'post-calendar' ); ?></th>
 							<td>
 								<input type="hidden" name="<?php echo esc_attr( self::OPTION_NAME ); ?>[]" value="">
-								<p class="description"><?php echo esc_html__( 'Use this list to control where the built-in event fields are shown. Posts from any post type appear on the calendar when they carry the required event meta.', 'post-calendar' ); ?></p>
+								<p class="description"><?php echo esc_html__( 'Use this list to choose which source post types show the built-in event editor. Posts appear on the calendar when they contain event definitions, no matter how that meta was added.', 'post-calendar' ); ?></p>
 								<br />
-
-								<?php if ( ! function_exists( 'acf_add_local_field_group' ) ) : ?>
-									<div class="notice notice-warning inline" style="margin: 0 0 12px 0;">
-										<p><?php echo esc_html__( 'No ACF-compatible field plugin is currently active. The built-in event fields will not show in the editor until SCF, ACF, or another compatible provider is active.', 'post-calendar' ); ?></p>
-									</div>
-								<?php endif; ?>
 
 								<?php if ( empty( $post_types ) ) : ?>
 									<p><?php echo esc_html__( 'No post types available.', 'post-calendar' ); ?></p>
@@ -110,7 +104,7 @@ class Settings_Page {
 													<strong><?php echo esc_html( $post_type->labels->singular_name ?: $post_type->label ); ?></strong>
 													<code style="margin-left: 6px;"><?php echo esc_html( $post_type->name ); ?></code>
 												</label>
-												<span class="description" style="display: block; margin-left: 24px;"><?php echo esc_html( sprintf( _n( '%d post is currently marked as an event.', '%d posts are currently marked as events.', $event_count, 'post-calendar' ), $event_count ) ); ?></span>
+												<span class="description" style="display: block; margin-left: 24px;"><?php echo esc_html( sprintf( _n( '%d post currently contains Post Calendar event definitions.', '%d posts currently contain Post Calendar event definitions.', $event_count, 'post-calendar' ), $event_count ) ); ?></span>
 												<?php if ( $post_type->description ) : ?>
 													<span class="description" style="display: block; margin-left: 24px;"><?php echo esc_html( $post_type->description ); ?></span>
 												<?php endif; ?>
@@ -124,7 +118,7 @@ class Settings_Page {
 													>
 														<?php echo esc_html__( 'Remove all event data', 'post-calendar' ); ?>
 													</button>
-													<span class="description"><?php echo esc_html__( 'Clears the event flag, all-day flag, and event dates for this post type.', 'post-calendar' ); ?></span>
+													<span class="description"><?php echo esc_html__( 'Removes stored event definitions and the derived query meta that Post Calendar maintains for this post type.', 'post-calendar' ); ?></span>
 												</div>
 											</div>
 										<?php endforeach; ?>
@@ -390,22 +384,46 @@ class Settings_Page {
 				'no_found_rows'          => true,
 				'update_post_meta_cache' => false,
 				'update_post_term_cache' => false,
-				'meta_key'               => self::EVENT_ENABLED_META,
-				'meta_value'             => '1',
+				'meta_query'             => array(
+					'relation' => 'OR',
+					array(
+						'key'   => self::EVENT_ENABLED_META,
+						'value' => '1',
+					),
+					array(
+						'key'     => self::EVENTS_META,
+						'compare' => 'EXISTS',
+					),
+				),
 			)
 		);
 
 		$removed_count = 0;
 
 		foreach ( $query->posts as $post_id ) {
-			foreach ( self::get_event_meta_keys() as $meta_key ) {
-				delete_post_meta( (int) $post_id, $meta_key );
-			}
-
+			$this->clear_event_meta_for_post( (int) $post_id );
 			++$removed_count;
 		}
 
 		return $removed_count;
+	}
+
+	private function clear_event_meta_for_post( int $post_id ): void {
+		foreach ( self::get_event_meta_keys() as $meta_key ) {
+			delete_post_meta( $post_id, $meta_key );
+		}
+
+		$post_meta = get_post_meta( $post_id );
+
+		if ( ! is_array( $post_meta ) ) {
+			return;
+		}
+
+		foreach ( array_keys( $post_meta ) as $meta_key ) {
+			if ( 0 === strpos( (string) $meta_key, self::EVENTS_META . '_' ) || 0 === strpos( (string) $meta_key, '_' . self::EVENTS_META . '_' ) ) {
+				delete_post_meta( $post_id, (string) $meta_key );
+			}
+		}
 	}
 
 	private static function get_event_counts_for_post_types( array $post_types ): array {
@@ -466,9 +484,9 @@ class Settings_Page {
 	private static function get_event_meta_keys(): array {
 		return array(
 			self::EVENT_ENABLED_META,
-			self::EVENT_ALL_DAY_META,
-			self::EVENT_START_META,
-			self::EVENT_END_META,
+			self::EVENTS_META,
+			self::EVENT_RANGE_START_META,
+			self::EVENT_RANGE_END_META,
 		);
 	}
 

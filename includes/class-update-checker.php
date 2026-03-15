@@ -53,11 +53,15 @@ class Update_Checker {
 			return null;
 		}
 		foreach ( $release->assets as $asset ) {
-			if ( isset( $asset->name ) && str_ends_with( $asset->name, '.zip' ) ) {
+			if ( isset( $asset->name ) && $this->has_zip_suffix( (string) $asset->name ) ) {
 				return $asset->browser_download_url;
 			}
 		}
 		return null;
+	}
+
+	private function has_zip_suffix( string $value ): bool {
+		return strlen( $value ) >= 4 && 0 === substr_compare( $value, '.zip', -4, 4 );
 	}
 
 	/**
@@ -198,7 +202,7 @@ class Update_Checker {
 			'requires_php'  => '7.4',
 			'download_link' => $zip_url ?? false,
 			'sections'      => array(
-				'description' => '<p>' . esc_html__( 'Display posts as events in a calendar via Bricks or shortcode, using existing post types and optional built-in event fields.', 'post-calendar' ) . '</p>'
+				'description' => '<p>' . esc_html__( 'Display posts as events in a calendar via Bricks or shortcode, using existing post types and the built-in Post Calendar editor or direct event meta.', 'post-calendar' ) . '</p>'
 					. '<p><a href="' . $releases_url . '" target="_blank">' . esc_html__( 'View all releases on GitHub', 'post-calendar' ) . '</a></p>',
 				'changelog'   => $changelog,
 			),

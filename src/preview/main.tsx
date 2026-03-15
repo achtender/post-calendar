@@ -1,4 +1,4 @@
-import React from 'react';
+import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import CalendarApp from '../components/calendar-app.tsx';
@@ -202,8 +202,8 @@ const previewRoot = document.getElementById('preview-root');
 
 if (previewRoot) {
   createRoot(previewRoot).render(
-    <React.StrictMode>
+    <StrictMode>
       <CalendarApp config={previewConfig} hostElement={previewRoot} runtime={previewRuntime} />
-    </React.StrictMode>
+    </StrictMode>
   );
 }
