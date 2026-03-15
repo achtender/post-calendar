@@ -11,7 +11,7 @@ class Element_Post_Calendar_View_Panel extends \Bricks\Element {
 	public $name     = 'post-calendar-view-panel';
 	public $icon     = 'ti-layout-width-default';
 	public $css_selector = '.post-calendar-view-panel';
-	public $nestable = true;
+	public $nestable = false;
 
 	public function get_label() {
 		return esc_html__( 'Calendar View Panel', 'post-calendar' );
@@ -36,19 +36,13 @@ class Element_Post_Calendar_View_Panel extends \Bricks\Element {
 
 		$this->set_attribute( '_root', 'class', 'post-calendar-view-panel' );
 		$this->set_attribute( '_root', 'data-post-calendar-view-panel', $view );
-		$this->set_attribute( '_root', 'hidden', 'hidden' );
 
-		echo '<div ' . $this->render_attributes( '_root' ) . '>';
-		echo \Bricks\Frontend::render_children( $this );
-		echo '</div>';
+		echo '<div ' . $this->render_attributes( '_root' ) . '></div>';
 	}
 
 	public static function render_builder() { ?>
 		<script type="text/x-template" id="tmpl-bricks-element-post-calendar-view-panel">
-			<component :is="tag" class="post-calendar-view-panel">
-				<div class="post-calendar-element-placeholder">{{ settings.view ? settings.view : 'month' }} view metadata</div>
-				<bricks-element-children :element="element"/>
-			</component>
+			<component :is="tag" class="post-calendar-view-panel"></component>
 		</script>
 	<?php }
 }

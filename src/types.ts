@@ -8,10 +8,20 @@ export interface CalendarConfig {
   showViewMenu?: boolean;
   agendaRangeMode?: string;
   agendaRangeMonths?: number | string;
-  agendaTemplate?: string;
   queryVars?: Record<string, unknown>;
   postTypes?: string[];
   error?: string;
+}
+
+export interface CalendarSharedSnapshot {
+	activePaneIndex: number;
+  activeView: string;
+  activeViews: string[];
+  agendaLength: number;
+  currentDate: Date;
+  errorMessage: string;
+  events: CalendarEventRecord[];
+  isLoading: boolean;
 }
 
 export interface CalendarEventInput {

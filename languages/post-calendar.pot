@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Post Calendar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-15 20:18:15+0000\n"
+"POT-Creation-Date: 2026-03-16 00:16:35+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,11 +22,11 @@ msgstr[1] ""
 msgid "A virtual query type for Post Calendar events. Query this type to retrieve event posts from all source post types."
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:508
+#: includes/bricks/elements/post-calendar.php:482
 msgid "Active button color"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:521
+#: includes/bricks/elements/post-calendar.php:495
 msgid "Active button text color"
 msgstr ""
 
@@ -38,12 +38,8 @@ msgstr ""
 msgid "Add one or more event rows to make this post appear in the calendar."
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:25 includes/class-assets.php:113
+#: includes/bricks/elements/post-calendar.php:26 includes/class-assets.php:113
 msgid "Agenda"
-msgstr ""
-
-#: includes/bricks/elements/post-calendar.php:206
-msgid "Agenda Item"
 msgstr ""
 
 #: includes/class-assets.php:112
@@ -54,15 +50,15 @@ msgstr ""
 msgid "All-day event"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:39 includes/class-assets.php:114
+#: includes/bricks/elements/post-calendar.php:40 includes/class-assets.php:114
 msgid "Back"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:452
+#: includes/bricks/elements/post-calendar.php:426
 msgid "Body text color"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:439
+#: includes/bricks/elements/post-calendar.php:413
 msgid "Border color"
 msgstr ""
 
@@ -70,47 +66,43 @@ msgstr ""
 msgid "Built-in event editor"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:396
+#: includes/bricks/elements/post-calendar.php:370
 msgid "Button and event radius"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:611
+#: includes/bricks/elements/post-calendar.php:578
 msgid "Calendar Content"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:361
+#: includes/bricks/elements/post-calendar.php:335
 msgid "Calendar height"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:57
+#: includes/bricks/elements/post-calendar.php:58
 msgid "Calendar label"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:537
+#: includes/bricks/elements/post-calendar.php:511
 msgid "Calendar Toolbar"
-msgstr ""
-
-#: includes/bricks/elements/post-calendar.php:664
-msgid "Calendar view content is rendered by the React frontend. Use the nested children above to edit toolbar actions, view buttons, and per-view panel content."
 msgstr ""
 
 #: includes/bricks/elements/post-calendar-view-panel.php:17
 msgid "Calendar View Panel"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:192 includes/class-assets.php:115
+#: includes/bricks/elements/post-calendar.php:163 includes/class-assets.php:115
 msgid "Calendar views"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:343
+#: includes/bricks/elements/post-calendar.php:317
 msgid "Calendar width"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:309
+#: includes/bricks/elements/post-calendar.php:282
 msgid "Colors"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:349
+#: includes/bricks/elements/post-calendar.php:323
 msgid "Controls the minimum calendar width used by the month and week layouts."
 msgstr ""
 
@@ -118,7 +110,7 @@ msgstr ""
 msgid "Date"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:24 includes/class-assets.php:118
+#: includes/bricks/elements/post-calendar.php:25 includes/class-assets.php:118
 msgid "Day"
 msgstr ""
 
@@ -142,10 +134,6 @@ msgstr ""
 msgid "Event"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:230
-msgid "Event excerpt"
-msgstr ""
-
 #: includes/event-sources/admin-editor.php:251
 msgid "Event frequency"
 msgstr ""
@@ -154,20 +142,12 @@ msgstr ""
 msgid "Event label"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:482
+#: includes/bricks/elements/post-calendar.php:456
 msgid "Event pill color"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:495
+#: includes/bricks/elements/post-calendar.php:469
 msgid "Event pill text color"
-msgstr ""
-
-#: includes/bricks/elements/post-calendar.php:241
-msgid "Event tags"
-msgstr ""
-
-#: includes/bricks/elements/post-calendar.php:217
-msgid "Event title"
 msgstr ""
 
 #: includes/event-sources/admin-editor.php:257
@@ -182,11 +162,11 @@ msgstr ""
 msgid "Friday"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:335
+#: includes/bricks/elements/post-calendar.php:308
 msgid "Index of the view/content item to open on page load, start at 0."
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:304
+#: includes/bricks/elements/post-calendar.php:277
 msgid "Layout"
 msgstr ""
 
@@ -206,7 +186,7 @@ msgstr ""
 msgid "Limit the number of source posts evaluated for the response."
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:653 includes/shortcode/shortcode.php:65
+#: includes/shortcode/shortcode.php:65
 msgid "Loading calendar…"
 msgstr ""
 
@@ -214,7 +194,7 @@ msgstr ""
 msgid "Monday"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:22 includes/class-assets.php:122
+#: includes/bricks/elements/post-calendar.php:23 includes/class-assets.php:122
 msgid "Month"
 msgstr ""
 
@@ -226,15 +206,15 @@ msgstr ""
 msgid "more"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:426
+#: includes/bricks/elements/post-calendar.php:400
 msgid "Muted surface color"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:465
+#: includes/bricks/elements/post-calendar.php:439
 msgid "Muted text color"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:41 includes/class-assets.php:123
+#: includes/bricks/elements/post-calendar.php:42 includes/class-assets.php:123
 msgid "Next"
 msgstr ""
 
@@ -250,15 +230,15 @@ msgstr ""
 msgid "No post types available."
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:333
+#: includes/bricks/elements/post-calendar.php:306
 msgid "Open tab index"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:276
+#: includes/bricks/elements/post-calendar.php:243
 msgid "Pane"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:293 includes/event-sources/admin-editor.php:33 includes/event-sources/settings-page.php:52 includes/event-sources/settings-page.php:53 includes/event-sources/settings-page.php:72
+#: includes/bricks/elements/post-calendar.php:266 includes/event-sources/admin-editor.php:33 includes/event-sources/settings-page.php:52 includes/event-sources/settings-page.php:53 includes/event-sources/settings-page.php:72
 msgid "Post Calendar"
 msgstr ""
 
@@ -278,7 +258,7 @@ msgstr ""
 msgid "Post Calendar Events"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:318
+#: includes/bricks/elements/post-calendar.php:291
 msgid "Query"
 msgstr ""
 
@@ -331,7 +311,7 @@ msgstr ""
 msgid "See the GitHub releases page for the full changelog."
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:367
+#: includes/bricks/elements/post-calendar.php:341
 msgid "Sets the fixed height used by the month and week layouts."
 msgstr ""
 
@@ -347,11 +327,11 @@ msgstr ""
 msgid "Sunday"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:413
+#: includes/bricks/elements/post-calendar.php:387
 msgid "Surface color"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:379
+#: includes/bricks/elements/post-calendar.php:353
 msgid "Surface radius"
 msgstr ""
 
@@ -363,11 +343,11 @@ msgstr ""
 msgid "The calendar API URL is missing."
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:634 includes/shortcode/shortcode.php:35
+#: includes/bricks/elements/post-calendar.php:601 includes/shortcode/shortcode.php:35
 msgid "The calendar frontend assets are missing. Run the plugin build before using this element."
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:328
+#: includes/bricks/elements/post-calendar.php:301
 msgid "The query popup is limited to the subset the calendar applies: post type, include/exclude, taxonomy, author include/exclude, search, ordering, and date/meta constraints. Loop, pagination, query-editor, live-search, and non-post object settings are hidden."
 msgstr ""
 
@@ -379,19 +359,19 @@ msgstr ""
 msgid "Time"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:132
+#: includes/bricks/elements/post-calendar.php:188
 msgid "Title"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:44 includes/class-assets.php:129
+#: includes/bricks/elements/post-calendar.php:45 includes/class-assets.php:129
 msgid "Today"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:546
+#: includes/bricks/elements/post-calendar.php:530
 msgid "Toolbar Actions"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:587
+#: includes/bricks/elements/post-calendar.php:551
 msgid "Toolbar Label"
 msgstr ""
 
@@ -419,7 +399,7 @@ msgstr ""
 msgid "View all releases on GitHub"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:186
+#: includes/bricks/elements/post-calendar.php:229
 msgid "View menu"
 msgstr ""
 
@@ -427,7 +407,7 @@ msgstr ""
 msgid "Wednesday"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:23 includes/class-assets.php:130
+#: includes/bricks/elements/post-calendar.php:24 includes/class-assets.php:130
 msgid "Week"
 msgstr ""
 
@@ -435,7 +415,7 @@ msgstr ""
 msgid "Weekly"
 msgstr ""
 
-#: includes/bricks/elements/post-calendar.php:26 includes/class-assets.php:131
+#: includes/bricks/elements/post-calendar.php:27 includes/class-assets.php:131
 msgid "Year"
 msgstr ""
 

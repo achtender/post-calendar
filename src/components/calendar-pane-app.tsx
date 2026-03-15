@@ -1,25 +1,12 @@
-import { useMemo } from 'react';
+import { useSyncExternalStore } from 'react';
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
-import type { CalendarConfig, CalendarEventRecord, CalendarRange, CalendarRuntime, CalendarRuntimeStrings } from '../types.ts';
-import {
-  getEventClassName,
-  getRuntimeStrings,
-  normalizeView,
-  YEAR_VIEW,
-  type CalendarRangeInput,
-  type CalendarView,
-  useCalendarLocale,
-  useCalendarState,
-} from './calendar-state.ts';
+import type { CalendarEventRecord, CalendarRange } from '../types.ts';
+import { getEventClassName, getRuntimeStrings, useCalendarLocale, YEAR_VIEW, type CalendarView } from './calendar-state.ts';
 import CalendarYearView from './calendar-year-view.tsx';
+import { CalendarParentStore } from './calendar-parent-store.ts';
 
 const localizer = momentLocalizer(moment);
-
-interface CalendarAppProps {
-  config: CalendarConfig;
-  runtime: CalendarRuntime;
-}
 
 interface CalendarEventProps {
   event: CalendarEventRecord;
@@ -44,36 +31,9 @@ interface AgendaTimeCellProps {
   allDayLabel: string;
 }
 
-interface CalendarToolbarProps {
-  culture?: string;
-  currentDate: Date;
-  label: string;
-  onNavigate: (action: string) => void;
-  onView: (view: CalendarView) => void;
-  showToolbarActions: boolean;
-  showToolbarLabel: boolean;
-  showViewMenu: boolean;
-  strings: Required<CalendarRuntimeStrings>;
-  view: CalendarView;
-  views: readonly CalendarView[];
-}
-
-function getToolbarLabel(label: string, view: CalendarView, currentDate: Date, culture?: string): string {
-  if (view === Views.DAY) {
-    return localizer.format(currentDate, 'MMMM D, YYYY', culture);
-  }
-
-  return label;
-}
-
-function getViewLabels(strings: Required<CalendarRuntimeStrings>): Record<CalendarView, string> {
-  return {
-    [Views.MONTH]: strings.month,
-    [Views.WEEK]: strings.week,
-    [Views.DAY]: strings.day,
-    [Views.AGENDA]: strings.agenda,
-    [YEAR_VIEW]: strings.year,
-  };
+interface CalendarPaneAppProps {
+  paneView: CalendarView;
+  store: CalendarParentStore;
 }
 
 function CalendarEvent({ event }: CalendarEventProps) {
@@ -140,50 +100,6 @@ function AgendaEventCell({ event }: CalendarEventProps) {
   );
 }
 
-function CalendarToolbar({ culture, currentDate, label, onNavigate, onView, showToolbarActions, showToolbarLabel, showViewMenu, strings, view, views }: CalendarToolbarProps) {
-  const viewLabels = getViewLabels(strings);
-  const toolbarLabel = getToolbarLabel(label, view, currentDate, culture);
-
-  if (!showToolbarActions && !showToolbarLabel && !showViewMenu) {
-    return null;
-  }
-
-  return (
-    <div className="post-calendar-toolbar">
-    {showToolbarActions ? (
-      <div className="post-calendar-toolbar-actions">
-      <button type="button" className="post-calendar-toolbar-button" onClick={() => onNavigate('TODAY')}>
-        {strings.today}
-      </button>
-      <button type="button" className="post-calendar-toolbar-button" onClick={() => onNavigate('PREV')}>
-        {strings.back}
-      </button>
-      <button type="button" className="post-calendar-toolbar-button" onClick={() => onNavigate('NEXT')}>
-        {strings.next}
-      </button>
-      </div>
-    ) : null}
-
-    {showToolbarLabel ? <div className="post-calendar-toolbar-label">{toolbarLabel}</div> : null}
-
-    {showViewMenu ? (
-      <div className="post-calendar-toolbar-views" role="tablist" aria-label={strings.calendarViews}>
-      {views.map((calendarView) => (
-        <button
-        key={calendarView}
-        type="button"
-        className={`post-calendar-view-button${view === calendarView ? ' is-active' : ''}`}
-        onClick={() => onView(calendarView)}
-        >
-        {viewLabels[calendarView]}
-        </button>
-      ))}
-      </div>
-    ) : null}
-    </div>
-  );
-}
-
 const calendarFormats = {
   dayFormat: (date: Date, culture: string | undefined, nextLocalizer: typeof localizer) => nextLocalizer.format(date, 'ddd', culture),
   dayHeaderFormat: (date: Date, culture: string | undefined, nextLocalizer: typeof localizer) => nextLocalizer.format(date, 'ddd', culture),
@@ -206,21 +122,15 @@ const calendarFormats = {
   timeGutterFormat: (date: Date, culture: string | undefined, nextLocalizer: typeof localizer) => nextLocalizer.format(date, 'hh:mm A', culture),
 };
 
-export default function CalendarApp({ config, runtime }: CalendarAppProps) {
+export default function CalendarPaneApp({ paneView, store }: CalendarPaneAppProps) {
+  const snapshot = useSyncExternalStore(
+    (listener) => store.subscribe(listener),
+    () => store.getSnapshot(),
+    () => store.getSnapshot(),
+  );
+  const runtime = store.getRuntime();
   const strings = getRuntimeStrings(runtime);
   const culture = useCalendarLocale(runtime.locale);
-  const {
-    activeViews,
-    agendaLength,
-    currentDate,
-    errorMessage,
-    events,
-    handleRangeChange,
-    setCurrentDate,
-    setView,
-    surfaceClassName,
-    view,
-  } = useCalendarState(config, runtime, strings);
   const localizedYearView = Object.assign(
     (props: Parameters<typeof CalendarYearView>[0]) => <CalendarYearView {...props} strings={strings} />,
     {
@@ -229,15 +139,15 @@ export default function CalendarApp({ config, runtime }: CalendarAppProps) {
       title: CalendarYearView.title,
     }
   );
-  const calendarViews = activeViews.reduce<Record<string, boolean | typeof CalendarYearView>>((viewMap, activeView) => {
-    viewMap[activeView] = activeView === YEAR_VIEW ? localizedYearView : true;
-    return viewMap;
-  }, {});
+  const surfaceClassName = `post-calendar-surface${paneView === Views.AGENDA ? ' is-agenda-view' : ''}${paneView === YEAR_VIEW ? ' is-year-view' : ''}`;
+  const calendarViews: Record<string, boolean | typeof CalendarYearView> = {
+    [paneView]: paneView === YEAR_VIEW ? localizedYearView : true,
+  };
 
   return (
     <div className="post-calendar-app">
-      {errorMessage && (
-        <p className="post-calendar-error">{errorMessage}</p>
+      {snapshot.errorMessage && (
+        <p className="post-calendar-error">{snapshot.errorMessage}</p>
       )}
 
       <div className={surfaceClassName}>
@@ -253,27 +163,15 @@ export default function CalendarApp({ config, runtime }: CalendarAppProps) {
               header: MonthHeader,
             },
             timeGutterHeader: () => <TimeGutterHeader label={strings.allDay} />,
-            toolbar: (props) => (
-              <CalendarToolbar
-                {...props}
-                culture={culture}
-                currentDate={currentDate}
-                strings={strings}
-                showToolbarActions={config.showToolbarActions !== false}
-                showToolbarLabel={config.showToolbarLabel !== false}
-                showViewMenu={config.showViewMenu !== false}
-                views={activeViews}
-              />
-            ),
             week: {
               header: WeekHeader,
             },
           }}
           culture={culture}
-          date={currentDate}
-          events={events}
+          date={snapshot.currentDate}
+          events={snapshot.events}
           formats={calendarFormats}
-          length={agendaLength}
+          length={snapshot.agendaLength}
           localizer={localizer}
           messages={{
             agenda: strings.agenda,
@@ -290,13 +188,10 @@ export default function CalendarApp({ config, runtime }: CalendarAppProps) {
             week: strings.week,
           }}
           eventPropGetter={(event) => ({
-            className: getEventClassName(event.start, currentDate, view),
+            className: getEventClassName(event.start, snapshot.currentDate, paneView),
           })}
           onNavigate={(nextDate) => {
-            setCurrentDate(nextDate);
-          }}
-          onRangeChange={(nextRange) => {
-            handleRangeChange(nextRange as CalendarRangeInput);
+            store.setCurrentDate(nextDate);
           }}
           onSelectEvent={(event) => {
             if (event.url) {
@@ -304,21 +199,17 @@ export default function CalendarApp({ config, runtime }: CalendarAppProps) {
             }
           }}
           onYearMonthSelect={(nextDate: Date) => {
-            setCurrentDate(nextDate);
-            setView(Views.MONTH);
-          }}
-          onView={(nextView) => {
-            setView(normalizeView(nextView));
+            store.setCurrentDate(nextDate);
+            store.setActiveView(Views.MONTH);
           }}
           popup
           showMultiDayTimes
           startAccessor="start"
-          toolbar={config.showToolbar !== false}
-          view={view}
+          toolbar={false}
+          view={paneView}
           views={calendarViews}
         />
       </div>
-
     </div>
   );
 }

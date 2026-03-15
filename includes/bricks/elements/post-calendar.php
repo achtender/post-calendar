@@ -13,6 +13,7 @@ class Element_Post_Calendar extends \Bricks\Element
 	public $category = 'general';
 	public $name = 'post-calendar';
 	public $icon = 'ti-calendar';
+	public $scripts = array('bricksTabs');
 	public $css_selector = '.post-calendar-element';
 	public $nestable = true;
 
@@ -29,7 +30,7 @@ class Element_Post_Calendar extends \Bricks\Element
 
 	public static function get_default_nested_view_keys(): array
 	{
-		return array('year', 'month', 'day', 'agenda');
+		return array('year', 'month', 'week', 'day', 'agenda');
 	}
 
 	public static function get_default_toolbar_action_label(string $action): string
@@ -125,16 +126,74 @@ class Element_Post_Calendar extends \Bricks\Element
 		);
 	}
 
-	public static function get_default_title_item(string $label, string $css_class, array $custom_attributes = array()): array
+	private static function get_default_view_menu_item_settings(): array
+	{
+		return array(
+			'_display' => 'flex',
+			'_alignItems' => 'center',
+			'_justifyContent' => 'center',
+			'_padding' => array(
+				'top' => 5,
+				'right' => 10,
+				'bottom' => 5,
+				'left' => 10,
+			),
+			'_heightMin' => 30,
+			'_border' => array(
+				'radius' => array(
+					'top' => 4,
+					'right' => 4,
+					'bottom' => 4,
+					'left' => 4,
+				),
+			),
+		);
+	}
+
+	private static function get_default_view_menu_settings(): array
+	{
+		return array(
+			'_display' => 'flex',
+			'_direction' => 'row',
+			'_alignItems' => 'center',
+			'_columnGap' => 10,
+			'_attributes' => array(
+				self::get_custom_attribute_setting('post-calendar-toolbar-region-views', 'data-post-calendar-toolbar-region', 'views'),
+				self::get_custom_attribute_setting('post-calendar-view-menu-role', 'role', 'tablist'),
+				self::get_custom_attribute_setting('post-calendar-view-menu-label', 'aria-label', esc_html__('Calendar views', 'post-calendar')),
+			),
+			'_hidden' => array(
+				'_cssClasses' => 'tab-menu',
+			),
+		);
+	}
+
+	private static function get_default_toolbar_action_item(string $action): array
+	{
+		return self::get_default_title_item(
+			self::get_default_toolbar_action_label($action),
+			'post-calendar-toolbar-button',
+			array(
+				self::get_custom_attribute_setting('post-calendar-action-' . $action, 'data-post-calendar-action', $action),
+				self::get_custom_attribute_setting('post-calendar-action-' . $action . '-role', 'role', 'button'),
+				self::get_custom_attribute_setting('post-calendar-action-' . $action . '-tabindex', 'tabindex', '0'),
+			),
+		);
+	}
+
+	public static function get_default_title_item(string $label, string $css_class, array $custom_attributes = array(), array $extra_settings = array()): array
 	{
 		return array(
 			'name' => 'div',
 			'label' => esc_html__('Title', 'post-calendar'),
-			'settings' => array(
-				'_hidden' => array(
-					'_cssClasses' => $css_class,
+			'settings' => array_merge(
+				array(
+					'_hidden' => array(
+						'_cssClasses' => $css_class,
+					),
+					'_attributes' => $custom_attributes,
 				),
-				'_attributes' => $custom_attributes,
+				$extra_settings,
 			),
 			'children' => array(
 				array(
@@ -147,23 +206,6 @@ class Element_Post_Calendar extends \Bricks\Element
 		);
 	}
 
-	private static function get_default_agenda_text_item(string $label, string $css_class, array $custom_attributes, array $settings = array()): array
-	{
-		return array(
-			'name' => 'text-basic',
-			'settings' => array_merge(
-				array(
-					'text' => $label,
-					'_hidden' => array(
-						'_cssClasses' => $css_class,
-					),
-					'_attributes' => $custom_attributes,
-				),
-				$settings
-			),
-		);
-	}
-
 	public static function get_default_view_menu_child(): array
 	{
 		$view_menu_children = array();
@@ -172,83 +214,21 @@ class Element_Post_Calendar extends \Bricks\Element
 		foreach ($available_view_keys as $view) {
 			$view_menu_children[] = self::get_default_title_item(
 				self::get_default_view_label($view),
-				'post-calendar-view-button',
+				'tab-title',
 				array(
 					self::get_custom_attribute_setting('post-calendar-view-' . $view . '-role', 'role', 'tab'),
 					self::get_custom_attribute_setting('post-calendar-view-' . $view . '-selected', 'aria-selected', 'false'),
 					self::get_custom_attribute_setting('post-calendar-view-' . $view . '-tabindex', 'tabindex', '-1'),
 				),
+				self::get_default_view_menu_item_settings(),
 			);
 		}
 
 		return array(
 			'name' => 'block',
 			'label' => esc_html__('View menu', 'post-calendar'),
-			'settings' => array(
-				'_direction' => 'row',
-				'_attributes' => array(
-					self::get_custom_attribute_setting('post-calendar-toolbar-region-views', 'data-post-calendar-toolbar-region', 'views'),
-					self::get_custom_attribute_setting('post-calendar-view-menu-role', 'role', 'tablist'),
-					self::get_custom_attribute_setting('post-calendar-view-menu-label', 'aria-label', esc_html__('Calendar views', 'post-calendar')),
-				),
-				'_hidden' => array(
-					'_cssClasses' => 'post-calendar-toolbar-views',
-				),
-			),
+			'settings' => self::get_default_view_menu_settings(),
 			'children' => $view_menu_children,
-		);
-	}
-
-	public static function get_default_agenda_item_child(): array
-	{
-		return array(
-			'name' => 'block',
-			'label' => esc_html__('Agenda Item', 'post-calendar'),
-			'settings' => array(
-				'_attributes' => array(
-					self::get_custom_attribute_setting('post-calendar-agenda-item-role', 'data-post-calendar-role', 'agenda-item'),
-				),
-				'_hidden' => array(
-					'_cssClasses' => 'post-calendar-agenda-event',
-				),
-			),
-			'children' => array(
-				self::get_default_agenda_text_item(
-					esc_html__('Event title', 'post-calendar'),
-					'post-calendar-agenda-title',
-					array(
-						self::get_custom_attribute_setting('post-calendar-agenda-title-field', 'data-post-calendar-field', 'title'),
-						self::get_custom_attribute_setting('post-calendar-agenda-title-link-field', 'data-post-calendar-link-field', 'url'),
-					),
-					array(
-						'link' => array(
-							'url' => '#',
-						),
-					)
-				),
-				self::get_default_agenda_text_item(
-					esc_html__('Event excerpt', 'post-calendar'),
-					'post-calendar-agenda-excerpt',
-					array(
-						self::get_custom_attribute_setting('post-calendar-agenda-excerpt-field', 'data-post-calendar-field', 'excerpt'),
-						self::get_custom_attribute_setting('post-calendar-agenda-excerpt-hide-empty', 'data-post-calendar-hide-empty', 'true'),
-					),
-					array(
-						'tag' => 'p',
-					)
-				),
-				self::get_default_agenda_text_item(
-					esc_html__('Event tags', 'post-calendar'),
-					'post-calendar-agenda-tag-list',
-					array(
-						self::get_custom_attribute_setting('post-calendar-agenda-tags-field', 'data-post-calendar-field', 'tags'),
-						self::get_custom_attribute_setting('post-calendar-agenda-tags-hide-empty', 'data-post-calendar-hide-empty', 'true'),
-					),
-					array(
-						'tag' => 'span',
-					)
-				),
-			),
 		);
 	}
 
@@ -258,29 +238,22 @@ class Element_Post_Calendar extends \Bricks\Element
 		$available_view_keys = self::get_default_nested_view_keys();
 
 		foreach ($available_view_keys as $view) {
-			$panel = array(
-				'name' => 'post-calendar-view-panel',
-				'settings' => array(
-					'view' => $view,
-				),
-			);
-
-			if ('agenda' === $view) {
-				$panel['children'] = array(
-					self::get_default_agenda_item_child(),
-				);
-			}
-
 			$view_panel_children[] = array(
 				'name' => 'block',
 				'label' => esc_html__('Pane', 'post-calendar'),
 				'settings' => array(
+					'_display' => 'block',
 					'_hidden' => array(
-						'_cssClasses' => 'post-calendar-content',
+						'_cssClasses' => 'tab-pane',
 					),
 				),
 				'children' => array(
-					$panel,
+					array(
+						'name' => 'post-calendar-view-panel',
+						'settings' => array(
+							'view' => $view,
+						),
+					),
 				),
 			);
 		}
@@ -335,6 +308,7 @@ class Element_Post_Calendar extends \Bricks\Element
 			'description' => esc_html__('Index of the view/content item to open on page load, start at 0.', 'post-calendar'),
 			'inline' => true,
 			'placeholder' => '0',
+			'content' => '1',
 		);
 
 		$this->controls['calendarWidth'] = array(
@@ -536,6 +510,16 @@ class Element_Post_Calendar extends \Bricks\Element
 				'name' => 'div',
 				'label' => esc_html__('Calendar Toolbar', 'post-calendar'),
 				'settings' => array(
+					'_display' => 'grid',
+					'_gridGap' => 20,
+					'_gridTemplateColumns' => 'minmax(0, auto) 1fr minmax(0, auto)',
+					'_alignItems' => 'center',
+					'_padding' => array(
+						'top' => 0,
+						'right' => 0,
+						'bottom' => 12,
+						'left' => 0,
+					),
 					'_hidden' => array(
 						'_cssClasses' => 'post-calendar-toolbar',
 					),
@@ -545,6 +529,10 @@ class Element_Post_Calendar extends \Bricks\Element
 						'name' => 'block',
 						'label' => esc_html__('Toolbar Actions', 'post-calendar'),
 						'settings' => array(
+							'_display' => 'flex',
+							'_direction' => 'row',
+							'_alignItems' => 'center',
+							'_columnGap' => 10,
 							'_attributes' => array(
 								self::get_custom_attribute_setting('post-calendar-toolbar-region-actions', 'data-post-calendar-toolbar-region', 'actions'),
 							),
@@ -553,39 +541,18 @@ class Element_Post_Calendar extends \Bricks\Element
 							),
 						),
 						'children' => array(
-							self::get_default_title_item(
-								self::get_default_toolbar_action_label('today'),
-								'post-calendar-toolbar-button',
-								array(
-									self::get_custom_attribute_setting('post-calendar-action-today', 'data-post-calendar-action', 'today'),
-									self::get_custom_attribute_setting('post-calendar-action-today-role', 'role', 'button'),
-									self::get_custom_attribute_setting('post-calendar-action-today-tabindex', 'tabindex', '0'),
-								),
-							),
-							self::get_default_title_item(
-								self::get_default_toolbar_action_label('prev'),
-								'post-calendar-toolbar-button',
-								array(
-									self::get_custom_attribute_setting('post-calendar-action-prev', 'data-post-calendar-action', 'prev'),
-									self::get_custom_attribute_setting('post-calendar-action-prev-role', 'role', 'button'),
-									self::get_custom_attribute_setting('post-calendar-action-prev-tabindex', 'tabindex', '0'),
-								),
-							),
-							self::get_default_title_item(
-								self::get_default_toolbar_action_label('next'),
-								'post-calendar-toolbar-button',
-								array(
-									self::get_custom_attribute_setting('post-calendar-action-next', 'data-post-calendar-action', 'next'),
-									self::get_custom_attribute_setting('post-calendar-action-next-role', 'role', 'button'),
-									self::get_custom_attribute_setting('post-calendar-action-next-tabindex', 'tabindex', '0'),
-								),
-							),
+							self::get_default_toolbar_action_item('today'),
+							self::get_default_toolbar_action_item('prev'),
+							self::get_default_toolbar_action_item('next'),
 						),
 					),
 					array(
 						'name' => 'block',
 						'label' => esc_html__('Toolbar Label', 'post-calendar'),
 						'settings' => array(
+							'_display' => 'flex',
+							'_alignItems' => 'center',
+							'_justifyContent' => 'center',
 							'_attributes' => array(
 								self::get_custom_attribute_setting('post-calendar-toolbar-region-label', 'data-post-calendar-toolbar-region', 'label'),
 							),
@@ -611,7 +578,7 @@ class Element_Post_Calendar extends \Bricks\Element
 				'label' => esc_html__('Calendar Content', 'post-calendar'),
 				'settings' => array(
 					'_hidden' => array(
-						'_cssClasses' => 'post-calendar-view-panels',
+						'_cssClasses' => 'tab-content',
 					),
 				),
 				'children' => self::get_default_view_panel_children(),
@@ -643,28 +610,155 @@ class Element_Post_Calendar extends \Bricks\Element
 		);
 		$children_markup = $this->get_children_markup();
 
-		echo '<div class="post-calendar-element">';
+		$this->set_attribute('_root', 'class', 'post-calendar-element brxe-tabs-nested');
+		$this->set_attribute('_root', 'data-config', wp_json_encode($config));
+		$this->set_attribute('_root', 'data-open-tab', (string) absint($config['openTab'] ?? 0));
+
+		$output = '<div ' . $this->render_attributes('_root') . '>';
 
 		if ('' !== $children_markup) {
-			echo $children_markup;
+			$output .= $children_markup;
 		}
 
-		echo '<div class="js-post-calendar-root" data-config="' . esc_attr(wp_json_encode($config)) . '">';
-		echo '<div class="post-calendar-element-placeholder">' . esc_html__('Loading calendar…', 'post-calendar') . '</div>';
-		echo '</div>';
+		$output .= '</div>';
 
-		echo '</div>';
+		echo $this->enhance_tabs_accessibility($output);
 	}
 
 	public static function render_builder()
 	{ ?>
 		<script type="text/x-template" id="tmpl-bricks-element-post-calendar">
-							<component :is="tag" class="post-calendar-element">
-								<bricks-element-children :element="element"/>
-								<div class="post-calendar-element-placeholder"><?php echo esc_html__('Calendar view content is rendered by the React frontend. Use the nested children above to edit toolbar actions, view buttons, and per-view panel content.', 'post-calendar'); ?></div>
-							</component>
-						</script>
+			<component :is="tag" class="post-calendar-element brxe-tabs-nested">
+				<bricks-element-children :element="element"/>
+			</component>
+		</script>
 	<?php }
+
+	private function enhance_tabs_accessibility(string $html_content): string
+	{
+		$dom = new \DOMDocument();
+
+		libxml_use_internal_errors(true);
+		$dom->loadHTML('<?xml encoding="UTF-8">' . $html_content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+		libxml_clear_errors();
+
+		$xpath = new \DOMXPath($dom);
+		$tab_titles = $xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' tab-title ')]");
+		$tab_panes = $xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' tab-pane ')]");
+
+		foreach ($tab_titles as $index => $title) {
+			$this->set_dom_attribute_if_missing($title, 'role', 'tab');
+
+			if ($index === 0) {
+				$this->set_dom_attribute_if_missing($title, 'aria-selected', 'true');
+				$this->set_dom_attribute_if_missing($title, 'tabindex', '0');
+			} else {
+				$this->set_dom_attribute_if_missing($title, 'aria-selected', 'false');
+				$this->set_dom_attribute_if_missing($title, 'tabindex', '-1');
+			}
+
+			$title_id = $title->getAttribute('id');
+
+			if (!$title_id) {
+				$title_id = "brx-tab-title-{$this->id}-$index";
+				$this->set_dom_attribute_if_missing($title, 'id', $title_id);
+			}
+
+			$pane = $tab_panes->item($index);
+
+			if ($pane) {
+				$pane_id = $pane->getAttribute('id');
+
+				if (!$pane_id) {
+					$pane_id = "brx-tab-pane-{$this->id}-$index";
+					$this->set_dom_attribute_if_missing($pane, 'id', $pane_id);
+				}
+
+				$this->set_dom_attribute_if_missing($title, 'aria-controls', $pane_id);
+			}
+		}
+
+		foreach ($tab_panes as $index => $pane) {
+			$this->set_dom_attribute_if_missing($pane, 'role', 'tabpanel');
+
+			$pane_id = $pane->getAttribute('id');
+
+			if (!$pane_id) {
+				$pane_id = "brx-tab-pane-{$this->id}-$index";
+				$this->set_dom_attribute_if_missing($pane, 'id', $pane_id);
+			}
+
+			$title = $tab_titles->item($index);
+
+			if ($title) {
+				$title_id = $title->getAttribute('id');
+				$this->set_dom_attribute_if_missing($pane, 'aria-labelledby', $title_id);
+			}
+
+			$this->set_dom_attribute_if_missing($pane, 'tabindex', '0');
+		}
+
+		$tab_menu = $xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' tab-menu ')]")->item(0);
+
+		if ($tab_menu) {
+			$this->set_dom_attribute_if_missing($tab_menu, 'role', 'tablist');
+		}
+
+		$action_nodes = $xpath->query('//*[@data-post-calendar-action]');
+
+		foreach ($action_nodes as $action_node) {
+			if (!($action_node instanceof \DOMElement)) {
+				continue;
+			}
+
+			$button_node = $this->convert_dom_element_to_button($dom, $action_node);
+			$this->set_dom_attribute($button_node, 'type', 'button');
+			$this->remove_dom_attribute($button_node, 'role');
+			$this->remove_dom_attribute($button_node, 'tabindex');
+		}
+
+		return $dom->saveHTML();
+	}
+
+	private function convert_dom_element_to_button(\DOMDocument $dom, \DOMElement $element): \DOMElement
+	{
+		if ('button' === strtolower($element->tagName)) {
+			return $element;
+		}
+
+		$button = $dom->createElement('button');
+
+		foreach ($element->attributes as $attribute) {
+			$button->setAttribute($attribute->nodeName, $attribute->nodeValue);
+		}
+
+		while ($element->firstChild) {
+			$button->appendChild($element->firstChild);
+		}
+
+		$element->parentNode?->replaceChild($button, $element);
+
+		return $button;
+	}
+
+	private function set_dom_attribute_if_missing(\DOMElement $element, string $attribute, string $value): void
+	{
+		if (!$element->hasAttribute($attribute)) {
+			$element->setAttribute($attribute, $value);
+		}
+	}
+
+	private function set_dom_attribute(\DOMElement $element, string $attribute, string $value): void
+	{
+		$element->setAttribute($attribute, $value);
+	}
+
+	private function remove_dom_attribute(\DOMElement $element, string $attribute): void
+	{
+		if ($element->hasAttribute($attribute)) {
+			$element->removeAttribute($attribute);
+		}
+	}
 
 	private function parse_supported_query_vars($query_settings): array
 	{

@@ -281,17 +281,17 @@ async function ensureMomentLocale(locale?: string): Promise<string | undefined> 
   return normalizeCulture(locale);
 }
 
-function normalizeAgendaRangeMode(mode?: string): AgendaRangeMode {
+export function normalizeAgendaRangeMode(mode?: string): AgendaRangeMode {
   return mode === agendaRangeModes.UPCOMING_WINDOW ? agendaRangeModes.UPCOMING_WINDOW : agendaRangeModes.VISIBLE_RANGE;
 }
 
-function normalizePositiveInteger(value: number | string | undefined, fallback: number): number {
+export function normalizePositiveInteger(value: number | string | undefined, fallback: number): number {
   const parsedValue = Number.parseInt(String(value), 10);
 
   return Number.isFinite(parsedValue) && parsedValue > 0 ? parsedValue : fallback;
 }
 
-function calculateAgendaWindow(date: Date, monthCount: number): CalendarRange & { length: number } {
+export function calculateAgendaWindow(date: Date, monthCount: number): CalendarRange & { length: number } {
   const windowStart = moment(date).startOf('day');
   const windowEnd = windowStart.clone().add(monthCount, 'months').endOf('day');
 
@@ -302,7 +302,7 @@ function calculateAgendaWindow(date: Date, monthCount: number): CalendarRange & 
   };
 }
 
-function calculateFallbackRange(view: CalendarView, date: Date): CalendarRange {
+export function calculateFallbackRange(view: CalendarView, date: Date): CalendarRange {
   if (view === Views.WEEK) {
     const weekStart = moment(date).startOf('week');
 
@@ -348,7 +348,7 @@ export function calculateYearRange(date: Date): CalendarRange {
   };
 }
 
-function normalizeEvents(events: CalendarEventInput[]): CalendarEventRecord[] {
+export function normalizeEvents(events: CalendarEventInput[]): CalendarEventRecord[] {
   return events.map((event) => ({
     ...event,
     start: new Date(event.start),
@@ -358,11 +358,11 @@ function normalizeEvents(events: CalendarEventInput[]): CalendarEventRecord[] {
   }));
 }
 
-function getPreviewEvents(previewEvents?: CalendarEventInput[]): CalendarEventRecord[] | null {
+export function getPreviewEvents(previewEvents?: CalendarEventInput[]): CalendarEventRecord[] | null {
   return Array.isArray(previewEvents) ? normalizeEvents(previewEvents) : null;
 }
 
-function buildRequestUrl(config: CalendarConfig, runtime: CalendarRuntime, activeRange: CalendarRange | null): string {
+export function buildRequestUrl(config: CalendarConfig, runtime: CalendarRuntime, activeRange: CalendarRange | null): string {
   const requestUrl = new URL(runtime.restUrl ?? '', globalThis.location?.origin ?? 'http://localhost');
 
   requestUrl.searchParams.set('per_page', '1000');

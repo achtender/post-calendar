@@ -2,107 +2,43 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import CalendarApp from './components/calendar-app.tsx';
+import CalendarPaneApp from './components/calendar-pane-app.tsx';
+import { CalendarParentStore } from './components/calendar-parent-store.ts';
 import './styles.css';
 import type { CalendarConfig } from './types.ts';
 
 const CALENDAR_ROOT_SELECTOR = '.js-post-calendar-root';
-const ALLOWED_VIEWS = ['month', 'week', 'day', 'agenda', 'year'] as const;
+const BRICKS_PARENT_SELECTOR = '.post-calendar-element[data-config]';
 
 let observer: MutationObserver | null = null;
+const parentStores = new WeakMap<HTMLElement, CalendarParentStore>();
 
-function getCalendarScope(element: HTMLElement): HTMLElement | null {
-  return element.closest('.post-calendar-element');
-}
-
-function normalizeView(value: string | undefined): string | undefined {
-  if (!value) {
-    return undefined;
+function normalizeView(value: string | undefined): string {
+  switch (value) {
+    case 'week':
+    case 'day':
+    case 'agenda':
+    case 'year':
+      return value;
+    case 'month':
+    default:
+      return 'month';
   }
-
-  return ALLOWED_VIEWS.includes(value as (typeof ALLOWED_VIEWS)[number]) ? value : undefined;
-}
-
-function getOrderedViewPanelNodes(scope: HTMLElement | null): HTMLElement[] {
-  if (!scope) {
-    return [];
-  }
-
-  return Array.from(scope.querySelectorAll<HTMLElement>('.post-calendar-view-panels > .post-calendar-content > [data-post-calendar-view-panel]'));
-}
-
-function getExternalViewContentItems(scope: HTMLElement | null): HTMLElement[] {
-  if (!scope) {
-    return [];
-  }
-
-  return Array.from(scope.querySelectorAll<HTMLElement>('.post-calendar-view-panels > .post-calendar-content'));
-}
-
-function getViewForContentIndex(scope: HTMLElement | null, index: number): string | undefined {
-  const panel = getExternalViewContentItems(scope)[index]?.querySelector<HTMLElement>('[data-post-calendar-view-panel]');
-
-  return normalizeView(panel?.dataset.postCalendarViewPanel);
-}
-
-function getExternalViewOrder(scope: HTMLElement | null): string[] {
-  return Array.from(new Set(
-    getOrderedViewPanelNodes(scope)
-    .map((panel) => normalizeView(panel.dataset.postCalendarViewPanel))
-    .filter((view): view is string => Boolean(view))
-  ));
-}
-
-function getAgendaTemplate(scope: HTMLElement | null): string | undefined {
-  const agendaPanel = getOrderedViewPanelNodes(scope).find((panel) => normalizeView(panel.dataset.postCalendarViewPanel) === 'agenda');
-
-  if (!agendaPanel || typeof document === 'undefined') {
-    return undefined;
-  }
-
-  const agendaItem = agendaPanel.querySelector<HTMLElement>('[data-post-calendar-role="agenda-item"]');
-
-  return agendaItem?.outerHTML.trim() || undefined;
 }
 
 function parseConfig(element: HTMLElement): CalendarConfig {
   const rawConfig = element.dataset.config;
-  const scope = getCalendarScope(element);
-  const externalViewOrder = getExternalViewOrder(scope);
-  const agendaTemplate = getAgendaTemplate(scope);
-
-  const externalViewConfig = {
-    ...(externalViewOrder.length > 0 ? { enabledViews: externalViewOrder } : {}),
-  };
 
   if (!rawConfig) {
-    return {
-      ...externalViewConfig,
-      ...(agendaTemplate ? { agendaTemplate } : {}),
-    };
+    return {};
   }
 
   try {
-    const config = JSON.parse(rawConfig) as CalendarConfig;
-
-    const defaultView = normalizeView(config.defaultView);
-    const openTabIndex = typeof config.openTab === 'string' ? Number.parseInt(config.openTab, 10) : Number(config.openTab ?? 0);
-    const openTabView = Number.isInteger(openTabIndex) && openTabIndex >= 0 ? getViewForContentIndex(scope, openTabIndex) : undefined;
-    const resolvedDefaultView = openTabView
-      ? openTabView
-      : externalViewOrder.length > 0 && (!defaultView || !externalViewOrder.includes(defaultView))
-        ? externalViewOrder[0]
-        : config.defaultView;
-
     return {
-      ...config,
-      ...externalViewConfig,
-      ...(resolvedDefaultView ? { defaultView: resolvedDefaultView } : {}),
-      ...(agendaTemplate ? { agendaTemplate } : {}),
+      ...(JSON.parse(rawConfig) as CalendarConfig),
     };
   } catch {
     return {
-      ...externalViewConfig,
-      ...(agendaTemplate ? { agendaTemplate } : {}),
       error: globalThis.PostCalendarRuntime?.strings?.configParseError ?? 'Unable to parse the calendar configuration.',
     };
   }
@@ -118,11 +54,52 @@ function mountCalendar(element: HTMLElement): void {
 
   root.render(
     <StrictMode>
-      <CalendarApp config={config} hostElement={element} runtime={globalThis.PostCalendarRuntime ?? {}} />
+      <CalendarApp config={config} runtime={globalThis.PostCalendarRuntime ?? {}} />
     </StrictMode>
   );
 
   element.dataset.mounted = 'true';
+}
+
+function mountBricksCalendar(parentElement: HTMLElement): void {
+  if (parentElement.dataset.mounted === 'true') {
+    return;
+  }
+
+  const rawConfig = parentElement.dataset.config;
+  let config: CalendarConfig = {};
+
+  if (rawConfig) {
+    try {
+      config = JSON.parse(rawConfig) as CalendarConfig;
+    } catch {
+      config = {
+        error: globalThis.PostCalendarRuntime?.strings?.configParseError ?? 'Unable to parse the calendar configuration.',
+      };
+    }
+  }
+
+  const store = new CalendarParentStore(parentElement, config, globalThis.PostCalendarRuntime ?? {});
+  parentStores.set(parentElement, store);
+
+  parentElement.querySelectorAll<HTMLElement>('[data-post-calendar-view-panel]').forEach((paneRoot) => {
+    if (paneRoot.dataset.mounted === 'true') {
+      return;
+    }
+
+    const paneView = normalizeView(paneRoot.dataset.postCalendarViewPanel);
+    const root = createRoot(paneRoot);
+
+    root.render(
+      <StrictMode>
+        <CalendarPaneApp paneView={paneView} store={store} />
+      </StrictMode>
+    );
+
+    paneRoot.dataset.mounted = 'true';
+  });
+
+  parentElement.dataset.mounted = 'true';
 }
 
 function mountCalendarsInNode(node: ParentNode): void {
@@ -130,7 +107,12 @@ function mountCalendarsInNode(node: ParentNode): void {
     mountCalendar(node);
   }
 
+  if (node instanceof HTMLElement && node.matches(BRICKS_PARENT_SELECTOR)) {
+    mountBricksCalendar(node);
+  }
+
   node.querySelectorAll<HTMLElement>(CALENDAR_ROOT_SELECTOR).forEach(mountCalendar);
+  node.querySelectorAll<HTMLElement>(BRICKS_PARENT_SELECTOR).forEach(mountBricksCalendar);
 }
 
 function observeCalendarRoots(): void {
