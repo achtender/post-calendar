@@ -82,10 +82,19 @@ class Post_Type {
 	}
 
 	public function intercept_query( WP_Query $query ): void {
-		$post_type  = $query->get( 'post_type' );
-		$post_types = is_array( $post_type ) ? $post_type : array( $post_type );
+		$post_type = $query->get( 'post_type' );
 
-		if ( ! in_array( self::SLUG, $post_types, true ) ) {
+		if ( is_string( $post_type ) ) {
+			if ( self::SLUG !== $post_type ) {
+				return;
+			}
+		} elseif ( is_array( $post_type ) ) {
+			$post_types = array_values( array_unique( array_filter( array_map( 'sanitize_key', $post_type ) ) ) );
+
+			if ( 1 !== count( $post_types ) || self::SLUG !== $post_types[0] ) {
+				return;
+			}
+		} else {
 			return;
 		}
 
