@@ -17,6 +17,7 @@ require_once POST_CALENDAR_PLUGIN_DIR . 'includes/class-update-checker.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/event-config.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/event-date-parser.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/bricks/elements.php';
+require_once POST_CALENDAR_PLUGIN_DIR . 'includes/bricks/dynamic-data-tags.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/admin-editor.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/event-model-sync.php';
 require_once POST_CALENDAR_PLUGIN_DIR . 'includes/event-sources/event-query-service.php';
@@ -57,6 +58,11 @@ class Plugin {
 	private $bricks_elements;
 
 	/**
+	 * @var Bricks\Dynamic_Data_Tags
+	 */
+	private $bricks_dynamic_tags;
+
+	/**
 	 * @var Assets
 	 */
 	private $assets;
@@ -95,6 +101,7 @@ class Plugin {
 		$this->proxy_post_type_rest = new Rest_Controller();
 		$this->shortcode            = new Shortcode\Shortcode();
 		$this->bricks_elements      = new Bricks\Elements();
+		$this->bricks_dynamic_tags  = new Bricks\Dynamic_Data_Tags();
 		$this->update_checker       = new Update_Checker();
 
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );

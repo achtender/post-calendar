@@ -141,7 +141,13 @@ class Post_Type {
 		$query->set( 'ignore_sticky_posts', true );
 
 		if ( ! $query->get( 'orderby' ) ) {
+			$query->set('orderby', 'meta_value');
+			$query->set('meta_key', self::EVENT_START_META);
 			$query->set( 'order', 'ASC' );
+		}
+
+		if (!$query->get('order')) {
+			$query->set('order', 'ASC');
 		}
 	}
 
@@ -528,7 +534,11 @@ class Post_Type {
 			return true;
 		}
 
-		return in_array( $orderby, array( 'meta_value', 'meta_value_num' ), true ) && self::EVENT_START_META === $meta_key;
+		if ( 'meta_value' === $orderby || 'meta_value_num' === $orderby ) {
+			return self::EVENT_START_META === $meta_key || empty( $meta_key );
+		}
+
+		return false;
 	}
 
 	private function now(): DateTimeImmutable {

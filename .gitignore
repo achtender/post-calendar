@@ -4,3 +4,4 @@ dist/
 *.zip
 .vscode/*
 !.vscode/settings.json
+.obsidian
