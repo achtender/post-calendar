@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Post Calendar\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-16 00:16:35+0000\n"
+"POT-Creation-Date: 2026-08-17 12:40:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,7 +18,7 @@ msgid_plural "%d posts currently contain Post Calendar event definitions."
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/event-sources/post-type.php:55
+#: includes/event-sources/post-type.php:56
 msgid "A virtual query type for Post Calendar events. Query this type to retrieve event posts from all source post types."
 msgstr ""
 
@@ -246,7 +246,7 @@ msgstr ""
 msgid "Post Calendar could not register its Bricks element because Bricks is not active or its API is unavailable."
 msgstr ""
 
-#: includes/event-sources/post-type.php:52
+#: includes/event-sources/post-type.php:53
 msgid "Post Calendar Event"
 msgstr ""
 
@@ -254,7 +254,7 @@ msgstr ""
 msgid "Post Calendar event editing requires JavaScript in the post editor."
 msgstr ""
 
-#: includes/event-sources/post-type.php:49 includes/event-sources/post-type.php:51 includes/event-sources/post-type.php:53
+#: includes/event-sources/post-type.php:50 includes/event-sources/post-type.php:52 includes/event-sources/post-type.php:54
 msgid "Post Calendar Events"
 msgstr ""
 

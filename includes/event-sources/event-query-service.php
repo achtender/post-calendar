@@ -16,6 +16,7 @@ class Event_Query_Service {
 	public const EVENT_RANGE_END_META       = Event_Config::EVENT_RANGE_END_META;
 	public const EVENT_START_META           = Event_Config::EVENT_START_META;
 	public const EVENT_END_META             = Event_Config::EVENT_END_META;
+	public const EVENT_LABEL_META           = Event_Config::EVENT_LABEL_META;
 
 	private const DEFAULT_EXPANSION_WINDOW = 'P1Y';
 	public const REPEAT_NONE               = 'none';
@@ -25,6 +26,17 @@ class Event_Query_Service {
 	private const MAX_OCCURRENCES          = 500;
 
 	public function build_range_meta_query( ?DateTimeImmutable $range_start, ?DateTimeImmutable $range_end ): array {
+		/**
+		 * Build a post-level meta query to find source posts that have events within the
+		 * specified occurrence range. This queries the POST-LEVEL aggregate summary keys,
+		 * not individual occurrence dates. The coarse filter identifies candidate posts;
+		 * occurrence-level filtering happens during expand_recurring_posts().
+		 *
+		 * For posts with multiple event definitions, this checks if ANY event in the post
+		 * overlaps the requested range. Individual occurrences are then filtered separately.
+		 *
+		 * @link https://www.w3.org/TR/NOTE-datetime Overlapping interval algorithm
+		 */
 		$range_meta_query = array(
 			array(
 				'key'   => self::EVENT_HAS_EVENTS_META,
@@ -334,14 +346,15 @@ class Event_Query_Service {
 	private function format_occurrence_event( array $definition, DateTimeImmutable $occurrence_start, DateTimeImmutable $occurrence_end ): array {
 		return array(
 			'id'         => $this->build_occurrence_id( (int) $definition['post_id'], (int) $definition['event_index'], $occurrence_start ),
-			'title'    => $definition['title'],
-			'start'    => $occurrence_start->format( DATE_ATOM ),
-			'end'      => $occurrence_end->format( DATE_ATOM ),
-			'allDay'   => $definition['all_day'],
-			'url'      => $definition['url'],
-			'postType' => $definition['post_type'],
-			'excerpt'  => $definition['excerpt'],
-			'tags'     => $definition['tags'],
+			'title'      => $definition['title'],
+			'label'      => $definition['title'],
+			'start'      => $occurrence_start->format( DATE_ATOM ),
+			'end'        => $occurrence_end->format( DATE_ATOM ),
+			'allDay'     => $definition['all_day'],
+			'url'        => $definition['url'],
+			'postType'   => $definition['post_type'],
+			'excerpt'    => $definition['excerpt'],
+			'tags'       => $definition['tags'],
 			'eventIndex' => (int) $definition['event_index'],
 		);
 	}

@@ -61,8 +61,18 @@ Derived meta keys:
 
 - `_post_events`: event-definition array data stored on the source post
 - `_post_has_events`: derived `1`/missing summary flag used for coarse event-source queries
-- `_post_event_range_start`: derived earliest event-definition start on the post
-- `_post_event_range_end`: derived latest bounded end on the post; it may be missing for open-ended recurring definitions
+- `_post_events_range_start`: canonical post-summary start for the full set of event definitions on this source post
+- `_post_events_range_end`: canonical post-summary end for the full set of event definitions on this source post; it may be missing for open-ended recurring definitions
+- Legacy compatibility aliases: `_post_event_range_start` and `_post_event_range_end` remain supported for existing integrations, but the plural names are the canonical contract for post-level summary metadata
+
+The query loop exposes occurrence-specific values for each expanded event row. These are not the same as the source-post summary keys:
+
+- `_post_start_date`: occurrence start for the current loop row
+- `_post_end_date`: occurrence end for the current loop row
+- `_post_event_label`: label for the current loop row, falling back to the post title when the event row leaves its label empty
+- `post_calendar_occurrence_start`, `post_calendar_occurrence_end`, `post_calendar_occurrence_label`, and `post_calendar_occurrence_event_index` on the loop post object
+
+This distinction matters when a single source post contains multiple event rows: the summary range describes the whole post, while each occurrence row has its own start/end/label values.
 
 Example `_post_events` value:
 
@@ -132,7 +142,8 @@ When the current loop item is an occurrence instance, the plugin exposes occurre
 
 - `get_post_meta( get_the_ID(), '_post_start_date', true )` returns the occurrence start for the current loop row
 - `get_post_meta( get_the_ID(), '_post_end_date', true )` returns the occurrence end for the current loop row
-- the loop post object exposes `post_calendar_occurrence_id`, `post_calendar_occurrence_start`, `post_calendar_occurrence_end`, and `post_calendar_occurrence_source_id`
+- `get_post_meta( get_the_ID(), '_post_event_label', true )` returns the event label for the current loop row, falling back to the source post title when the row label is empty
+- the loop post object exposes `post_calendar_occurrence_id`, `post_calendar_occurrence_start`, `post_calendar_occurrence_end`, `post_calendar_occurrence_label`, and `post_calendar_occurrence_source_id`
 
 For recurring queries, date constraints should be explicit whenever possible. A `meta_query` on `_post_start_date` is treated as an occurrence-range filter, and the loop paginates after recurrence expansion. If no date window is supplied, the virtual query defaults to an upcoming one-year occurrence window.
 

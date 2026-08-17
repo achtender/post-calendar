@@ -23,6 +23,7 @@ class Post_Type {
 	private const EVENT_ENABLED_META              = Event_Config::EVENT_HAS_EVENTS_META;
 	private const EVENT_START_META                = Event_Config::EVENT_START_META;
 	private const EVENT_END_META                  = Event_Config::EVENT_END_META;
+	private const EVENT_LABEL_META                = Event_Config::EVENT_LABEL_META;
 	private const OCCURRENCE_FLAG_QUERY_VAR       = 'post_calendar_expand_occurrences';
 	private const OCCURRENCE_RANGE_START_QUERY_VAR = 'post_calendar_occurrence_range_start';
 	private const OCCURRENCE_RANGE_END_QUERY_VAR   = 'post_calendar_occurrence_range_end';
@@ -149,6 +150,12 @@ class Post_Type {
 			return $posts;
 		}
 
+		/**
+		 * Expand each post into its individual occurrence rows. This is where occurrence-level
+		 * date filtering actually happens. Each event definition in the post is expanded into
+		 * individual occurrences and filtered by the search range. Posts with multiple events
+		 * may produce multiple occurrence rows, each with its own start/end/label metadata.
+		 */
 		$range_start = Event_Date_Parser::parse( is_string( $query->get( self::OCCURRENCE_RANGE_START_QUERY_VAR ) ) ? $query->get( self::OCCURRENCE_RANGE_START_QUERY_VAR ) : null );
 		$range_end   = Event_Date_Parser::parse( is_string( $query->get( self::OCCURRENCE_RANGE_END_QUERY_VAR ) ) ? $query->get( self::OCCURRENCE_RANGE_END_QUERY_VAR ) : null );
 		$occurrences = array();
@@ -185,6 +192,15 @@ class Post_Type {
 	}
 
 	public function filter_occurrence_meta( $value, $object_id, $meta_key, $single ) {
+		/**
+		 * Intercept meta requests on occurrence loop rows to return occurrence-specific data
+		 * instead of source-post data. When the loop is rendering an occurrence, the post
+		 * object carries occurrence metadata as properties. This filter checks whether the
+		 * current loop row is an occurrence and returns the correct value.
+		 *
+		 * For multi-event posts, this ensures each loop row returns its own event's label,
+		 * start date, and end date, not the source post's aggregate values.
+		 */
 		global $post;
 
 		if ( ! $post instanceof WP_Post ) {
@@ -201,6 +217,11 @@ class Post_Type {
 
 		if ( self::EVENT_END_META === $meta_key ) {
 			return $single ? $post->post_calendar_occurrence_end : array( $post->post_calendar_occurrence_end );
+		}
+
+		if ( self::EVENT_LABEL_META === $meta_key ) {
+			$label = isset( $post->post_calendar_occurrence_label ) ? (string) $post->post_calendar_occurrence_label : (string) get_the_title( $post->ID );
+			return $single ? $label : array( $label );
 		}
 
 		if ( self::EVENT_ENABLED_META === $meta_key ) {
@@ -265,6 +286,19 @@ class Post_Type {
 	}
 
 	private function extract_occurrence_constraints( $meta_query ): array {
+		/**
+		 * Extract occurrence-level date filters from a meta_query and convert them to
+		 * a post-level search window. This is necessary because:
+		 *
+		 * 1. Users query on _post_start_date and _post_end_date (occurrence keys)
+		 * 2. These keys don't exist on the source post; they only appear on occurrence clones
+		 * 3. We must intercept these filters, remove them from the post meta_query,
+		 *    and convert them to post-level summary range bounds
+		 * 4. The occurrence-level filtering happens later in expand_recurring_posts()
+		 *
+		 * For multi-event posts, this ensures each event's date is checked against the
+		 * user's requested range, not the aggregate post range.
+		 */
 		if ( ! is_array( $meta_query ) ) {
 			return array(
 				'meta_query'  => array(),
@@ -324,6 +358,15 @@ class Post_Type {
 	}
 
 	private function extract_range_from_clause( array $clause ): array {
+		/**
+		 * Extract a date range constraint from a meta_query clause that references
+		 * occurrence date keys. Only _post_start_date and _post_end_date are converted
+		 * to search window bounds. All other meta keys are left as-is for post-level filtering.
+		 *
+		 * Occurrence date filters must NOT be passed to the post-level WP_Query because
+		 * they don't exist as persistent post meta. Instead, they define the search window
+		 * used to find candidate posts and later applied during occurrence expansion.
+		 */
 		$key = $clause['key'] ?? '';
 
 		if ( ! in_array( $key, array( self::EVENT_START_META, self::EVENT_END_META ), true ) ) {
@@ -427,6 +470,13 @@ class Post_Type {
 	}
 
 	private function create_occurrence_post( WP_Post $post, array $event, int $source_index ): WP_Post {
+		/**
+		 * Create an occurrence clone: a synthetic WP_Post object that represents a single
+		 * event occurrence with its own metadata. The clone carries the source post's
+		 * content (title, excerpt, permalink, taxonomy) but with occurrence-specific
+		 * dates and label. When the loop accesses post meta, filter_occurrence_meta()
+		 * intercepts the request and returns occurrence values, not source values.
+		 */
 		$occurrence_start = $this->event_query_service->parse_request_date( $event['start'] ?? null );
 		$occurrence_end   = $this->event_query_service->parse_request_date( $event['end'] ?? null );
 		$occurrence       = clone $post;
@@ -442,6 +492,7 @@ class Post_Type {
 		$occurrence->post_calendar_occurrence_source_id = (int) $post->ID;
 		$occurrence->post_calendar_occurrence_index     = $source_index;
 		$occurrence->post_calendar_occurrence_event_index = isset( $event['eventIndex'] ) ? (int) $event['eventIndex'] : 0;
+		$occurrence->post_calendar_occurrence_label     = isset( $event['title'] ) ? (string) $event['title'] : $post->post_title;
 
 		return $occurrence;
 	}
