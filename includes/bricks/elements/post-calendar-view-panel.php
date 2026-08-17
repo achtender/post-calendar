@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Element_Post_Calendar_View_Panel extends \Bricks\Element {
 	public $category = 'general';
-	public $name     = 'post-calendar-view-panel';
-	public $icon     = 'ti-layout-width-default';
+	public $name = 'post-calendar-view-panel';
+	public $icon = 'ti-layout-width-default';
 	public $css_selector = '.post-calendar-view-panel';
 	public $nestable = false;
 
@@ -23,9 +23,9 @@ class Element_Post_Calendar_View_Panel extends \Bricks\Element {
 
 	public function set_controls() {
 		$this->controls['view'] = array(
-			'tab'     => 'content',
-			'label'   => esc_html__( 'View', 'post-calendar' ),
-			'type'    => 'select',
+			'tab' => 'content',
+			'label' => esc_html__( 'View', 'post-calendar' ),
+			'type' => 'select',
 			'options' => Element_Post_Calendar::get_view_options(),
 			'default' => 'month',
 		);
@@ -42,7 +42,7 @@ class Element_Post_Calendar_View_Panel extends \Bricks\Element {
 
 	public static function render_builder() { ?>
 		<script type="text/x-template" id="tmpl-bricks-element-post-calendar-view-panel">
-			<component :is="tag" class="post-calendar-view-panel"></component>
-		</script>
+							<component :is="tag" class="post-calendar-view-panel"></component>
+						</script>
 	<?php }
 }

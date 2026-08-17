@@ -26,9 +26,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class Update_Checker {
 
-	const TRANSIENT_KEY  = 'post_calendar_github_update';
+	const TRANSIENT_KEY = 'post_calendar_github_update';
 	const GITHUB_API_URL = 'https://api.github.com/repos/achtender/post-calendar/releases/latest';
-	const PLUGIN_SLUG    = 'post-calendar/post-calendar.php';
+	const PLUGIN_SLUG = 'post-calendar/post-calendar.php';
 
 	public function __construct() {
 		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'check_for_update' ) );
@@ -85,10 +85,10 @@ class Update_Checker {
 			array(
 				'timeout' => 10,
 				'headers' => array(
-					'Accept'     => 'application/vnd.github.v3+json',
+					'Accept' => 'application/vnd.github.v3+json',
 					'User-Agent' => 'WordPress/' . get_bloginfo( 'version' ) . '; ' . get_bloginfo( 'url' ),
 				),
-			)
+			),
 		);
 
 		if ( is_wp_error( $response ) || 200 !== wp_remote_retrieve_response_code( $response ) ) {
@@ -144,16 +144,16 @@ class Update_Checker {
 			$zip_url = $this->get_zip_url( $release );
 
 			$transient->response[ self::PLUGIN_SLUG ] = (object) array(
-				'id'           => self::PLUGIN_SLUG,
-				'slug'         => 'post-calendar',
-				'plugin'       => self::PLUGIN_SLUG,
-				'new_version'  => $github_version,
-				'url'          => esc_url( $release->html_url ?? 'https://github.com/achtender/post-calendar/releases' ),
+				'id' => self::PLUGIN_SLUG,
+				'slug' => 'post-calendar',
+				'plugin' => self::PLUGIN_SLUG,
+				'new_version' => $github_version,
+				'url' => esc_url( $release->html_url ?? 'https://github.com/achtender/post-calendar/releases' ),
 				// When a ZIP asset is attached, WordPress can install it automatically.
 				// If no asset is found (e.g. forgot to upload), falls back to false
 				// and the update_message hook appends a manual download link.
-				'package'      => $zip_url ?? false,
-				'tested'       => '',
+				'package' => $zip_url ?? false,
+				'tested' => '',
 				'requires_php' => '7.4',
 			);
 		}
@@ -184,8 +184,8 @@ class Update_Checker {
 		}
 
 		$github_version = ltrim( $release->tag_name, 'v' );
-		$releases_url   = esc_url( 'https://github.com/achtender/post-calendar/releases' );
-		$zip_url        = $this->get_zip_url( $release );
+		$releases_url = esc_url( 'https://github.com/achtender/post-calendar/releases' );
+		$zip_url = $this->get_zip_url( $release );
 
 		// Use the GitHub release body as the changelog if available.
 		$changelog = ! empty( $release->body )
@@ -193,18 +193,18 @@ class Update_Checker {
 			: '<p>' . esc_html__( 'See the GitHub releases page for the full changelog.', 'post-calendar' ) . '</p>';
 
 		$info = (object) array(
-			'name'          => 'Post Calendar',
-			'slug'          => 'post-calendar',
-			'version'       => $github_version,
-			'author'        => '<a href="https://github.com/achtender" target="_blank">Achtender</a>',
-			'homepage'      => $releases_url,
-			'requires'      => '6.0',
-			'requires_php'  => '7.4',
+			'name' => 'Post Calendar',
+			'slug' => 'post-calendar',
+			'version' => $github_version,
+			'author' => '<a href="https://github.com/achtender" target="_blank">Achtender</a>',
+			'homepage' => $releases_url,
+			'requires' => '6.0',
+			'requires_php' => '7.4',
 			'download_link' => $zip_url ?? false,
-			'sections'      => array(
+			'sections' => array(
 				'description' => '<p>' . esc_html__( 'Display posts as events in a calendar via Bricks or shortcode, using existing post types and the built-in Post Calendar editor or direct event meta.', 'post-calendar' ) . '</p>'
 					. '<p><a href="' . $releases_url . '" target="_blank">' . esc_html__( 'View all releases on GitHub', 'post-calendar' ) . '</a></p>',
-				'changelog'   => $changelog,
+				'changelog' => $changelog,
 			),
 		);
 
@@ -229,7 +229,7 @@ class Update_Checker {
 		printf(
 			' <a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
 			$releases_url,
-			esc_html__( 'Download from GitHub ↗', 'post-calendar' )
+			esc_html__( 'Download from GitHub ↗', 'post-calendar' ),
 		);
 	}
 

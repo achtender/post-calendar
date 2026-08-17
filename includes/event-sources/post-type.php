@@ -20,16 +20,16 @@ class Post_Type {
 	public const SLUG = 'post_calendar_event';
 	public const SOURCE_TYPES_QUERY_VAR = 'post_calendar_source_types';
 
-	private const EVENT_ENABLED_META              = Event_Config::EVENT_HAS_EVENTS_META;
-	private const EVENT_START_META                = Event_Config::EVENT_START_META;
-	private const EVENT_END_META                  = Event_Config::EVENT_END_META;
-	private const EVENT_LABEL_META                = Event_Config::EVENT_LABEL_META;
-	private const OCCURRENCE_FLAG_QUERY_VAR       = 'post_calendar_expand_occurrences';
+	private const EVENT_ENABLED_META = Event_Config::EVENT_HAS_EVENTS_META;
+	private const EVENT_START_META = Event_Config::EVENT_START_META;
+	private const EVENT_END_META = Event_Config::EVENT_END_META;
+	private const EVENT_LABEL_META = Event_Config::EVENT_LABEL_META;
+	private const OCCURRENCE_FLAG_QUERY_VAR = 'post_calendar_expand_occurrences';
 	private const OCCURRENCE_RANGE_START_QUERY_VAR = 'post_calendar_occurrence_range_start';
-	private const OCCURRENCE_RANGE_END_QUERY_VAR   = 'post_calendar_occurrence_range_end';
-	private const OCCURRENCE_OFFSET_QUERY_VAR      = 'post_calendar_occurrence_offset';
-	private const OCCURRENCE_LIMIT_QUERY_VAR       = 'post_calendar_occurrence_limit';
-	private const DEFAULT_OCCURRENCE_WINDOW        = 'P1Y';
+	private const OCCURRENCE_RANGE_END_QUERY_VAR = 'post_calendar_occurrence_range_end';
+	private const OCCURRENCE_OFFSET_QUERY_VAR = 'post_calendar_occurrence_offset';
+	private const OCCURRENCE_LIMIT_QUERY_VAR = 'post_calendar_occurrence_limit';
+	private const DEFAULT_OCCURRENCE_WINDOW = 'P1Y';
 
 	private Event_Query_Service $event_query_service;
 
@@ -47,38 +47,38 @@ class Post_Type {
 		register_post_type(
 			self::SLUG,
 			array(
-				'label'               => esc_html__( 'Post Calendar Events', 'post-calendar' ),
-				'labels'              => array(
-					'name'          => esc_html__( 'Post Calendar Events', 'post-calendar' ),
+				'label' => esc_html__( 'Post Calendar Events', 'post-calendar' ),
+				'labels' => array(
+					'name' => esc_html__( 'Post Calendar Events', 'post-calendar' ),
 					'singular_name' => esc_html__( 'Post Calendar Event', 'post-calendar' ),
-					'menu_name'     => esc_html__( 'Post Calendar Events', 'post-calendar' ),
+					'menu_name' => esc_html__( 'Post Calendar Events', 'post-calendar' ),
 				),
-				'description'         => esc_html__( 'A virtual query type for Post Calendar events. Query this type to retrieve event posts from all source post types.', 'post-calendar' ),
-				'public'              => true,
-				'publicly_queryable'  => true,
-				'show_ui'             => true,
-				'show_in_menu'        => false,
-				'show_in_admin_bar'   => false,
-				'show_in_nav_menus'   => false,
+				'description' => esc_html__( 'A virtual query type for Post Calendar events. Query this type to retrieve event posts from all source post types.', 'post-calendar' ),
+				'public' => true,
+				'publicly_queryable' => true,
+				'show_ui' => true,
+				'show_in_menu' => false,
+				'show_in_admin_bar' => false,
+				'show_in_nav_menus' => false,
 				'exclude_from_search' => true,
-				'has_archive'         => false,
-				'rewrite'             => false,
-				'show_in_rest'        => true,
-				'rest_base'           => self::SLUG,
-				'query_var'           => false,
-				'map_meta_cap'        => true,
-				'capabilities'        => array(
-					'create_posts'           => 'do_not_allow',
-					'edit_posts'             => 'do_not_allow',
-					'edit_published_posts'   => 'do_not_allow',
-					'delete_posts'           => 'do_not_allow',
+				'has_archive' => false,
+				'rewrite' => false,
+				'show_in_rest' => true,
+				'rest_base' => self::SLUG,
+				'query_var' => false,
+				'map_meta_cap' => true,
+				'capabilities' => array(
+					'create_posts' => 'do_not_allow',
+					'edit_posts' => 'do_not_allow',
+					'edit_published_posts' => 'do_not_allow',
+					'delete_posts' => 'do_not_allow',
 					'delete_published_posts' => 'do_not_allow',
-					'publish_posts'          => 'do_not_allow',
-					'read_private_posts'     => 'read',
-					'read'                   => 'read',
+					'publish_posts' => 'do_not_allow',
+					'read_private_posts' => 'read',
+					'read' => 'read',
 				),
-				'supports'            => array( 'title', 'custom-fields' ),
-			)
+				'supports' => array( 'title', 'custom-fields' ),
+			),
 		);
 	}
 
@@ -111,10 +111,10 @@ class Post_Type {
 		$query->set( self::OCCURRENCE_FLAG_QUERY_VAR, true );
 
 		$occurrence_constraints = $this->extract_occurrence_constraints( $query->get( 'meta_query' ) );
-		$range_start            = $this->resolve_occurrence_range_start( $query, $occurrence_constraints['range_start'] );
-		$range_end              = $this->resolve_occurrence_range_end( $query, $occurrence_constraints['range_end'], $range_start );
-		$occurrence_offset      = $this->resolve_occurrence_offset( $query );
-		$occurrence_limit       = $this->resolve_occurrence_limit( $query );
+		$range_start = $this->resolve_occurrence_range_start( $query, $occurrence_constraints['range_start'] );
+		$range_end = $this->resolve_occurrence_range_end( $query, $occurrence_constraints['range_end'], $range_start );
+		$occurrence_offset = $this->resolve_occurrence_offset( $query );
+		$occurrence_limit = $this->resolve_occurrence_limit( $query );
 
 		$query->set( self::OCCURRENCE_RANGE_START_QUERY_VAR, $range_start ? $range_start->format( DATE_ATOM ) : '' );
 		$query->set( self::OCCURRENCE_RANGE_END_QUERY_VAR, $range_end ? $range_end->format( DATE_ATOM ) : '' );
@@ -122,7 +122,7 @@ class Post_Type {
 		$query->set( self::OCCURRENCE_LIMIT_QUERY_VAR, $occurrence_limit );
 
 		$caller_meta = $occurrence_constraints['meta_query'];
-		$meta_query  = array(
+		$meta_query = array(
 			'relation' => 'AND',
 		);
 
@@ -141,13 +141,13 @@ class Post_Type {
 		$query->set( 'ignore_sticky_posts', true );
 
 		if ( ! $query->get( 'orderby' ) ) {
-			$query->set('orderby', 'meta_value');
-			$query->set('meta_key', self::EVENT_START_META);
+			$query->set( 'orderby', 'meta_value' );
+			$query->set( 'meta_key', self::EVENT_START_META );
 			$query->set( 'order', 'ASC' );
 		}
 
-		if (!$query->get('order')) {
-			$query->set('order', 'ASC');
+		if ( ! $query->get( 'order' ) ) {
+			$query->set( 'order', 'ASC' );
 		}
 	}
 
@@ -163,7 +163,7 @@ class Post_Type {
 		 * may produce multiple occurrence rows, each with its own start/end/label metadata.
 		 */
 		$range_start = Event_Date_Parser::parse( is_string( $query->get( self::OCCURRENCE_RANGE_START_QUERY_VAR ) ) ? $query->get( self::OCCURRENCE_RANGE_START_QUERY_VAR ) : null );
-		$range_end   = Event_Date_Parser::parse( is_string( $query->get( self::OCCURRENCE_RANGE_END_QUERY_VAR ) ) ? $query->get( self::OCCURRENCE_RANGE_END_QUERY_VAR ) : null );
+		$range_end = Event_Date_Parser::parse( is_string( $query->get( self::OCCURRENCE_RANGE_END_QUERY_VAR ) ) ? $query->get( self::OCCURRENCE_RANGE_END_QUERY_VAR ) : null );
 		$occurrences = array();
 
 		foreach ( $posts as $index => $post ) {
@@ -179,9 +179,9 @@ class Post_Type {
 		}
 
 		$occurrences = $this->sort_occurrences( $occurrences, $query );
-		$total       = count( $occurrences );
-		$offset      = max( 0, (int) $query->get( self::OCCURRENCE_OFFSET_QUERY_VAR ) );
-		$limit       = (int) $query->get( self::OCCURRENCE_LIMIT_QUERY_VAR );
+		$total = count( $occurrences );
+		$offset = max( 0, (int) $query->get( self::OCCURRENCE_OFFSET_QUERY_VAR ) );
+		$limit = (int) $query->get( self::OCCURRENCE_LIMIT_QUERY_VAR );
 
 		if ( $limit > 0 ) {
 			$occurrences = array_slice( $occurrences, $offset, $limit );
@@ -189,9 +189,9 @@ class Post_Type {
 			$occurrences = array_slice( $occurrences, $offset );
 		}
 
-		$query->found_posts   = $total;
-		$query->post_count    = count( $occurrences );
-		$query->posts         = $occurrences;
+		$query->found_posts = $total;
+		$query->post_count = count( $occurrences );
+		$query->posts = $occurrences;
 		$query->max_num_pages = $limit > 0 ? (int) ceil( $total / $limit ) : ( $total > 0 ? 1 : 0 );
 
 		return $occurrences;
@@ -274,9 +274,9 @@ class Post_Type {
 	}
 
 	private function resolve_occurrence_offset( WP_Query $query ): int {
-		$offset         = max( 0, (int) $query->get( 'offset' ) );
+		$offset = max( 0, (int) $query->get( 'offset' ) );
 		$posts_per_page = $this->resolve_occurrence_limit( $query );
-		$paged          = max( 1, (int) $query->get( 'paged' ) );
+		$paged = max( 1, (int) $query->get( 'paged' ) );
 
 		if ( $posts_per_page > 0 && $paged > 1 ) {
 			$offset += ( $paged - 1 ) * $posts_per_page;
@@ -307,9 +307,9 @@ class Post_Type {
 		 */
 		if ( ! is_array( $meta_query ) ) {
 			return array(
-				'meta_query'  => array(),
+				'meta_query' => array(),
 				'range_start' => null,
-				'range_end'   => null,
+				'range_end' => null,
 			);
 		}
 
@@ -320,7 +320,7 @@ class Post_Type {
 		}
 
 		$range_start = null;
-		$range_end   = null;
+		$range_end = null;
 
 		foreach ( $meta_query as $key => $clause ) {
 			if ( 'relation' === $key ) {
@@ -337,7 +337,7 @@ class Post_Type {
 
 				if ( $constraint['handled'] ) {
 					$range_start = $this->merge_range_start( $range_start, $constraint['range_start'] );
-					$range_end   = $this->merge_range_end( $range_end, $constraint['range_end'] );
+					$range_end = $this->merge_range_end( $range_end, $constraint['range_end'] );
 					continue;
 				}
 			}
@@ -345,7 +345,7 @@ class Post_Type {
 			$nested = $this->extract_occurrence_constraints( $clause );
 
 			$range_start = $this->merge_range_start( $range_start, $nested['range_start'] );
-			$range_end   = $this->merge_range_end( $range_end, $nested['range_end'] );
+			$range_end = $this->merge_range_end( $range_end, $nested['range_end'] );
 
 			if ( $this->has_meta_clauses( $nested['meta_query'] ) ) {
 				$cleaned_meta[ $key ] = $nested['meta_query'];
@@ -353,9 +353,9 @@ class Post_Type {
 		}
 
 		return array(
-			'meta_query'  => $this->has_meta_clauses( $cleaned_meta ) ? $cleaned_meta : array(),
+			'meta_query' => $this->has_meta_clauses( $cleaned_meta ) ? $cleaned_meta : array(),
 			'range_start' => $range_start,
-			'range_end'   => $range_end,
+			'range_end' => $range_end,
 		);
 	}
 
@@ -377,56 +377,56 @@ class Post_Type {
 
 		if ( ! in_array( $key, array( self::EVENT_START_META, self::EVENT_END_META ), true ) ) {
 			return array(
-				'handled'     => false,
+				'handled' => false,
 				'range_start' => null,
-				'range_end'   => null,
+				'range_end' => null,
 			);
 		}
 
 		$compare = strtoupper( is_string( $clause['compare'] ?? '' ) ? $clause['compare'] : '=' );
-		$value   = $clause['value'] ?? null;
+		$value = $clause['value'] ?? null;
 
 		switch ( $compare ) {
 			case '>':
 			case '>=':
 				return array(
-					'handled'     => true,
+					'handled' => true,
 					'range_start' => $this->parse_range_value( $value ),
-					'range_end'   => null,
+					'range_end' => null,
 				);
 
 			case '<':
 			case '<=':
 				return array(
-					'handled'     => true,
+					'handled' => true,
 					'range_start' => null,
-					'range_end'   => $this->parse_range_value( $value ),
+					'range_end' => $this->parse_range_value( $value ),
 				);
 
 			case '=':
 				$date = $this->parse_range_value( $value );
 
 				return array(
-					'handled'     => true,
+					'handled' => true,
 					'range_start' => $date,
-					'range_end'   => $date,
+					'range_end' => $date,
 				);
 
 			case 'BETWEEN':
 				$start_value = is_array( $value ) && isset( $value[0] ) ? $value[0] : null;
-				$end_value   = is_array( $value ) && isset( $value[1] ) ? $value[1] : null;
+				$end_value = is_array( $value ) && isset( $value[1] ) ? $value[1] : null;
 
 				return array(
-					'handled'     => true,
+					'handled' => true,
 					'range_start' => $this->parse_range_value( $start_value ),
-					'range_end'   => $this->parse_range_value( $end_value ),
+					'range_end' => $this->parse_range_value( $end_value ),
 				);
 
 			default:
 				return array(
-					'handled'     => false,
+					'handled' => false,
 					'range_start' => null,
-					'range_end'   => null,
+					'range_end' => null,
 				);
 		}
 	}
@@ -484,21 +484,21 @@ class Post_Type {
 		 * intercepts the request and returns occurrence values, not source values.
 		 */
 		$occurrence_start = $this->event_query_service->parse_request_date( $event['start'] ?? null );
-		$occurrence_end   = $this->event_query_service->parse_request_date( $event['end'] ?? null );
-		$occurrence       = clone $post;
+		$occurrence_end = $this->event_query_service->parse_request_date( $event['end'] ?? null );
+		$occurrence = clone $post;
 
 		if ( $occurrence_start ) {
-			$occurrence->post_date     = $occurrence_start->format( 'Y-m-d H:i:s' );
+			$occurrence->post_date = $occurrence_start->format( 'Y-m-d H:i:s' );
 			$occurrence->post_date_gmt = $occurrence_start->setTimezone( new \DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' );
 		}
 
-		$occurrence->post_calendar_occurrence_id        = (string) ( $event['id'] ?? $post->ID );
-		$occurrence->post_calendar_occurrence_start     = $occurrence_start ? $occurrence_start->format( 'Y-m-d H:i:s' ) : '';
-		$occurrence->post_calendar_occurrence_end       = $occurrence_end ? $occurrence_end->format( 'Y-m-d H:i:s' ) : $occurrence->post_calendar_occurrence_start;
+		$occurrence->post_calendar_occurrence_id = (string) ( $event['id'] ?? $post->ID );
+		$occurrence->post_calendar_occurrence_start = $occurrence_start ? $occurrence_start->format( 'Y-m-d H:i:s' ) : '';
+		$occurrence->post_calendar_occurrence_end = $occurrence_end ? $occurrence_end->format( 'Y-m-d H:i:s' ) : $occurrence->post_calendar_occurrence_start;
 		$occurrence->post_calendar_occurrence_source_id = (int) $post->ID;
-		$occurrence->post_calendar_occurrence_index     = $source_index;
+		$occurrence->post_calendar_occurrence_index = $source_index;
 		$occurrence->post_calendar_occurrence_event_index = isset( $event['eventIndex'] ) ? (int) $event['eventIndex'] : 0;
-		$occurrence->post_calendar_occurrence_label     = isset( $event['title'] ) ? (string) $event['title'] : $post->post_title;
+		$occurrence->post_calendar_occurrence_label = isset( $event['title'] ) ? (string) $event['title'] : $post->post_title;
 
 		return $occurrence;
 	}
@@ -527,7 +527,7 @@ class Post_Type {
 	}
 
 	private function should_sort_by_occurrence_start( WP_Query $query ): bool {
-		$orderby  = $query->get( 'orderby' );
+		$orderby = $query->get( 'orderby' );
 		$meta_key = (string) $query->get( 'meta_key' );
 
 		if ( empty( $orderby ) || 'date' === $orderby ) {

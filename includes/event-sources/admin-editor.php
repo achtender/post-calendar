@@ -9,12 +9,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Admin_Editor {
-	private const META_BOX_ID      = 'post-calendar-events';
-	private const NONCE_ACTION     = 'post_calendar_save_events';
-	private const NONCE_NAME       = 'post_calendar_events_nonce';
-	private const ROWS_FIELD_NAME  = 'post_calendar_events';
+	private const META_BOX_ID = 'post-calendar-events';
+	private const NONCE_ACTION = 'post_calendar_save_events';
+	private const NONCE_NAME = 'post_calendar_events_nonce';
+	private const ROWS_FIELD_NAME = 'post_calendar_events';
 	private const INPUT_FIELD_NAME = 'post_calendar_events_json';
-	private const ROOT_CLASS       = 'js-post-calendar-admin-root';
+	private const ROOT_CLASS = 'js-post-calendar-admin-root';
 
 	private Assets $assets;
 
@@ -34,20 +34,21 @@ class Admin_Editor {
 				array( $this, 'render_meta_box' ),
 				$post_type,
 				'normal',
-				'default'
+				'default',
 			);
 		}
 	}
 
 	public function render_meta_box( $post ): void {
-		$post_id      = is_object( $post ) && isset( $post->ID ) ? (int) $post->ID : 0;
+		$post_id = is_object( $post ) && isset( $post->ID ) ? (int) $post->ID : 0;
 		$current_rows = $this->get_editor_rows( $post_id );
 
 		wp_nonce_field( self::NONCE_ACTION, self::NONCE_NAME );
 		?>
 		<div class="post-calendar-admin-root <?php echo esc_attr( self::ROOT_CLASS ); ?>"></div>
 		<noscript>
-			<p><?php echo esc_html__( 'Post Calendar event editing requires JavaScript in the post editor.', 'post-calendar' ); ?></p>
+			<p><?php echo esc_html__( 'Post Calendar event editing requires JavaScript in the post editor.', 'post-calendar' ); ?>
+			</p>
 		</noscript>
 		<?php
 	}
@@ -105,8 +106,8 @@ class Admin_Editor {
 	private function get_editor_config( int $post_id ): array {
 		return array(
 			'currentEvents' => $this->get_editor_rows( $post_id ),
-			'fieldName'    => self::ROWS_FIELD_NAME,
-			'strings'      => $this->get_editor_strings(),
+			'fieldName' => self::ROWS_FIELD_NAME,
+			'strings' => $this->get_editor_strings(),
 		);
 	}
 
@@ -166,7 +167,7 @@ class Admin_Editor {
 
 	private function sanitize_row( array $row ): ?array {
 		$all_day = ! empty( $row['all_day'] );
-		$start   = Event_Date_Parser::parse_editor_input( $row['start_date'] ?? '', false, $all_day );
+		$start = Event_Date_Parser::parse_editor_input( $row['start_date'] ?? '', false, $all_day );
 
 		if ( ! $start ) {
 			return null;
@@ -178,19 +179,19 @@ class Admin_Editor {
 			$end = $all_day ? $start->setTime( 23, 59, 59 ) : $start;
 		}
 
-		$repeat         = $this->normalize_repeat_value( $row['repeat'] ?? Event_Query_Service::REPEAT_NONE );
+		$repeat = $this->normalize_repeat_value( $row['repeat'] ?? Event_Query_Service::REPEAT_NONE );
 		$repeat_interval = max( 1, absint( $row['repeat_interval'] ?? 1 ) );
-		$repeat_until   = Event_Query_Service::REPEAT_NONE === $repeat ? null : Event_Date_Parser::parse_editor_input( $row['repeat_until'] ?? '', true, $all_day );
+		$repeat_until = Event_Query_Service::REPEAT_NONE === $repeat ? null : Event_Date_Parser::parse_editor_input( $row['repeat_until'] ?? '', true, $all_day );
 
 		return array(
-			'label'           => sanitize_text_field( (string) ( $row['label'] ?? '' ) ),
-			'all_day'         => $all_day,
-			'start_date'      => $start->format( 'Y-m-d H:i:s' ),
-			'end_date'        => $end->format( 'Y-m-d H:i:s' ),
-			'repeat'          => $repeat,
+			'label' => sanitize_text_field( (string) ( $row['label'] ?? '' ) ),
+			'all_day' => $all_day,
+			'start_date' => $start->format( 'Y-m-d H:i:s' ),
+			'end_date' => $end->format( 'Y-m-d H:i:s' ),
+			'repeat' => $repeat,
 			'repeat_interval' => $repeat_interval,
-			'repeat_byday'    => Event_Query_Service::REPEAT_WEEKLY === $repeat ? $this->normalize_repeat_byday( $row['repeat_byday'] ?? array() ) : array(),
-			'repeat_until'    => $repeat_until ? $repeat_until->format( 'Y-m-d H:i:s' ) : '',
+			'repeat_byday' => Event_Query_Service::REPEAT_WEEKLY === $repeat ? $this->normalize_repeat_byday( $row['repeat_byday'] ?? array() ) : array(),
+			'repeat_until' => $repeat_until ? $repeat_until->format( 'Y-m-d H:i:s' ) : '',
 		);
 	}
 
@@ -222,13 +223,13 @@ class Admin_Editor {
 						static function ( $weekday_code ): string {
 							return strtoupper( sanitize_key( (string) $weekday_code ) );
 						},
-						$weekday_codes
-					)
+						$weekday_codes,
+					),
 				),
 				static function ( string $weekday_code ) use ( $allowed ): bool {
 					return in_array( $weekday_code, $allowed, true );
 				}
-			)
+			),
 		);
 	}
 
@@ -242,32 +243,32 @@ class Admin_Editor {
 
 	private function get_editor_strings(): array {
 		return array(
-			'addEvent'        => esc_html__( 'Add event', 'post-calendar' ),
-			'allDay'          => esc_html__( 'All-day event', 'post-calendar' ),
-			'endDate'         => esc_html__( 'End date', 'post-calendar' ),
-			'eventLabel'      => esc_html__( 'Event label', 'post-calendar' ),
-			'eventLabelHelp'  => esc_html__( 'Leave empty to use the post title.', 'post-calendar' ),
-			'eventNumber'     => esc_html__( 'Event', 'post-calendar' ),
-			'eventRepeat'     => esc_html__( 'Event frequency', 'post-calendar' ),
-			'eventsIntro'     => esc_html__( 'Add one or more event rows to make this post appear in the calendar.', 'post-calendar' ),
-			'monthly'         => esc_html__( 'Monthly', 'post-calendar' ),
-			'noEvents'        => esc_html__( 'No event rows yet.', 'post-calendar' ),
-			'removeEvent'     => esc_html__( 'Remove event', 'post-calendar' ),
-			'repeatInterval'  => esc_html__( 'Repeat interval', 'post-calendar' ),
+			'addEvent' => esc_html__( 'Add event', 'post-calendar' ),
+			'allDay' => esc_html__( 'All-day event', 'post-calendar' ),
+			'endDate' => esc_html__( 'End date', 'post-calendar' ),
+			'eventLabel' => esc_html__( 'Event label', 'post-calendar' ),
+			'eventLabelHelp' => esc_html__( 'Leave empty to use the post title.', 'post-calendar' ),
+			'eventNumber' => esc_html__( 'Event', 'post-calendar' ),
+			'eventRepeat' => esc_html__( 'Event frequency', 'post-calendar' ),
+			'eventsIntro' => esc_html__( 'Add one or more event rows to make this post appear in the calendar.', 'post-calendar' ),
+			'monthly' => esc_html__( 'Monthly', 'post-calendar' ),
+			'noEvents' => esc_html__( 'No event rows yet.', 'post-calendar' ),
+			'removeEvent' => esc_html__( 'Remove event', 'post-calendar' ),
+			'repeatInterval' => esc_html__( 'Repeat interval', 'post-calendar' ),
 			'repeatIntervalHelp' => esc_html__( 'For example, every 2 weeks.', 'post-calendar' ),
-			'repeatOn'        => esc_html__( 'Repeat on', 'post-calendar' ),
-			'repeatUntil'     => esc_html__( 'Repeat until', 'post-calendar' ),
-			'startDate'       => esc_html__( 'Start date', 'post-calendar' ),
-			'weekly'          => esc_html__( 'Weekly', 'post-calendar' ),
-			'yearly'          => esc_html__( 'Yearly', 'post-calendar' ),
-			'doesNotRepeat'   => esc_html__( 'Does not repeat', 'post-calendar' ),
-			'monday'          => esc_html__( 'Monday', 'post-calendar' ),
-			'tuesday'         => esc_html__( 'Tuesday', 'post-calendar' ),
-			'wednesday'       => esc_html__( 'Wednesday', 'post-calendar' ),
-			'thursday'        => esc_html__( 'Thursday', 'post-calendar' ),
-			'friday'          => esc_html__( 'Friday', 'post-calendar' ),
-			'saturday'        => esc_html__( 'Saturday', 'post-calendar' ),
-			'sunday'          => esc_html__( 'Sunday', 'post-calendar' ),
+			'repeatOn' => esc_html__( 'Repeat on', 'post-calendar' ),
+			'repeatUntil' => esc_html__( 'Repeat until', 'post-calendar' ),
+			'startDate' => esc_html__( 'Start date', 'post-calendar' ),
+			'weekly' => esc_html__( 'Weekly', 'post-calendar' ),
+			'yearly' => esc_html__( 'Yearly', 'post-calendar' ),
+			'doesNotRepeat' => esc_html__( 'Does not repeat', 'post-calendar' ),
+			'monday' => esc_html__( 'Monday', 'post-calendar' ),
+			'tuesday' => esc_html__( 'Tuesday', 'post-calendar' ),
+			'wednesday' => esc_html__( 'Wednesday', 'post-calendar' ),
+			'thursday' => esc_html__( 'Thursday', 'post-calendar' ),
+			'friday' => esc_html__( 'Friday', 'post-calendar' ),
+			'saturday' => esc_html__( 'Saturday', 'post-calendar' ),
+			'sunday' => esc_html__( 'Sunday', 'post-calendar' ),
 		);
 	}
 }

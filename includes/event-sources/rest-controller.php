@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Rest_Controller {
 	public const REST_NAMESPACE = 'post-calendar/v1';
-	public const REST_ROUTE     = '/events';
+	public const REST_ROUTE = '/events';
 
 	private const DEFAULT_PER_PAGE = 1000;
 
@@ -35,43 +35,43 @@ class Rest_Controller {
 			self::REST_ROUTE,
 			array(
 				array(
-					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_events' ),
+					'methods' => WP_REST_Server::READABLE,
+					'callback' => array( $this, 'get_events' ),
 					'permission_callback' => '__return_true',
-					'args'                => $this->get_collection_params(),
+					'args' => $this->get_collection_params(),
 				),
-			)
+			),
 		);
 	}
 
 	public function get_collection_params(): array {
 		return array(
 			'post_types' => array(
-			'description'       => __( 'Restrict the collection to a comma-separated list of source post types.', 'post-calendar' ),
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
+				'description' => __( 'Restrict the collection to a comma-separated list of source post types.', 'post-calendar' ),
+				'type' => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
 			),
 			'query_vars' => array(
-			'description'       => __( 'Restrict the collection with a JSON-encoded subset of Bricks query vars.', 'post-calendar' ),
-			'type'              => 'string',
-			'sanitize_callback' => array( $this, 'sanitize_query_vars_param' ),
+				'description' => __( 'Restrict the collection with a JSON-encoded subset of Bricks query vars.', 'post-calendar' ),
+				'type' => 'string',
+				'sanitize_callback' => array( $this, 'sanitize_query_vars_param' ),
 			),
 			'start' => array(
-			'description'       => __( 'Limit results to events that overlap the supplied ISO 8601 start date.', 'post-calendar' ),
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
+				'description' => __( 'Limit results to events that overlap the supplied ISO 8601 start date.', 'post-calendar' ),
+				'type' => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
 			),
 			'end' => array(
-			'description'       => __( 'Limit results to events that overlap the supplied ISO 8601 end date.', 'post-calendar' ),
-			'type'              => 'string',
-			'sanitize_callback' => 'sanitize_text_field',
+				'description' => __( 'Limit results to events that overlap the supplied ISO 8601 end date.', 'post-calendar' ),
+				'type' => 'string',
+				'sanitize_callback' => 'sanitize_text_field',
 			),
 			'per_page' => array(
-				'description'       => __( 'Limit the number of source posts evaluated for the response.', 'post-calendar' ),
-				'type'              => 'integer',
-				'default'           => self::DEFAULT_PER_PAGE,
-				'minimum'           => 1,
-				'maximum'           => self::DEFAULT_PER_PAGE,
+				'description' => __( 'Limit the number of source posts evaluated for the response.', 'post-calendar' ),
+				'type' => 'integer',
+				'default' => self::DEFAULT_PER_PAGE,
+				'minimum' => 1,
+				'maximum' => self::DEFAULT_PER_PAGE,
 				'sanitize_callback' => 'absint',
 			),
 		);
@@ -79,9 +79,9 @@ class Rest_Controller {
 
 	public function get_events( WP_REST_Request $request ): WP_REST_Response {
 		$source_types = $this->event_query_service->resolve_post_types( $request->get_param( 'post_types' ) );
-		$query_vars   = $this->parse_query_vars_param( $request->get_param( 'query_vars' ) );
-		$range_start  = $this->event_query_service->parse_request_date( $request->get_param( 'start' ) );
-		$range_end    = $this->event_query_service->parse_request_date( $request->get_param( 'end' ) );
+		$query_vars = $this->parse_query_vars_param( $request->get_param( 'query_vars' ) );
+		$range_start = $this->event_query_service->parse_request_date( $request->get_param( 'start' ) );
+		$range_end = $this->event_query_service->parse_request_date( $request->get_param( 'end' ) );
 		$source_types = $this->merge_source_types_from_query_vars( $source_types, $query_vars );
 
 		if ( empty( $source_types ) ) {
@@ -90,30 +90,30 @@ class Rest_Controller {
 
 		$args = $this->merge_supported_query_vars(
 			array(
-				'post_type'                 => $source_types,
-				'post_status'               => 'publish',
-				'posts_per_page'            => $this->resolve_posts_per_page( $request ),
-				'no_found_rows'             => true,
-				'update_post_term_cache'    => false,
-				'ignore_sticky_posts'       => true,
+				'post_type' => $source_types,
+				'post_status' => 'publish',
+				'posts_per_page' => $this->resolve_posts_per_page( $request ),
+				'no_found_rows' => true,
+				'update_post_term_cache' => false,
+				'ignore_sticky_posts' => true,
 				'post_calendar_source_types' => $source_types,
 			),
-			$query_vars
+			$query_vars,
 		);
 
 		$args['meta_query'] = $this->merge_meta_query_constraints(
 			$args['meta_query'] ?? array(),
-			$this->build_rest_meta_constraints( $range_start, $range_end )
+			$this->build_rest_meta_constraints( $range_start, $range_end ),
 		);
 
 		if ( ! $request->has_param( 'orderby' ) && empty( $query_vars['orderby'] ) ) {
-			$args['orderby']   = 'meta_value';
-			$args['meta_key']  = Event_Query_Service::EVENT_RANGE_START_META;
+			$args['orderby'] = 'meta_value';
+			$args['meta_key'] = Event_Query_Service::EVENT_RANGE_START_META;
 			$args['meta_type'] = 'DATETIME';
-			$args['order']     = 'ASC';
+			$args['order'] = 'ASC';
 		}
 
-		$query  = new WP_Query( $args );
+		$query = new WP_Query( $args );
 		$events = $this->event_query_service->build_events_for_posts( $query->posts, $range_start, $range_end );
 
 		return new WP_REST_Response( $events );
@@ -154,7 +154,7 @@ class Rest_Controller {
 			return array();
 		}
 
-		$sanitized      = array();
+		$sanitized = array();
 
 		foreach ( Event_Config::get_supported_query_var_keys() as $key ) {
 			if ( ! array_key_exists( $key, $decoded ) ) {
@@ -196,7 +196,7 @@ class Rest_Controller {
 		}
 
 		$query_source_types = $this->event_query_service->resolve_post_types( is_array( $query_vars['post_type'] ) ? implode( ',', $query_vars['post_type'] ) : (string) $query_vars['post_type'] );
-		unset( $query_vars['post_type'] );
+		unset($query_vars['post_type']);
 
 		if ( empty( $query_source_types ) ) {
 			return array();

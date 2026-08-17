@@ -16,7 +16,7 @@ class Event_Date_Parser {
 		}
 
 		$timezone = self::get_timezone();
-		$date     = DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $value, $timezone );
+		$date = DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $value, $timezone );
 
 		if ( false !== $date ) {
 			return $date;
@@ -24,7 +24,7 @@ class Event_Date_Parser {
 
 		try {
 			return new DateTimeImmutable( $value, $timezone );
-		} catch ( \Exception $exception ) {
+		} catch (\Exception $exception) {
 			return null;
 		}
 	}

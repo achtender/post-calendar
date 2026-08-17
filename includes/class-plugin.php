@@ -93,16 +93,16 @@ class Plugin {
 	}
 
 	private function __construct() {
-		$this->proxy_post_type      = new Post_Type();
-		$this->assets               = new Assets();
-		$this->admin_editor         = new Admin_Editor( $this->assets );
-		$this->event_model_sync     = new Event_Model_Sync();
-		$this->settings_page        = new Settings_Page();
+		$this->proxy_post_type = new Post_Type();
+		$this->assets = new Assets();
+		$this->admin_editor = new Admin_Editor( $this->assets );
+		$this->event_model_sync = new Event_Model_Sync();
+		$this->settings_page = new Settings_Page();
 		$this->proxy_post_type_rest = new Rest_Controller();
-		$this->shortcode            = new Shortcode\Shortcode();
-		$this->bricks_elements      = new Bricks\Elements();
-		$this->bricks_dynamic_tags  = new Bricks\Dynamic_Data_Tags();
-		$this->update_checker       = new Update_Checker();
+		$this->shortcode = new Shortcode\Shortcode();
+		$this->bricks_elements = new Bricks\Elements();
+		$this->bricks_dynamic_tags = new Bricks\Dynamic_Data_Tags();
+		$this->update_checker = new Update_Checker();
 
 		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 	}

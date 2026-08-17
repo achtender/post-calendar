@@ -42,7 +42,7 @@ class Elements {
 
 		printf(
 			'<div class="notice notice-warning"><p>%s</p></div>',
-			esc_html__( 'Post Calendar could not register its Bricks element because Bricks is not active or its API is unavailable.', 'post-calendar' )
+			esc_html__( 'Post Calendar could not register its Bricks element because Bricks is not active or its API is unavailable.', 'post-calendar' ),
 		);
 	}
 

@@ -10,20 +10,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Event_Query_Service {
-	public const EVENTS_META                = Event_Config::EVENTS_META;
-	public const EVENT_HAS_EVENTS_META      = Event_Config::EVENT_HAS_EVENTS_META;
-	public const EVENT_RANGE_START_META     = Event_Config::EVENT_RANGE_START_META;
-	public const EVENT_RANGE_END_META       = Event_Config::EVENT_RANGE_END_META;
-	public const EVENT_START_META           = Event_Config::EVENT_START_META;
-	public const EVENT_END_META             = Event_Config::EVENT_END_META;
-	public const EVENT_LABEL_META           = Event_Config::EVENT_LABEL_META;
+	public const EVENTS_META = Event_Config::EVENTS_META;
+	public const EVENT_HAS_EVENTS_META = Event_Config::EVENT_HAS_EVENTS_META;
+	public const EVENT_RANGE_START_META = Event_Config::EVENT_RANGE_START_META;
+	public const EVENT_RANGE_END_META = Event_Config::EVENT_RANGE_END_META;
+	public const EVENT_START_META = Event_Config::EVENT_START_META;
+	public const EVENT_END_META = Event_Config::EVENT_END_META;
+	public const EVENT_LABEL_META = Event_Config::EVENT_LABEL_META;
 
 	private const DEFAULT_EXPANSION_WINDOW = 'P1Y';
-	public const REPEAT_NONE               = 'none';
-	public const REPEAT_WEEKLY             = 'weekly';
-	public const REPEAT_MONTHLY            = 'monthly';
-	public const REPEAT_YEARLY             = 'yearly';
-	private const MAX_OCCURRENCES          = 500;
+	public const REPEAT_NONE = 'none';
+	public const REPEAT_WEEKLY = 'weekly';
+	public const REPEAT_MONTHLY = 'monthly';
+	public const REPEAT_YEARLY = 'yearly';
+	private const MAX_OCCURRENCES = 500;
 
 	public function build_range_meta_query( ?DateTimeImmutable $range_start, ?DateTimeImmutable $range_end ): array {
 		/**
@@ -39,47 +39,47 @@ class Event_Query_Service {
 		 */
 		$range_meta_query = array(
 			array(
-				'key'   => self::EVENT_HAS_EVENTS_META,
+				'key' => self::EVENT_HAS_EVENTS_META,
 				'value' => '1',
 			),
 			array(
-				'key'     => self::EVENT_RANGE_START_META,
+				'key' => self::EVENT_RANGE_START_META,
 				'compare' => 'EXISTS',
 			),
 			array(
-				'key'     => self::EVENT_RANGE_START_META,
-				'value'   => '',
+				'key' => self::EVENT_RANGE_START_META,
+				'value' => '',
 				'compare' => '!=',
 			),
 		);
 
 		if ( $range_end ) {
 			$range_meta_query[] = array(
-				'key'     => self::EVENT_RANGE_START_META,
-				'value'   => $this->format_request_date_for_meta( $range_end ),
+				'key' => self::EVENT_RANGE_START_META,
+				'value' => $this->format_request_date_for_meta( $range_end ),
 				'compare' => '<=',
-				'type'    => 'DATETIME',
+				'type' => 'DATETIME',
 			);
 		}
 
 		if ( $range_start ) {
-			$formatted_start    = $this->format_request_date_for_meta( $range_start );
+			$formatted_start = $this->format_request_date_for_meta( $range_start );
 			$range_meta_query[] = array(
 				'relation' => 'OR',
 				array(
-					'key'     => self::EVENT_RANGE_END_META,
-					'value'   => $formatted_start,
+					'key' => self::EVENT_RANGE_END_META,
+					'value' => $formatted_start,
 					'compare' => '>=',
-					'type'    => 'DATETIME',
+					'type' => 'DATETIME',
 				),
 				array(
 					'relation' => 'OR',
 					array(
-						'key'     => self::EVENT_RANGE_END_META,
+						'key' => self::EVENT_RANGE_END_META,
 						'compare' => 'NOT EXISTS',
 					),
 					array(
-						'key'   => self::EVENT_RANGE_END_META,
+						'key' => self::EVENT_RANGE_END_META,
 						'value' => '',
 					),
 				),
@@ -119,7 +119,7 @@ class Event_Query_Service {
 	}
 
 	public function build_events_for_post( int $post_id, ?DateTimeImmutable $range_start, ?DateTimeImmutable $range_end ): array {
-		$events      = array();
+		$events = array();
 		$definitions = $this->get_event_definitions_for_post( $post_id );
 
 		foreach ( $definitions as $definition ) {
@@ -157,14 +157,14 @@ class Event_Query_Service {
 		}
 
 		$base_definition = array(
-			'post_id'    => $post_id,
-			'title'      => get_the_title( $post_id ),
-			'url'        => get_permalink( $post_id ),
-			'post_type'  => get_post_type( $post_id ),
-			'excerpt'    => $this->get_event_excerpt( $post_id ),
-			'tags'       => $this->get_event_terms( $post_id ),
+			'post_id' => $post_id,
+			'title' => get_the_title( $post_id ),
+			'url' => get_permalink( $post_id ),
+			'post_type' => get_post_type( $post_id ),
+			'excerpt' => $this->get_event_excerpt( $post_id ),
+			'tags' => $this->get_event_terms( $post_id ),
 		);
-		$definitions     = array();
+		$definitions = array();
 
 		foreach ( array_values( $rows ) as $event_index => $row ) {
 			$definition = $this->normalize_event_definition( $base_definition, is_array( $row ) ? $row : array(), $event_index );
@@ -199,17 +199,17 @@ class Event_Query_Service {
 		}
 
 		return array(
-			$this->format_occurrence_event( $definition, $occurrence_start, $occurrence_end )
+			$this->format_occurrence_event( $definition, $occurrence_start, $occurrence_end ),
 		);
 	}
 
 	private function build_weekly_events( array $definition, ?DateTimeImmutable $range_start, ?DateTimeImmutable $range_end ): array {
-		$events          = array();
-		$duration        = $definition['end']->getTimestamp() - $definition['start']->getTimestamp();
-		$search_end      = $this->resolve_expansion_end( $definition, $range_start, $range_end );
+		$events = array();
+		$duration = $definition['end']->getTimestamp() - $definition['start']->getTimestamp();
+		$search_end = $this->resolve_expansion_end( $definition, $range_start, $range_end );
 		$base_week_start = $this->get_week_start( $definition['start'] );
-		$weekday_codes   = $definition['repeat_byday'];
-		$start_at        = $this->resolve_weekly_start_index( $definition['start'], $range_start, $definition['repeat_interval'] );
+		$weekday_codes = $definition['repeat_byday'];
+		$start_at = $this->resolve_weekly_start_index( $definition['start'], $range_start, $definition['repeat_interval'] );
 
 		for ( $occurrence_count = 0, $week_index = $start_at; $occurrence_count < self::MAX_OCCURRENCES; $week_index += $definition['repeat_interval'] ) {
 			$week_start = $base_week_start->modify( '+' . ( $week_index * 7 ) . ' days' );
@@ -247,19 +247,19 @@ class Event_Query_Service {
 			return 0;
 		}
 
-		$base_week_start  = $this->get_week_start( $base_start );
+		$base_week_start = $this->get_week_start( $base_start );
 		$range_week_start = $this->get_week_start( $range_start );
-		$days_difference  = (int) floor( ( $range_week_start->getTimestamp() - $base_week_start->getTimestamp() ) / 86400 );
+		$days_difference = (int) floor( ( $range_week_start->getTimestamp() - $base_week_start->getTimestamp() ) / 86400 );
 		$weeks_difference = max( 0, intdiv( max( 0, $days_difference ), 7 ) );
 
 		return intdiv( $weeks_difference, $interval ) * $interval;
 	}
 
 	private function build_monthly_events( array $definition, ?DateTimeImmutable $range_start, ?DateTimeImmutable $range_end ): array {
-		$events     = array();
-		$duration   = $definition['end']->getTimestamp() - $definition['start']->getTimestamp();
+		$events = array();
+		$duration = $definition['end']->getTimestamp() - $definition['start']->getTimestamp();
 		$search_end = $this->resolve_expansion_end( $definition, $range_start, $range_end );
-		$start_at   = $this->resolve_monthly_start_index( $definition['start'], $range_start, $definition['repeat_interval'] );
+		$start_at = $this->resolve_monthly_start_index( $definition['start'], $range_start, $definition['repeat_interval'] );
 
 		for ( $occurrence_count = 0, $month_index = $start_at; $occurrence_count < self::MAX_OCCURRENCES; $month_index += $definition['repeat_interval'], ++$occurrence_count ) {
 			$occurrence_start = $this->create_monthly_occurrence( $definition['start'], $month_index );
@@ -283,10 +283,10 @@ class Event_Query_Service {
 	}
 
 	private function build_yearly_events( array $definition, ?DateTimeImmutable $range_start, ?DateTimeImmutable $range_end ): array {
-		$events     = array();
-		$duration   = $definition['end']->getTimestamp() - $definition['start']->getTimestamp();
+		$events = array();
+		$duration = $definition['end']->getTimestamp() - $definition['start']->getTimestamp();
 		$search_end = $this->resolve_expansion_end( $definition, $range_start, $range_end );
-		$start_at   = $this->resolve_yearly_start_index( $definition['start'], $range_start, $definition['repeat_interval'] );
+		$start_at = $this->resolve_yearly_start_index( $definition['start'], $range_start, $definition['repeat_interval'] );
 
 		for ( $occurrence_count = 0, $year_index = $start_at; $occurrence_count < self::MAX_OCCURRENCES; $year_index += $definition['repeat_interval'], ++$occurrence_count ) {
 			$occurrence_start = $this->create_yearly_occurrence( $definition['start'], $year_index );
@@ -325,36 +325,36 @@ class Event_Query_Service {
 		$repeat = $this->normalize_repeat_value( $this->get_row_value( $row, 'repeat' ) );
 
 		return array(
-			'post_id'         => $base_definition['post_id'],
-			'event_index'     => $event_index,
-			'definition_id'   => $base_definition['post_id'] . ':' . $event_index,
-			'title'           => $this->normalize_event_title( $this->get_row_value( $row, 'label' ), $base_definition['title'] ),
-			'start'           => $start,
-			'end'             => $end,
-			'all_day'         => $this->normalize_boolean( $this->get_row_value( $row, 'all_day' ) ),
-			'url'             => $base_definition['url'],
-			'post_type'       => $base_definition['post_type'],
-			'excerpt'         => $base_definition['excerpt'],
-			'tags'            => $base_definition['tags'],
-			'repeat'          => $repeat,
+			'post_id' => $base_definition['post_id'],
+			'event_index' => $event_index,
+			'definition_id' => $base_definition['post_id'] . ':' . $event_index,
+			'title' => $this->normalize_event_title( $this->get_row_value( $row, 'label' ), $base_definition['title'] ),
+			'start' => $start,
+			'end' => $end,
+			'all_day' => $this->normalize_boolean( $this->get_row_value( $row, 'all_day' ) ),
+			'url' => $base_definition['url'],
+			'post_type' => $base_definition['post_type'],
+			'excerpt' => $base_definition['excerpt'],
+			'tags' => $base_definition['tags'],
+			'repeat' => $repeat,
 			'repeat_interval' => max( 1, absint( $this->get_row_value( $row, 'repeat_interval' ) ) ),
-			'repeat_until'    => Event_Date_Parser::parse( $this->get_row_value( $row, 'repeat_until' ) ),
-			'repeat_byday'    => $this->normalize_repeat_byday( $this->get_row_value( $row, 'repeat_byday' ), $start ),
+			'repeat_until' => Event_Date_Parser::parse( $this->get_row_value( $row, 'repeat_until' ) ),
+			'repeat_byday' => $this->normalize_repeat_byday( $this->get_row_value( $row, 'repeat_byday' ), $start ),
 		);
 	}
 
 	private function format_occurrence_event( array $definition, DateTimeImmutable $occurrence_start, DateTimeImmutable $occurrence_end ): array {
 		return array(
-			'id'         => $this->build_occurrence_id( (int) $definition['post_id'], (int) $definition['event_index'], $occurrence_start ),
-			'title'      => $definition['title'],
-			'label'      => $definition['title'],
-			'start'      => $occurrence_start->format( DATE_ATOM ),
-			'end'        => $occurrence_end->format( DATE_ATOM ),
-			'allDay'     => $definition['all_day'],
-			'url'        => $definition['url'],
-			'postType'   => $definition['post_type'],
-			'excerpt'    => $definition['excerpt'],
-			'tags'       => $definition['tags'],
+			'id' => $this->build_occurrence_id( (int) $definition['post_id'], (int) $definition['event_index'], $occurrence_start ),
+			'title' => $definition['title'],
+			'label' => $definition['title'],
+			'start' => $occurrence_start->format( DATE_ATOM ),
+			'end' => $occurrence_end->format( DATE_ATOM ),
+			'allDay' => $definition['all_day'],
+			'url' => $definition['url'],
+			'postType' => $definition['post_type'],
+			'excerpt' => $definition['excerpt'],
+			'tags' => $definition['tags'],
 			'eventIndex' => (int) $definition['event_index'],
 		);
 	}
@@ -389,10 +389,10 @@ class Event_Query_Service {
 						static function ( $weekday_code ): string {
 							return strtoupper( sanitize_key( (string) $weekday_code ) );
 						},
-						$weekday_codes
-					)
-				)
-			)
+						$weekday_codes,
+					),
+				),
+			),
 		);
 
 		if ( empty( $weekday_codes ) ) {
@@ -401,7 +401,7 @@ class Event_Query_Service {
 
 		usort(
 			$weekday_codes,
-			array( $this, 'compare_weekday_codes' )
+			array( $this, 'compare_weekday_codes' ),
 		);
 
 		return $weekday_codes;
@@ -443,7 +443,7 @@ class Event_Query_Service {
 		$expansion_end = $range_end;
 
 		if ( ! $expansion_end ) {
-			$anchor        = $range_start ?: $definition['start'];
+			$anchor = $range_start ?: $definition['start'];
 			$expansion_end = $anchor->add( new DateInterval( self::DEFAULT_EXPANSION_WINDOW ) );
 		}
 
@@ -482,7 +482,7 @@ class Event_Query_Service {
 
 	private function create_weekday_occurrence( DateTimeImmutable $base_start, DateTimeImmutable $week_start, string $weekday_code ): DateTimeImmutable {
 		$day_offset = $this->get_weekday_number_from_code( $weekday_code ) - 1;
-		$time       = $base_start->format( 'H:i:s' );
+		$time = $base_start->format( 'H:i:s' );
 
 		return $week_start
 			->modify( '+' . $day_offset . ' days' )
@@ -491,17 +491,17 @@ class Event_Query_Service {
 
 	private function create_monthly_occurrence( DateTimeImmutable $base_start, int $month_index ): DateTimeImmutable {
 		$base_month_index = ( (int) $base_start->format( 'Y' ) * 12 ) + ( (int) $base_start->format( 'n' ) - 1 ) + $month_index;
-		$year             = intdiv( $base_month_index, 12 );
-		$month            = ( $base_month_index % 12 ) + 1;
-		$day              = min( (int) $base_start->format( 'j' ), cal_days_in_month( CAL_GREGORIAN, $month, $year ) );
+		$year = intdiv( $base_month_index, 12 );
+		$month = ( $base_month_index % 12 ) + 1;
+		$day = min( (int) $base_start->format( 'j' ), cal_days_in_month( CAL_GREGORIAN, $month, $year ) );
 
 		return $base_start->setDate( $year, $month, $day );
 	}
 
 	private function create_yearly_occurrence( DateTimeImmutable $base_start, int $year_index ): DateTimeImmutable {
-		$year  = (int) $base_start->format( 'Y' ) + $year_index;
+		$year = (int) $base_start->format( 'Y' ) + $year_index;
 		$month = (int) $base_start->format( 'n' );
-		$day   = min( (int) $base_start->format( 'j' ), cal_days_in_month( CAL_GREGORIAN, $month, $year ) );
+		$day = min( (int) $base_start->format( 'j' ), cal_days_in_month( CAL_GREGORIAN, $month, $year ) );
 
 		return $base_start->setDate( $year, $month, $day );
 	}
@@ -534,7 +534,7 @@ class Event_Query_Service {
 
 	private function get_event_terms( int $post_id ): array {
 		$taxonomy_names = get_object_taxonomies( get_post_type( $post_id ), 'names' );
-		$labels         = array();
+		$labels = array();
 
 		foreach ( $taxonomy_names as $taxonomy_name ) {
 			if ( 'post_format' === $taxonomy_name ) {
@@ -546,7 +546,7 @@ class Event_Query_Service {
 				$taxonomy_name,
 				array(
 					'fields' => 'names',
-				)
+				),
 			);
 
 			if ( is_wp_error( $terms ) || empty( $terms ) ) {

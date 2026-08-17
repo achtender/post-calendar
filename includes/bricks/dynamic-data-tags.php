@@ -38,25 +38,25 @@ class Dynamic_Data_Tags {
 		}
 
 		$tags[] = [
-			'name'  => '{postcal_event_start_date}',
+			'name' => '{postcal_event_start_date}',
 			'label' => 'Post Calendar - Event Start Date',
 			'group' => 'Post Calendar',
 		];
 
 		$tags[] = [
-			'name'  => '{postcal_event_end_date}',
+			'name' => '{postcal_event_end_date}',
 			'label' => 'Post Calendar - Event End Date',
 			'group' => 'Post Calendar',
 		];
 
 		$tags[] = [
-			'name'  => '{postcal_event_label}',
+			'name' => '{postcal_event_label}',
 			'label' => 'Post Calendar - Event Label',
 			'group' => 'Post Calendar',
 		];
 
 		$tags[] = [
-			'name'  => '{postcal_has_events}',
+			'name' => '{postcal_has_events}',
 			'label' => 'Post Calendar - Has Events',
 			'group' => 'Post Calendar',
 		];
@@ -149,9 +149,9 @@ class Dynamic_Data_Tags {
 		// Handle simple tags.
 		$simple_tags = [
 			'postcal_event_start_date' => Event_Config::EVENT_START_META,
-			'postcal_event_end_date'   => Event_Config::EVENT_END_META,
-			'postcal_event_label'      => Event_Config::EVENT_LABEL_META,
-			'postcal_has_events'       => Event_Config::EVENT_HAS_EVENTS_META,
+			'postcal_event_end_date' => Event_Config::EVENT_END_META,
+			'postcal_event_label' => Event_Config::EVENT_LABEL_META,
+			'postcal_has_events' => Event_Config::EVENT_HAS_EVENTS_META,
 		];
 
 		foreach ( $simple_tags as $tag_name => $meta_key ) {
@@ -182,7 +182,7 @@ class Dynamic_Data_Tags {
 		}
 
 		foreach ( $matches[1] as $key => $format ) {
-			$tag   = $matches[0][ $key ];
+			$tag = $matches[0][ $key ];
 			$value = $this->get_formatted_meta_date( $post_id, $meta_key, $format );
 			$content = str_replace( $tag, $value, $content );
 		}
@@ -220,7 +220,7 @@ class Dynamic_Data_Tags {
 		try {
 			$date = new \DateTime( $value );
 			return $date->format( $format );
-		} catch ( \Exception $e ) {
+		} catch (\Exception $e) {
 			// Return the raw value if parsing fails.
 			return $value;
 		}
