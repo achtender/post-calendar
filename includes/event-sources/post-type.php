@@ -25,10 +25,10 @@ class Post_Type {
 	private const EVENT_END_META = Event_Config::EVENT_END_META;
 	private const EVENT_LABEL_META = Event_Config::EVENT_LABEL_META;
 	private const OCCURRENCE_FLAG_QUERY_VAR = 'post_calendar_expand_occurrences';
-	private const OCCURRENCE_RANGE_START_QUERY_VAR = 'post_calendar_occurrence_range_start';
-	private const OCCURRENCE_RANGE_END_QUERY_VAR = 'post_calendar_occurrence_range_end';
-	private const OCCURRENCE_OFFSET_QUERY_VAR = 'post_calendar_occurrence_offset';
-	private const OCCURRENCE_LIMIT_QUERY_VAR = 'post_calendar_occurrence_limit';
+	private const OCCURRENCE_RANGE_START_QUERY_VAR = 'post_event_range_start';
+	private const OCCURRENCE_RANGE_END_QUERY_VAR = 'post_event_range_end';
+	private const OCCURRENCE_OFFSET_QUERY_VAR = 'post_event_offset';
+	private const OCCURRENCE_LIMIT_QUERY_VAR = 'post_event_limit';
 	private const DEFAULT_OCCURRENCE_WINDOW = 'P1Y';
 
 	private Event_Query_Service $event_query_service;
@@ -213,20 +213,20 @@ class Post_Type {
 			return $value;
 		}
 
-		if ( (int) $post->ID !== (int) $object_id || empty( $post->post_calendar_occurrence_start ) ) {
+		if ( (int) $post->ID !== (int) $object_id || empty( $post->post_event_start_date ) ) {
 			return $value;
 		}
 
 		if ( self::EVENT_START_META === $meta_key ) {
-			return $single ? $post->post_calendar_occurrence_start : array( $post->post_calendar_occurrence_start );
+			return $single ? $post->post_event_start_date : array( $post->post_event_start_date );
 		}
 
 		if ( self::EVENT_END_META === $meta_key ) {
-			return $single ? $post->post_calendar_occurrence_end : array( $post->post_calendar_occurrence_end );
+			return $single ? $post->post_event_end_date : array( $post->post_event_end_date );
 		}
 
 		if ( self::EVENT_LABEL_META === $meta_key ) {
-			$label = isset( $post->post_calendar_occurrence_label ) ? (string) $post->post_calendar_occurrence_label : (string) get_the_title( $post->ID );
+			$label = isset( $post->post_event_label ) ? (string) $post->post_event_label : (string) get_the_title( $post->ID );
 			return $single ? $label : array( $label );
 		}
 
@@ -492,13 +492,13 @@ class Post_Type {
 			$occurrence->post_date_gmt = $occurrence_start->setTimezone( new \DateTimeZone( 'UTC' ) )->format( 'Y-m-d H:i:s' );
 		}
 
-		$occurrence->post_calendar_occurrence_id = (string) ( $event['id'] ?? $post->ID );
-		$occurrence->post_calendar_occurrence_start = $occurrence_start ? $occurrence_start->format( 'Y-m-d H:i:s' ) : '';
-		$occurrence->post_calendar_occurrence_end = $occurrence_end ? $occurrence_end->format( 'Y-m-d H:i:s' ) : $occurrence->post_calendar_occurrence_start;
-		$occurrence->post_calendar_occurrence_source_id = (int) $post->ID;
-		$occurrence->post_calendar_occurrence_index = $source_index;
-		$occurrence->post_calendar_occurrence_event_index = isset( $event['eventIndex'] ) ? (int) $event['eventIndex'] : 0;
-		$occurrence->post_calendar_occurrence_label = isset( $event['title'] ) ? (string) $event['title'] : $post->post_title;
+		$occurrence->post_event_id = (string) ( $event['id'] ?? $post->ID );
+		$occurrence->post_event_start_date = $occurrence_start ? $occurrence_start->format( 'Y-m-d H:i:s' ) : '';
+		$occurrence->post_event_end_date = $occurrence_end ? $occurrence_end->format( 'Y-m-d H:i:s' ) : $occurrence->post_event_start_date;
+		$occurrence->post_event_source_id = (int) $post->ID;
+		$occurrence->post_event_occurrence_index = $source_index;
+		$occurrence->post_event_source_index = isset( $event['eventIndex'] ) ? (int) $event['eventIndex'] : 0;
+		$occurrence->post_event_label = isset( $event['title'] ) ? (string) $event['title'] : $post->post_title;
 
 		return $occurrence;
 	}
@@ -513,7 +513,7 @@ class Post_Type {
 		usort(
 			$occurrences,
 			static function ( WP_Post $left, WP_Post $right ) use ( $order ): int {
-				$comparison = strcmp( (string) $left->post_calendar_occurrence_start, (string) $right->post_calendar_occurrence_start );
+				$comparison = strcmp( (string) $left->post_event_start_date, (string) $right->post_event_start_date );
 
 				if ( 0 === $comparison ) {
 					$comparison = strcmp( (string) $left->post_title, (string) $right->post_title );

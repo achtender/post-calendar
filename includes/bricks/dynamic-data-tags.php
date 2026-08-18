@@ -21,13 +21,17 @@ class Dynamic_Data_Tags {
 	 * Register Post Calendar dynamic data tags in Bricks builder
 	 *
 	 * Syntax examples:
-	 * - {postcal_event_start_date}
-	 * - {postcal_event_start_date:Y-m-d}
-	 * - {postcal_event_start_date:F j, Y \a\t g:i A}
-	 * - {postcal_event_end_date}
-	 * - {postcal_event_end_date:Y-m-d}
-	 * - {postcal_event_label}
-	 * - {postcal_has_events}
+	 * - {post_event_start_date}
+	 * - {post_event_start_date:Y-m-d}
+	 * - {post_event_start_date:F j, Y \a\t g:i A}
+	 * - {post_event_end_date}
+	 * - {post_event_end_date:Y-m-d}
+	 * - {post_event_label}
+	 * - {post_has_events}
+	 * - {post_events_range_start}
+	 * - {post_events_range_start:Y-m-d}
+	 * - {post_events_range_end}
+	 * - {post_events_range_end:Y-m-d}
 	 *
 	 * @param array $tags Existing dynamic tags list.
 	 * @return array Updated tags list.
@@ -38,26 +42,38 @@ class Dynamic_Data_Tags {
 		}
 
 		$tags[] = [
-			'name' => '{postcal_event_start_date}',
+			'name' => '{post_event_start_date}',
 			'label' => 'Post Calendar - Event Start Date',
 			'group' => 'Post Calendar',
 		];
 
 		$tags[] = [
-			'name' => '{postcal_event_end_date}',
+			'name' => '{post_event_end_date}',
 			'label' => 'Post Calendar - Event End Date',
 			'group' => 'Post Calendar',
 		];
 
 		$tags[] = [
-			'name' => '{postcal_event_label}',
+			'name' => '{post_event_label}',
 			'label' => 'Post Calendar - Event Label',
 			'group' => 'Post Calendar',
 		];
 
 		$tags[] = [
-			'name' => '{postcal_has_events}',
+			'name' => '{post_has_events}',
 			'label' => 'Post Calendar - Has Events',
+			'group' => 'Post Calendar',
+		];
+
+		$tags[] = [
+			'name' => '{post_events_range_start}',
+			'label' => 'Post Calendar - Events Range Start',
+			'group' => 'Post Calendar',
+		];
+
+		$tags[] = [
+			'name' => '{post_events_range_end}',
+			'label' => 'Post Calendar - Events Range End',
 			'group' => 'Post Calendar',
 		];
 
@@ -67,7 +83,7 @@ class Dynamic_Data_Tags {
 	/**
 	 * Render individual dynamic tags
 	 *
-	 * @param mixed  $tag The tag to render (may include arguments like "postcal_event_start_date:Y-m-d").
+	 * @param mixed  $tag The tag to render (may include arguments like "post_event_start_date:Y-m-d").
 	 * @param object $post The post object.
 	 * @param string $context The context ('text', 'html', etc.).
 	 * @return mixed The rendered value or original tag if not recognized.
@@ -87,32 +103,50 @@ class Dynamic_Data_Tags {
 			return $tag;
 		}
 
-		// Handle tags with format arguments (e.g., "postcal_event_start_date:Y-m-d").
-		if ( strpos( $clean_tag, 'postcal_event_start_date:' ) === 0 ) {
-			$format = str_replace( 'postcal_event_start_date:', '', $clean_tag );
+		// Handle tags with format arguments (e.g., "post_event_start_date:Y-m-d").
+		if ( strpos( $clean_tag, 'post_event_start_date:' ) === 0 ) {
+			$format = str_replace( 'post_event_start_date:', '', $clean_tag );
 			return $this->get_formatted_meta_date( $post_id, Event_Config::EVENT_START_META, $format );
 		}
 
-		if ( strpos( $clean_tag, 'postcal_event_end_date:' ) === 0 ) {
-			$format = str_replace( 'postcal_event_end_date:', '', $clean_tag );
+		if ( strpos( $clean_tag, 'post_event_end_date:' ) === 0 ) {
+			$format = str_replace( 'post_event_end_date:', '', $clean_tag );
 			return $this->get_formatted_meta_date( $post_id, Event_Config::EVENT_END_META, $format );
 		}
 
+		if ( strpos( $clean_tag, 'post_events_range_start:' ) === 0 ) {
+			$format = str_replace( 'post_events_range_start:', '', $clean_tag );
+			return $this->get_formatted_meta_date( $post_id, Event_Config::EVENT_RANGE_START_META, $format );
+		}
+
+		if ( strpos( $clean_tag, 'post_events_range_end:' ) === 0 ) {
+			$format = str_replace( 'post_events_range_end:', '', $clean_tag );
+			return $this->get_formatted_meta_date( $post_id, Event_Config::EVENT_RANGE_END_META, $format );
+		}
+
 		// Handle simple tags without arguments.
-		if ( $clean_tag === 'postcal_event_start_date' ) {
+		if ( $clean_tag === 'post_event_start_date' ) {
 			return $this->get_meta_value( $post_id, Event_Config::EVENT_START_META );
 		}
 
-		if ( $clean_tag === 'postcal_event_end_date' ) {
+		if ( $clean_tag === 'post_event_end_date' ) {
 			return $this->get_meta_value( $post_id, Event_Config::EVENT_END_META );
 		}
 
-		if ( $clean_tag === 'postcal_event_label' ) {
+		if ( $clean_tag === 'post_event_label' ) {
 			return $this->get_meta_value( $post_id, Event_Config::EVENT_LABEL_META );
 		}
 
-		if ( $clean_tag === 'postcal_has_events' ) {
+		if ( $clean_tag === 'post_has_events' ) {
 			return $this->get_meta_value( $post_id, Event_Config::EVENT_HAS_EVENTS_META );
+		}
+
+		if ( $clean_tag === 'post_events_range_start' ) {
+			return $this->get_meta_value( $post_id, Event_Config::EVENT_RANGE_START_META );
+		}
+
+		if ( $clean_tag === 'post_events_range_end' ) {
+			return $this->get_meta_value( $post_id, Event_Config::EVENT_RANGE_END_META );
 		}
 
 		return $tag;
@@ -138,20 +172,24 @@ class Dynamic_Data_Tags {
 		}
 
 		// Check if content contains any Post Calendar tags.
-		if ( strpos( $content, '{postcal_' ) === false ) {
+		if ( strpos( $content, '{post_' ) === false ) {
 			return $content;
 		}
 
-		// Handle formatted date tags: {postcal_event_start_date:format} or {postcal_event_end_date:format}.
-		$content = $this->replace_formatted_date_tags( $content, $post_id, 'postcal_event_start_date', Event_Config::EVENT_START_META );
-		$content = $this->replace_formatted_date_tags( $content, $post_id, 'postcal_event_end_date', Event_Config::EVENT_END_META );
+		// Handle formatted date tags: {post_event_start_date:format}, {post_event_end_date:format}, etc.
+		$content = $this->replace_formatted_date_tags( $content, $post_id, 'post_event_start_date', Event_Config::EVENT_START_META );
+		$content = $this->replace_formatted_date_tags( $content, $post_id, 'post_event_end_date', Event_Config::EVENT_END_META );
+		$content = $this->replace_formatted_date_tags( $content, $post_id, 'post_events_range_start', Event_Config::EVENT_RANGE_START_META );
+		$content = $this->replace_formatted_date_tags( $content, $post_id, 'post_events_range_end', Event_Config::EVENT_RANGE_END_META );
 
 		// Handle simple tags.
 		$simple_tags = [
-			'postcal_event_start_date' => Event_Config::EVENT_START_META,
-			'postcal_event_end_date' => Event_Config::EVENT_END_META,
-			'postcal_event_label' => Event_Config::EVENT_LABEL_META,
-			'postcal_has_events' => Event_Config::EVENT_HAS_EVENTS_META,
+			'post_event_start_date' => Event_Config::EVENT_START_META,
+			'post_event_end_date' => Event_Config::EVENT_END_META,
+			'post_event_label' => Event_Config::EVENT_LABEL_META,
+			'post_has_events' => Event_Config::EVENT_HAS_EVENTS_META,
+			'post_events_range_start' => Event_Config::EVENT_RANGE_START_META,
+			'post_events_range_end' => Event_Config::EVENT_RANGE_END_META,
 		];
 
 		foreach ( $simple_tags as $tag_name => $meta_key ) {

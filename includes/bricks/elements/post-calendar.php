@@ -606,10 +606,10 @@ class Element_Post_Calendar extends \Bricks\Element {
 
 	public static function render_builder() { ?>
 		<script type="text/x-template" id="tmpl-bricks-element-post-calendar">
-							<component :is="tag" class="post-calendar-element brxe-tabs-nested">
-								<bricks-element-children :element="element"/>
-							</component>
-						</script>
+											<component :is="tag" class="post-calendar-element brxe-tabs-nested">
+												<bricks-element-children :element="element"/>
+											</component>
+										</script>
 	<?php }
 
 	private function enhance_tabs_accessibility( string $html_content ): string {

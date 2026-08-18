@@ -42,7 +42,7 @@ class Element_Post_Calendar_View_Panel extends \Bricks\Element {
 
 	public static function render_builder() { ?>
 		<script type="text/x-template" id="tmpl-bricks-element-post-calendar-view-panel">
-							<component :is="tag" class="post-calendar-view-panel"></component>
-						</script>
+											<component :is="tag" class="post-calendar-view-panel"></component>
+										</script>
 	<?php }
 }

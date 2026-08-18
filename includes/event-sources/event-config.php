@@ -9,10 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Event_Config {
 	public const EVENTS_META = '_post_events';
 	public const EVENT_HAS_EVENTS_META = '_post_has_events';
-	public const EVENT_RANGE_START_META = '_post_event_range_start';
-	public const EVENT_RANGE_END_META = '_post_event_range_end';
-	public const EVENT_START_META = '_post_start_date';
-	public const EVENT_END_META = '_post_end_date';
+	public const EVENT_RANGE_START_META = '_post_events_range_start';
+	public const EVENT_RANGE_END_META = '_post_events_range_end';
+	public const EVENT_START_META = '_post_event_start_date';
+	public const EVENT_END_META = '_post_event_end_date';
 	public const EVENT_LABEL_META = '_post_event_label';
 
 	private const SUPPORTED_QUERY_VAR_KEYS = array(
