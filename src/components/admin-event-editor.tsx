@@ -17,8 +17,8 @@ function createEmptyRow(): AdminEventRow {
   return {
     label: '',
     all_day: false,
-    start_date: '',
-    end_date: '',
+    start: '',
+    end: '',
     repeat: 'none',
     repeat_interval: 1,
     repeat_byday: [],
@@ -62,14 +62,14 @@ function toggleAllDayRow(row: AdminEventRow, allDay: boolean): AdminEventRow {
     }
   }
 
-  const startDate = row.start_date ? row.start_date.slice(0, 10) : ''
-  const endDate = row.end_date ? row.end_date.slice(0, 10) : startDate
+  const startDate = row.start ? row.start.slice(0, 10) : ''
+  const endDate = row.end ? row.end.slice(0, 10) : startDate
 
   return {
     ...row,
     all_day: true,
-    start_date: startDate ? `${startDate} 00:00:00` : '',
-    end_date: endDate ? `${endDate} 23:59:59` : '',
+    start: startDate ? `${startDate} 00:00:00` : '',
+    end: endDate ? `${endDate} 23:59:59` : '',
   }
 }
 
@@ -81,8 +81,8 @@ function normalizeRows(rows: AdminEventRow[] | undefined): AdminEventRow[] {
   return rows.map((row) => ({
     label: row?.label ?? '',
     all_day: Boolean(row?.all_day),
-    start_date: row?.start_date ?? '',
-    end_date: row?.end_date ?? '',
+    start: row?.start ?? '',
+    end: row?.end ?? '',
     repeat: (row?.repeat ?? 'none') as EventRepeatValue,
     repeat_interval: Math.max(1, Number(row?.repeat_interval ?? 1) || 1),
     repeat_byday: Array.isArray(row?.repeat_byday) ? row.repeat_byday : [],
@@ -164,8 +164,8 @@ export default function AdminEventEditor({ runtime }: { runtime: AdminRuntime })
         <div key={`hidden-${index}`} hidden>
           <input type="hidden" name={`${fieldName}[${index}][label]`} value={row.label} readOnly />
           <input type="hidden" name={`${fieldName}[${index}][all_day]`} value={row.all_day ? '1' : '0'} readOnly />
-          <input type="hidden" name={`${fieldName}[${index}][start_date]`} value={row.start_date} readOnly />
-          <input type="hidden" name={`${fieldName}[${index}][end_date]`} value={row.end_date} readOnly />
+          <input type="hidden" name={`${fieldName}[${index}][start]`} value={row.start} readOnly />
+          <input type="hidden" name={`${fieldName}[${index}][end]`} value={row.end} readOnly />
           <input type="hidden" name={`${fieldName}[${index}][repeat]`} value={row.repeat} readOnly />
           <input type="hidden" name={`${fieldName}[${index}][repeat_interval]`} value={String(row.repeat_interval)} readOnly />
           <input type="hidden" name={`${fieldName}[${index}][repeat_until]`} value={row.repeat_until} readOnly />
@@ -224,8 +224,8 @@ export default function AdminEventEditor({ runtime }: { runtime: AdminRuntime })
                     <span>{strings.startDate ?? 'Start date'}</span>
                     <input
                       type={row.all_day ? 'date' : 'datetime-local'}
-                      value={toInputValue(row.start_date, row.all_day)}
-                      onChange={(event) => updateRow(index, { ...row, start_date: fromInputValue(event.target.value, row.all_day, false) })}
+                      value={toInputValue(row.start, row.all_day)}
+                      onChange={(event) => updateRow(index, { ...row, start: fromInputValue(event.target.value, row.all_day, false) })}
                     />
                   </label>
 
@@ -233,8 +233,8 @@ export default function AdminEventEditor({ runtime }: { runtime: AdminRuntime })
                     <span>{strings.endDate ?? 'End date'}</span>
                     <input
                       type={row.all_day ? 'date' : 'datetime-local'}
-                      value={toInputValue(row.end_date, row.all_day)}
-                      onChange={(event) => updateRow(index, { ...row, end_date: fromInputValue(event.target.value, row.all_day, true) })}
+                      value={toInputValue(row.end, row.all_day)}
+                      onChange={(event) => updateRow(index, { ...row, end: fromInputValue(event.target.value, row.all_day, true) })}
                     />
                   </label>
 

@@ -25,11 +25,11 @@ The plugin maintains these meta keys on source posts:
 
 When you query event occurrences, the plugin exposes these meta keys for each expanded occurrence. These describe the current occurrence, not the source post:
 
-- `_post_event_start_date` — the occurrence start date
-- `_post_event_end_date` — the occurrence end date
+- `_post_event_start` — the occurrence start date
+- `_post_event_end` — the occurrence end date
 - `_post_event_label` — the occurrence label (falls back to the source post title if the event row has no label)
 
-The loop post object also exposes: `post_event_id`, `post_event_start_date`, `post_event_end_date`, `post_event_label`, `post_event_source_id`, `post_event_source_index`, and `post_event_occurrence_index`.
+The loop post object also exposes: `post_event_id`, `post_event_start`, `post_event_end`, `post_event_label`, `post_event_source_id`, `post_event_source_index`, and `post_event_occurrence_index`.
 
 If a source post contains multiple event definitions, the summary range describes the complete set of events. Each occurrence carries its own start date, end date, and label.
 
@@ -40,8 +40,8 @@ update_post_meta( $post_id, '_post_events', array(
   array(
     'label'           => '',
     'all_day'         => 1,
-    'start_date'      => '2026-03-13 00:00:00',
-    'end_date'        => '2026-03-20 23:59:59',
+    'start'      => '2026-03-13 00:00:00',
+    'end'        => '2026-03-20 23:59:59',
     'repeat'          => 'none',
     'repeat_interval' => 1,
     'repeat_byday'    => array(),
@@ -50,8 +50,8 @@ update_post_meta( $post_id, '_post_events', array(
   array(
     'label'           => 'Team Meeting',
     'all_day'         => 0,
-    'start_date'      => '2026-03-15 09:00:00',
-    'end_date'        => '2026-03-15 11:00:00',
+    'start'      => '2026-03-15 09:00:00',
+    'end'        => '2026-03-15 11:00:00',
     'repeat'          => 'weekly',
     'repeat_interval' => 1,
     'repeat_byday'    => array( 'MO', 'WE' ),
@@ -64,8 +64,8 @@ Each event definition in `_post_events` contains these fields:
 
 - `label` — optional string label for the event (falls back to post title if empty)
 - `all_day` — `1` or `0`
-- `start_date` — start datetime in `Y-m-d H:i:s` format
-- `end_date` — end datetime in `Y-m-d H:i:s` format
+- `start` — start datetime in `Y-m-d H:i:s` format
+- `end` — end datetime in `Y-m-d H:i:s` format
 - `repeat` — `none`, `weekly`, `monthly`, or `yearly`
 - `repeat_interval` — positive integer interval between repeats
 - `repeat_byday` — array of weekday codes for weekly recurrence (such as `MO` or `WE`)
@@ -79,7 +79,7 @@ Post Calendar registers `post_calendar_event` as a virtual post type for queryin
 
 Use the `Y-m-d H:i:s` format for event start and end datetimes. Events can be non-recurring or repeat weekly, monthly, or yearly. The plugin expands recurring definitions into individual occurrence rows when you query them.
 
-For recurring queries, provide explicit date constraints whenever possible. A `meta_query` on `_post_event_start_date` filters the expanded occurrences, and the plugin paginates after expanding recurrence. If you don't provide a date window, the query uses a default one-year occurrence window (upcoming dates).
+For recurring queries, provide explicit date constraints whenever possible. A `meta_query` on `_post_event_start` filters the expanded occurrences, and the plugin paginates after expanding recurrence. If you don't provide a date window, the query uses a default one-year occurrence window (upcoming dates).
 
 ### Basic query
 
@@ -87,11 +87,11 @@ Set the query post type to `post_calendar_event`. Pagination, filters, and sorti
 
 When the current loop item is an occurrence, you can access virtual metadata for that row:
 
-- `get_post_meta( get_the_ID(), '_post_event_start_date', true )` — retrieves the occurrence start date
-- `get_post_meta( get_the_ID(), '_post_event_end_date', true )` — retrieves the occurrence end date
+- `get_post_meta( get_the_ID(), '_post_event_start', true )` — retrieves the occurrence start date
+- `get_post_meta( get_the_ID(), '_post_event_end', true )` — retrieves the occurrence end date
 - `get_post_meta( get_the_ID(), '_post_event_label', true )` — retrieves the event label (falls back to the source post title if the event row has no label)
 
-The loop post object also exposes: `post_event_id`, `post_event_start_date`, `post_event_end_date`, `post_event_label`, `post_event_source_id`, `post_event_source_index`, and `post_event_occurrence_index`.
+The loop post object also exposes: `post_event_id`, `post_event_start`, `post_event_end`, `post_event_label`, `post_event_source_id`, `post_event_source_index`, and `post_event_occurrence_index`.
 
 ```php
 $events = new WP_Query( [
@@ -108,7 +108,7 @@ Events are ordered by start date in ascending order by default. Override this by
 $events = new WP_Query( [
     'post_type'      => 'post_calendar_event',
     'posts_per_page' => -1,
-    'meta_key'       => '_post_event_start_date',
+    'meta_key'       => '_post_event_start',
     'orderby'        => 'meta_value',
     'meta_type'      => 'DATETIME',
     'order'          => 'DESC',
@@ -123,7 +123,7 @@ $events = new WP_Query( [
     'posts_per_page' => 10,
     'meta_query'     => [
         [
-            'key'     => '_post_event_start_date',
+            'key'     => '_post_event_start',
             'value'   => date( 'Y-m-d H:i:s' ),
             'compare' => '>=',
             'type'    => 'DATETIME',
@@ -132,6 +132,7 @@ $events = new WP_Query( [
 ] );
 ```
 
+<!-- 
 You can also specify explicit occurrence window bounds using the `start` and `end` query vars:
 
 ```php
@@ -142,6 +143,7 @@ $events = new WP_Query( [
   'end'            => gmdate( 'Y-m-d H:i:s', strtotime( '+90 days' ) ),
 ] );
 ```
+-->
 
 ## Using events in Bricks
 
@@ -155,8 +157,8 @@ Post Calendar provides these dynamic data tags for displaying an event's start d
 
 ### Available Tags
 
-- `{post_event_start_date}` – Event start date (raw format: `Y-m-d H:i:s`)
-- `{post_event_end_date}` – Event end date (raw format: `Y-m-d H:i:s`)
+- `{post_event_start}` – Event start date (raw format: `Y-m-d H:i:s`)
+- `{post_event_end}` – Event end date (raw format: `Y-m-d H:i:s`)
 - `{post_event_label}` – Event title/label
 - `{post_has_events}` – Boolean flag indicating post has events
 - `{post_events_range_start}` – Events range start (raw format: `Y-m-d H:i:s`)
@@ -164,16 +166,16 @@ Post Calendar provides these dynamic data tags for displaying an event's start d
 
 ### Date Formatting
 
-The date tags (`{post_event_start_date}`, `{post_event_end_date}`, `{post_events_range_start}`, and `{post_events_range_end}`) support PHP `DateTime::format()` syntax. Add the format string after the tag name with a colon:
+The date tags (`{post_event_start}`, `{post_event_end}`, `{post_events_range_start}`, and `{post_events_range_end}`) support PHP `DateTime::format()` syntax. Add the format string after the tag name with a colon:
 
 ```
-{post_event_start_date:Y-m-d}               → 2026-08-17
-{post_event_start_date:F j, Y}              → August 17, 2026
-{post_event_start_date:g:i A}               → 2:30 PM
-{post_event_start_date:l, F j \a\t g:i A}  → Sunday, August 17 at 2:30 PM
-{post_event_end_date:Y-m-d H:i}             → 2026-08-17 16:00
-{post_events_range_start:Y-m-d}             → 2026-03-13
-{post_events_range_end:Y-m-d}               → 2026-06-30
+{post_event_start:Y-m-d}             -> 2026-08-17
+{post_event_start:F j, Y}            -> August 17, 2026
+{post_event_start:g:i A}             -> 2:30 PM
+{post_event_start:l, F j \a\t g:i A} -> Sunday, August 17 at 2:30 PM
+{post_event_end:Y-m-d H:i}           -> 2026-08-17 16:00
+{post_events_range_start:Y-m-d}      -> 2026-03-13
+{post_events_range_end:Y-m-d}        -> 2026-06-30
 ```
 
 #### Using tags in Bricks

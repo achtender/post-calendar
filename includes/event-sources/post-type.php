@@ -213,16 +213,16 @@ class Post_Type {
 			return $value;
 		}
 
-		if ( (int) $post->ID !== (int) $object_id || empty( $post->post_event_start_date ) ) {
+		if ( (int) $post->ID !== (int) $object_id || empty( $post->post_event_start ) ) {
 			return $value;
 		}
 
 		if ( self::EVENT_START_META === $meta_key ) {
-			return $single ? $post->post_event_start_date : array( $post->post_event_start_date );
+			return $single ? $post->post_event_start : array( $post->post_event_start );
 		}
 
 		if ( self::EVENT_END_META === $meta_key ) {
-			return $single ? $post->post_event_end_date : array( $post->post_event_end_date );
+			return $single ? $post->post_event_end : array( $post->post_event_end );
 		}
 
 		if ( self::EVENT_LABEL_META === $meta_key ) {
@@ -296,7 +296,7 @@ class Post_Type {
 		 * Extract occurrence-level date filters from a meta_query and convert them to
 		 * a post-level search window. This is necessary because:
 		 *
-		 * 1. Users query on _post_start_date and _post_end_date (occurrence keys)
+		 * 1. Users query on _post_start and _post_end (occurrence keys)
 		 * 2. These keys don't exist on the source post; they only appear on occurrence clones
 		 * 3. We must intercept these filters, remove them from the post meta_query,
 		 *    and convert them to post-level summary range bounds
@@ -366,7 +366,7 @@ class Post_Type {
 	private function extract_range_from_clause( array $clause ): array {
 		/**
 		 * Extract a date range constraint from a meta_query clause that references
-		 * occurrence date keys. Only _post_start_date and _post_end_date are converted
+		 * occurrence date keys. Only _post_start and _post_end are converted
 		 * to search window bounds. All other meta keys are left as-is for post-level filtering.
 		 *
 		 * Occurrence date filters must NOT be passed to the post-level WP_Query because
@@ -493,8 +493,8 @@ class Post_Type {
 		}
 
 		$occurrence->post_event_id = (string) ( $event['id'] ?? $post->ID );
-		$occurrence->post_event_start_date = $occurrence_start ? $occurrence_start->format( 'Y-m-d H:i:s' ) : '';
-		$occurrence->post_event_end_date = $occurrence_end ? $occurrence_end->format( 'Y-m-d H:i:s' ) : $occurrence->post_event_start_date;
+		$occurrence->post_event_start = $occurrence_start ? $occurrence_start->format( 'Y-m-d H:i:s' ) : '';
+		$occurrence->post_event_end = $occurrence_end ? $occurrence_end->format( 'Y-m-d H:i:s' ) : $occurrence->post_event_start;
 		$occurrence->post_event_source_id = (int) $post->ID;
 		$occurrence->post_event_occurrence_index = $source_index;
 		$occurrence->post_event_source_index = isset( $event['eventIndex'] ) ? (int) $event['eventIndex'] : 0;
@@ -513,7 +513,7 @@ class Post_Type {
 		usort(
 			$occurrences,
 			static function ( WP_Post $left, WP_Post $right ) use ( $order ): int {
-				$comparison = strcmp( (string) $left->post_event_start_date, (string) $right->post_event_start_date );
+				$comparison = strcmp( (string) $left->post_event_start, (string) $right->post_event_start );
 
 				if ( 0 === $comparison ) {
 					$comparison = strcmp( (string) $left->post_title, (string) $right->post_title );

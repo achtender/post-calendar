@@ -82,8 +82,8 @@ export type EventRepeatValue = 'none' | 'weekly' | 'monthly' | 'yearly';
 export interface AdminEventRow {
   label: string;
   all_day: boolean;
-  start_date: string;
-  end_date: string;
+  start: string;
+  end: string;
   repeat: EventRepeatValue;
   repeat_interval: number;
   repeat_byday: string[];

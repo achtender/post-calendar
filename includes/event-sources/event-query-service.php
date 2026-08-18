@@ -310,13 +310,13 @@ class Event_Query_Service {
 	}
 
 	private function normalize_event_definition( array $base_definition, array $row, int $event_index ): ?array {
-		$start = Event_Date_Parser::parse( $this->get_row_value( $row, 'start_date' ) );
+		$start = Event_Date_Parser::parse( $this->get_row_value( $row, 'start' ) );
 
 		if ( ! $start ) {
 			return null;
 		}
 
-		$end = Event_Date_Parser::parse( $this->get_row_value( $row, 'end_date' ) );
+		$end = Event_Date_Parser::parse( $this->get_row_value( $row, 'end' ) );
 
 		if ( ! $end || $end < $start ) {
 			$end = $start;

@@ -167,13 +167,13 @@ class Admin_Editor {
 
 	private function sanitize_row( array $row ): ?array {
 		$all_day = ! empty( $row['all_day'] );
-		$start = Event_Date_Parser::parse_editor_input( $row['start_date'] ?? '', false, $all_day );
+		$start = Event_Date_Parser::parse_editor_input( $row['start'] ?? '', false, $all_day );
 
 		if ( ! $start ) {
 			return null;
 		}
 
-		$end = Event_Date_Parser::parse_editor_input( $row['end_date'] ?? '', true, $all_day );
+		$end = Event_Date_Parser::parse_editor_input( $row['end'] ?? '', true, $all_day );
 
 		if ( ! $end || $end < $start ) {
 			$end = $all_day ? $start->setTime( 23, 59, 59 ) : $start;
@@ -186,8 +186,8 @@ class Admin_Editor {
 		return array(
 			'label' => sanitize_text_field( (string) ( $row['label'] ?? '' ) ),
 			'all_day' => $all_day,
-			'start_date' => $start->format( 'Y-m-d H:i:s' ),
-			'end_date' => $end->format( 'Y-m-d H:i:s' ),
+			'start' => $start->format( 'Y-m-d H:i:s' ),
+			'end' => $end->format( 'Y-m-d H:i:s' ),
 			'repeat' => $repeat,
 			'repeat_interval' => $repeat_interval,
 			'repeat_byday' => Event_Query_Service::REPEAT_WEEKLY === $repeat ? $this->normalize_repeat_byday( $row['repeat_byday'] ?? array() ) : array(),
